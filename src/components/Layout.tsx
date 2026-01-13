@@ -1,0 +1,237 @@
+import Link from "next/link";
+import Image from "next/image";
+import { ReactNode } from "react";
+
+export default function Layout({ children }: { children: ReactNode }) {
+  return (
+    <div className="flex min-h-dvh flex-col bg-white text-slate-900">
+      <header className="sticky top-0 z-40 border-b border-slate-200 bg-white/85 backdrop-blur">
+        <div className="flex w-full items-center justify-between gap-4 px-4 py-2.5 sm:px-6 sm:py-3 lg:px-10">
+          <div className="flex items-center gap-3">
+            <Link href="/" className="flex min-w-0 items-center gap-2">
+              <span className="inline-flex items-center justify-center rounded-xl bg-white px-2.5 py-1.5 shadow-sm ring-1 ring-slate-200 sm:px-3">
+                <Image
+                  src="/brand/colaberry-ai-logo.svg"
+                  alt="Colaberry.AI"
+                  width={260}
+                  height={60}
+                  priority
+                  className="h-8 w-auto sm:h-9 lg:h-10"
+                />
+              </span>
+              <div className="hidden leading-tight sm:block">
+                <div className="text-sm font-semibold text-brand-ink">AI Platform</div>
+                <div className="text-xs text-slate-500">Consulting • AIXcelerator • Labs</div>
+              </div>
+            </Link>
+          </div>
+
+          <nav className="hidden items-center gap-1 text-sm lg:flex">
+            <Link
+              href="/aixcelerator"
+              className="rounded-md px-3 py-2 text-slate-600 hover:bg-slate-100 hover:text-slate-900"
+            >
+              Platform
+            </Link>
+            <Link
+              href="/aixcelerator/agents"
+              className="rounded-md px-3 py-2 text-slate-600 hover:bg-slate-100 hover:text-slate-900"
+            >
+              Agents
+            </Link>
+            <Link
+              href="/aixcelerator/mcp"
+              className="rounded-md px-3 py-2 text-slate-600 hover:bg-slate-100 hover:text-slate-900"
+            >
+              MCP
+            </Link>
+            <Link
+              href="/industries"
+              className="rounded-md px-3 py-2 text-slate-600 hover:bg-slate-100 hover:text-slate-900"
+            >
+              Industries
+            </Link>
+            <Link
+              href="/solutions"
+              className="rounded-md px-3 py-2 text-slate-600 hover:bg-slate-100 hover:text-slate-900"
+            >
+              Solutions
+            </Link>
+            <Link
+              href="/resources"
+              className="rounded-md px-3 py-2 text-slate-600 hover:bg-slate-100 hover:text-slate-900"
+            >
+              Resources
+            </Link>
+            <Link
+              href="/updates"
+              className="rounded-md px-3 py-2 text-slate-600 hover:bg-slate-100 hover:text-slate-900"
+            >
+              Updates
+            </Link>
+
+            <form
+              className="ml-2 hidden items-center lg:flex"
+              onSubmit={(event) => event.preventDefault()}
+            >
+              <label htmlFor="site-search" className="sr-only">
+                Search
+              </label>
+              <div className="relative">
+                <input
+                  id="site-search"
+                  name="q"
+                  type="search"
+                  placeholder="Search what you need:"
+                  className="w-64 rounded-lg border border-slate-200 bg-white px-3 py-2 pr-10 text-sm text-slate-900 placeholder:text-slate-400 shadow-sm focus:border-brand-blue/40 focus:outline-none focus:ring-2 focus:ring-brand-blue/25"
+                />
+                <svg
+                  aria-hidden="true"
+                  viewBox="0 0 24 24"
+                  className="pointer-events-none absolute right-3 top-1/2 h-5 w-5 -translate-y-1/2 text-brand-teal"
+                  fill="none"
+                >
+                  <path
+                    d="M10.5 18a7.5 7.5 0 1 1 0-15 7.5 7.5 0 0 1 0 15Z"
+                    stroke="currentColor"
+                    strokeWidth="2"
+                  />
+                  <path
+                    d="M16.25 16.25 21 21"
+                    stroke="currentColor"
+                    strokeWidth="2"
+                    strokeLinecap="round"
+                  />
+                </svg>
+              </div>
+            </form>
+
+            <span className="mx-2 h-5 w-px bg-slate-200" />
+            <Link
+              href="/request-demo"
+              className="ml-1 inline-flex items-center justify-center rounded-lg bg-slate-900 bg-gradient-to-r from-brand-blue to-brand-aqua px-3 py-2 text-xs font-semibold text-white shadow-sm hover:bg-slate-800 hover:from-brand-deep hover:to-brand-teal focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-slate-300 focus-visible:ring-offset-2"
+            >
+              Book a demo
+            </Link>
+          </nav>
+
+          <details className="relative lg:hidden">
+            <summary className="list-none rounded-md border border-slate-200 bg-white px-3 py-2 text-sm font-medium text-slate-700 hover:bg-slate-50">
+              Menu
+            </summary>
+            <div className="absolute right-0 mt-2 w-56 rounded-xl border border-slate-200 bg-white p-2 shadow-sm">
+              <form className="px-1 pb-2" onSubmit={(event) => event.preventDefault()}>
+                <label htmlFor="site-search-mobile" className="sr-only">
+                  Search
+                </label>
+                <div className="relative">
+                  <input
+                    id="site-search-mobile"
+                    name="q"
+                    type="search"
+                    placeholder="Search what you need:"
+                    className="w-full rounded-lg border border-slate-200 bg-white px-3 py-2 pr-10 text-sm text-slate-900 placeholder:text-slate-400 shadow-sm focus:border-brand-blue/40 focus:outline-none focus:ring-2 focus:ring-brand-blue/25"
+                  />
+                  <svg
+                    aria-hidden="true"
+                    viewBox="0 0 24 24"
+                    className="pointer-events-none absolute right-3 top-1/2 h-5 w-5 -translate-y-1/2 text-brand-teal"
+                    fill="none"
+                  >
+                    <path
+                      d="M10.5 18a7.5 7.5 0 1 1 0-15 7.5 7.5 0 0 1 0 15Z"
+                      stroke="currentColor"
+                      strokeWidth="2"
+                    />
+                    <path
+                      d="M16.25 16.25 21 21"
+                      stroke="currentColor"
+                      strokeWidth="2"
+                      strokeLinecap="round"
+                    />
+                  </svg>
+                </div>
+              </form>
+              <MobileLink href="/aixcelerator">Platform</MobileLink>
+              <MobileLink href="/aixcelerator/agents">Agents</MobileLink>
+              <MobileLink href="/aixcelerator/mcp">MCP</MobileLink>
+              <MobileLink href="/industries">Industries</MobileLink>
+              <MobileLink href="/solutions">Solutions</MobileLink>
+              <MobileLink href="/resources">Resources</MobileLink>
+              <MobileLink href="/updates">Updates</MobileLink>
+              <div className="my-2 h-px bg-slate-200" />
+              <Link
+                href="/request-demo"
+                className="mt-1 block rounded-lg bg-slate-900 bg-gradient-to-r from-brand-blue to-brand-aqua px-3 py-2 text-center text-xs font-semibold text-white shadow-sm hover:bg-slate-800 hover:from-brand-deep hover:to-brand-teal focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-slate-300 focus-visible:ring-offset-2"
+              >
+                Book a demo
+              </Link>
+            </div>
+          </details>
+        </div>
+      </header>
+
+      <main className="w-full flex-1 px-4 py-8 sm:px-6 sm:py-10 lg:px-10">
+        {children}
+      </main>
+
+      <footer className="border-t border-slate-200 bg-white">
+        <div className="grid w-full grid-cols-1 gap-6 px-4 py-8 text-sm text-slate-600 sm:grid-cols-3 sm:px-6 lg:px-10">
+          <div>
+            <div className="flex items-center gap-2">
+              <span className="inline-flex items-center justify-center rounded-xl bg-white px-3 py-1.5 shadow-sm ring-1 ring-slate-200">
+                <Image
+                  src="/brand/colaberry-ai-logo.svg"
+                  alt="Colaberry.AI"
+                  width={260}
+                  height={60}
+                  className="h-9 w-auto"
+                />
+              </span>
+            </div>
+            <div className="mt-1 text-sm text-slate-600">AI consulting + delivery platform for agents and MCP.</div>
+            <div className="mt-3 text-xs text-slate-500">© {new Date().getFullYear()} Colaberry AI</div>
+          </div>
+          <div>
+            <div className="text-xs font-semibold uppercase tracking-wide text-slate-500">Product</div>
+            <div className="mt-2 grid gap-2">
+              <FooterLink href="/aixcelerator">Platform</FooterLink>
+              <FooterLink href="/aixcelerator/agents">Agents</FooterLink>
+              <FooterLink href="/aixcelerator/mcp">MCP servers</FooterLink>
+              <FooterLink href="/solutions">Solutions</FooterLink>
+              <FooterLink href="/industries">Industries</FooterLink>
+            </div>
+          </div>
+          <div>
+            <div className="text-xs font-semibold uppercase tracking-wide text-slate-500">Resources</div>
+            <div className="mt-2 grid gap-2">
+              <FooterLink href="/resources">Resources hub</FooterLink>
+              <FooterLink href="/resources/podcasts">Podcasts</FooterLink>
+              <FooterLink href="/resources/white-papers">White papers</FooterLink>
+              <FooterLink href="/updates">News & product</FooterLink>
+            </div>
+          </div>
+        </div>
+      </footer>
+    </div>
+  );
+}
+
+function MobileLink({ href, children }: { href: string; children: ReactNode }) {
+  return (
+    <Link
+      href={href}
+      className="block rounded-lg px-3 py-2 text-sm text-slate-700 hover:bg-slate-50"
+    >
+      {children}
+    </Link>
+  );
+}
+
+function FooterLink({ href, children }: { href: string; children: ReactNode }) {
+  return (
+    <Link href={href} className="text-slate-600 hover:text-slate-900">
+      {children}
+    </Link>
+  );
+}
