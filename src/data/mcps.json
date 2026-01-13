@@ -1,0 +1,12 @@
+[
+  {
+    "name": "AgTech MCP",
+    "industry": "Agriculture",
+    "description": "Satellite, weather, and hyperspectral data pipelines."
+  },
+  {
+    "name": "Utilities MCP",
+    "industry": "Utilities",
+    "description": "IoT, meter data, and real-time telemetry."
+  }
+]
