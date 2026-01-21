@@ -19,5 +19,16 @@ export async function fetchPodcastEpisodes(): Promise<PodcastEpisode[]> {
   }
 
   const json = await res.json();
-  return json.data ?? [];
+
+  return (json.data ?? []).map((item: any) => {
+    // Support both Strapi shapes safely
+    const source = item.attributes ?? item;
+
+    return {
+      id: item.id,
+      title: source.title,
+      slug: source.slug,
+      publishedDate: source.publishedDate,
+    };
+  });
 }
