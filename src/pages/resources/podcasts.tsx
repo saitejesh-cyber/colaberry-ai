@@ -78,7 +78,7 @@ export default function Podcasts() {
         {/* EXTERNAL AGGREGATION */}
         <Panel
           title="External aggregation"
-          description="Curated external podcasts powered by Buzzsprout."
+          description="Curated external podcasts from trusted sources."
         >
           <BuzzsproutPlayer />
         </Panel>
