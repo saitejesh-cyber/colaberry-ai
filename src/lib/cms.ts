@@ -5,7 +5,8 @@ export type PodcastEpisode = {
   title: string;
   slug: string;
   publishedDate: string;
-  tags?: string[];
+  transcript?: any;
+  tags: string[];
 };
 
 export async function fetchPodcastEpisodes(): Promise<PodcastEpisode[]> {
@@ -26,7 +27,18 @@ export async function fetchPodcastEpisodes(): Promise<PodcastEpisode[]> {
       title: item.title,
       slug: item.slug,
       publishedDate: item.publishedDate,
+      transcript: item.transcript,
       tags: item.tags || [],
     })) || []
   );
+}
+
+export async function fetchPodcastBySlug(slug: string) {
+  const res = await fetch(
+    `${CMS_URL}/api/podcast-episodes?filters[slug][$eq]=${slug}`,
+    { cache: "no-store" }
+  );
+
+  const json = await res.json();
+  return json?.data?.[0] || null;
 }

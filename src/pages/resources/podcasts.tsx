@@ -44,11 +44,11 @@ export default function Podcasts({ episodes }: Props) {
             </div>
           )}
 
-          <ul className="mt-4 grid gap-3">
+          <ul className="mt-4 grid gap-4">
             {episodes.map((episode) => (
               <li
                 key={episode.id}
-                className="rounded-lg border border-slate-200 p-4 hover:shadow-sm transition"
+                className="rounded-lg border border-slate-200 p-4"
               >
                 <div className="text-sm font-semibold text-slate-900">
                   {episode.title}
@@ -58,14 +58,13 @@ export default function Podcasts({ episodes }: Props) {
                   Published on {episode.publishedDate}
                 </div>
 
-                {/* TAGS */}
-                {episode.tags && (
-                  <div className="flex flex-wrap gap-2 mt-2">
+                {episode.tags.length > 0 && (
+                  <div className="mt-2 flex flex-wrap gap-2">
                     {episode.tags.map((tag) => (
                       <Link
                         key={tag}
                         href={`/resources/podcasts/tag/${tag}`}
-                        className="text-xs bg-slate-100 px-2 py-1 rounded hover:bg-slate-200"
+                        className="text-xs px-2 py-1 rounded bg-slate-100 hover:bg-slate-200"
                       >
                         #{tag}
                       </Link>
@@ -75,13 +74,14 @@ export default function Podcasts({ episodes }: Props) {
 
                 <Link
                   href={`/resources/podcasts/${episode.slug}`}
-                  className="mt-2 inline-block text-xs font-semibold text-brand-blue hover:underline"
+                  className="mt-3 inline-block text-xs font-semibold text-brand-blue"
                 >
                   View episode →
                 </Link>
               </li>
             ))}
           </ul>
+
         </Panel>
 
         {/* EXTERNAL AGGREGATION */}
