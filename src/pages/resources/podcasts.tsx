@@ -1,28 +1,32 @@
-import { useEffect, useState } from "react";
 import Layout from "../../components/Layout";
 import BuzzsproutPlayer from "../../components/BuzzsproutPlayer";
 import Link from "next/link";
-import { fetchPodcastEpisodes, PodcastEpisode } from "../../lib/cms";
+import { GetServerSideProps } from "next";
 
-export default function Podcasts() {
-  const [episodes, setEpisodes] = useState<PodcastEpisode[]>([]);
-  const [loading, setLoading] = useState(true);
+type PodcastEpisode = {
+  id: number;
+  title: string;
+  slug: string;
+  publishedDate: string;
+  tags?: string[];
+};
 
-  useEffect(() => {
-    fetchPodcastEpisodes()
-      .then(setEpisodes)
-      .finally(() => setLoading(false));
-  }, []);
+type Props = {
+  episodes: PodcastEpisode[];
+};
 
+export default function Podcasts({ episodes }: Props) {
   return (
     <Layout>
       <div className="flex flex-col gap-2">
         <div className="text-xs font-semibold uppercase tracking-wide text-slate-500">
           Resources
         </div>
+
         <h1 className="text-3xl font-semibold tracking-tight text-slate-900 sm:text-4xl">
           Podcasts
         </h1>
+
         <p className="max-w-3xl text-sm leading-relaxed text-slate-600 sm:text-base">
           Space for internal podcast posts and curated external aggregation.
         </p>
@@ -34,13 +38,7 @@ export default function Podcasts() {
           title="Internal posting"
           description="Publish episodes, transcripts, show notes, and takeaways."
         >
-          {loading && (
-            <div className="mt-3 text-sm text-slate-500">
-              Loading podcasts…
-            </div>
-          )}
-
-          {!loading && episodes.length === 0 && (
+          {episodes.length === 0 && (
             <div className="mt-3 text-sm text-slate-500">
               No podcasts published yet.
             </div>
@@ -57,13 +55,24 @@ export default function Podcasts() {
                 </div>
 
                 <div className="mt-1 text-xs text-slate-500">
-                  Published on{" "}
-                  {new Date(episode.publishedDate)
-                    .toISOString()
-                    .split("T")[0]}
+                  Published on {episode.publishedDate}
                 </div>
 
-                {/* Future-ready deep link */}
+                {/* TAGS */}
+                {episode.tags && (
+                  <div className="flex flex-wrap gap-2 mt-2">
+                    {episode.tags.map((tag) => (
+                      <Link
+                        key={tag}
+                        href={`/resources/podcasts/tag/${tag}`}
+                        className="text-xs bg-slate-100 px-2 py-1 rounded hover:bg-slate-200"
+                      >
+                        #{tag}
+                      </Link>
+                    ))}
+                  </div>
+                )}
+
                 <Link
                   href={`/resources/podcasts/${episode.slug}`}
                   className="mt-2 inline-block text-xs font-semibold text-brand-blue hover:underline"
@@ -82,7 +91,6 @@ export default function Podcasts() {
         >
           <BuzzsproutPlayer />
         </Panel>
-
       </div>
 
       <div className="mt-8 flex flex-col gap-3 sm:flex-row">
@@ -92,9 +100,10 @@ export default function Podcasts() {
         >
           Back to Resources
         </Link>
+
         <Link
           href="/updates"
-          className="inline-flex items-center justify-center rounded-lg bg-slate-900 bg-gradient-to-r from-brand-blue to-brand-aqua px-4 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-slate-800"
+          className="inline-flex items-center justify-center rounded-lg bg-slate-900 px-4 py-2.5 text-sm font-semibold text-white hover:bg-slate-800"
         >
           View News & Product
         </Link>
@@ -102,6 +111,28 @@ export default function Podcasts() {
     </Layout>
   );
 }
+
+/* ---------- SSR ---------- */
+export const getServerSideProps: GetServerSideProps = async () => {
+  const CMS_URL = process.env.NEXT_PUBLIC_CMS_URL;
+
+  const res = await fetch(
+    `${CMS_URL}/api/podcast-episodes?populate=*&sort=publishedDate:desc`
+  );
+
+  const json = await res.json();
+
+  const episodes =
+    json?.data?.map((item: any) => ({
+      id: item.id,
+      title: item.title,
+      slug: item.slug,
+      publishedDate: item.publishedDate,
+      tags: item.tags || [],
+    })) || [];
+
+  return { props: { episodes } };
+};
 
 function Panel({
   title,

@@ -1,4 +1,3 @@
-// src/lib/cms.ts
 const CMS_URL = process.env.NEXT_PUBLIC_CMS_URL!;
 
 export type PodcastEpisode = {
@@ -6,6 +5,7 @@ export type PodcastEpisode = {
   title: string;
   slug: string;
   publishedDate: string;
+  tags?: string[];
 };
 
 export async function fetchPodcastEpisodes(): Promise<PodcastEpisode[]> {
@@ -20,15 +20,13 @@ export async function fetchPodcastEpisodes(): Promise<PodcastEpisode[]> {
 
   const json = await res.json();
 
-  return (json.data ?? []).map((item: any) => {
-    // Support both Strapi shapes safely
-    const source = item.attributes ?? item;
-
-    return {
+  return (
+    json?.data?.map((item: any) => ({
       id: item.id,
-      title: source.title,
-      slug: source.slug,
-      publishedDate: source.publishedDate,
-    };
-  });
+      title: item.title,
+      slug: item.slug,
+      publishedDate: item.publishedDate,
+      tags: item.tags || [],
+    })) || []
+  );
 }
