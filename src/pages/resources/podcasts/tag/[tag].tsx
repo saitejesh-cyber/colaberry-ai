@@ -3,17 +3,37 @@ import { fetchPodcastEpisodes } from "../../../../lib/cms";
 import Link from "next/link";
 
 export async function getServerSideProps({ params }: any) {
-  const episodes = await fetchPodcastEpisodes();
-  const filtered = episodes.filter((e) =>
-    e.tags?.includes(params.tag)
-  );
+    const res = await fetch(
+        `${process.env.NEXT_PUBLIC_CMS_URL}/api/podcast-episodes` +
+        `?populate[tags][fields][0]=name` +
+        `&populate[tags][fields][1]=slug`,
+        { cache: "no-store" }
+    );
 
-  return {
-    props: {
-      tag: params.tag,
-      episodes: filtered,
-    },
-  };
+    const json = await res.json();
+
+    const episodes =
+        json?.data?.map((item: any) => ({
+            id: item.id,
+            title: item.attributes.title,
+            slug: item.attributes.slug,
+            tags:
+                item.attributes.tags?.data?.map((t: any) => ({
+                    name: t.attributes.name,
+                    slug: t.attributes.slug,
+                })) || [],
+        })) || [];
+
+    const filtered = episodes.filter((e: any) =>
+        e.tags.some((t: any) => t.slug === params.tag)
+    );
+
+    return {
+        props: {
+            tag: params.tag,
+            episodes: filtered,
+        },
+    };
 }
 
 export default function PodcastTagPage({ tag, episodes }: any) {

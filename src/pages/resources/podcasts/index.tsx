@@ -4,13 +4,19 @@ import BuzzsproutPlayer from "../../../components/BuzzsproutPlayer";
 import Link from "next/link";
 import { GetServerSideProps } from "next";
 
+type Tag = {
+  name: string;
+  slug: string;
+};
+
 type PodcastEpisode = {
   id: number;
   title: string;
   slug: string;
   publishedDate: string;
-  tags: string[];
+  tags: Tag[];
 };
+
 
 export default function Podcasts({ episodes }: { episodes: PodcastEpisode[] }) {
   return (
@@ -37,18 +43,18 @@ export default function Podcasts({ episodes }: { episodes: PodcastEpisode[] }) {
                   {ep.publishedDate}
                 </p>
 
-                {/* TAGS */}
-                <div className="mt-2 flex flex-wrap gap-2">
-                  {ep.tags.map((tag) => (
-                    <Link
-                      key={tag}
-                      href={`/resources/podcasts/tag/${tag}`}
-                      className="text-xs bg-slate-100 px-2 py-1 rounded"
-                    >
-                      #{tag}
-                    </Link>
-                  ))}
-                </div>
+                    {/* TAGS */}
+                    <div className="mt-2 flex flex-wrap gap-2">
+                        {ep.tags.map((tag: any) => (
+                            <Link
+                                key={tag.slug}
+                                href={`/resources/podcasts/tag/${tag.slug}`}
+                                className="text-xs bg-slate-100 px-2 py-1 rounded"
+                            >
+                                #{tag.name}
+                            </Link>
+                        ))}
+                    </div>
 
                 <Link
                   href={`/resources/podcasts/${ep.slug}`}
@@ -73,7 +79,10 @@ export default function Podcasts({ episodes }: { episodes: PodcastEpisode[] }) {
 
 export const getServerSideProps: GetServerSideProps = async () => {
   const res = await fetch(
-    `${process.env.NEXT_PUBLIC_CMS_URL}/api/podcast-episodes?sort=publishedDate:desc`
+    `${process.env.NEXT_PUBLIC_CMS_URL}/api/podcast-episodes` +
+      `?sort=publishedDate:desc` +
+      `&populate[tags][fields][0]=name` +
+      `&populate[tags][fields][1]=slug`
   );
 
   const json = await res.json();
@@ -82,9 +91,10 @@ export const getServerSideProps: GetServerSideProps = async () => {
     json?.data?.map((item: any) => ({
       id: item.id,
       title: item.title,
+      description: item.description,
       slug: item.slug,
       publishedDate: item.publishedDate,
-      tags: item.tags || [],
+      tags: item.tags ?? [],
     })) || [];
 
   return { props: { episodes } };
