@@ -1,8 +1,25 @@
 import Link from "next/link";
 import Image from "next/image";
-import { ReactNode } from "react";
+import { ReactNode, useEffect, useState } from "react";
 
 export default function Layout({ children }: { children: ReactNode }) {
+  const [theme, setTheme] = useState<"light" | "dark">("light");
+
+  useEffect(() => {
+    const stored = window.localStorage.getItem("theme");
+    const prefersDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
+    const initial = stored === "light" || stored === "dark" ? stored : prefersDark ? "dark" : "light";
+    setTheme(initial);
+    document.documentElement.classList.toggle("dark", initial === "dark");
+  }, []);
+
+  const toggleTheme = () => {
+    const next = theme === "dark" ? "light" : "dark";
+    setTheme(next);
+    document.documentElement.classList.toggle("dark", next === "dark");
+    window.localStorage.setItem("theme", next);
+  };
+
   return (
     <div className="flex min-h-dvh flex-col bg-transparent text-slate-900">
       <header className="sticky top-0 z-40 border-b border-slate-200/70 bg-white/95 shadow-[0_10px_24px_rgba(15,23,42,0.06)]">
@@ -107,6 +124,15 @@ export default function Layout({ children }: { children: ReactNode }) {
             </form>
 
             <span className="mx-2 h-5 w-px bg-slate-200" />
+            <button
+              type="button"
+              onClick={toggleTheme}
+              className="focus-ring inline-flex items-center gap-2 rounded-full border border-slate-200/80 bg-white/90 px-3 py-2 text-xs font-semibold text-slate-600 hover:bg-slate-100/80"
+              aria-label="Toggle light and dark mode"
+            >
+              {theme === "dark" ? "Dark" : "Light"}
+              <ThemeIcon isDark={theme === "dark"} />
+            </button>
             <Link
               href="/request-demo"
               className="ml-1 inline-flex items-center justify-center rounded-full bg-slate-900 bg-gradient-to-r from-brand-blue to-brand-aqua px-4 py-2 text-xs font-semibold text-white shadow-sm hover:from-brand-deep hover:to-brand-teal focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-slate-300 focus-visible:ring-offset-2"
@@ -159,6 +185,14 @@ export default function Layout({ children }: { children: ReactNode }) {
               <MobileLink href="/solutions">Solutions</MobileLink>
               <MobileLink href="/resources">Resources</MobileLink>
               <MobileLink href="/updates">Updates</MobileLink>
+              <button
+                type="button"
+                onClick={toggleTheme}
+                className="focus-ring mt-2 flex w-full items-center justify-between rounded-lg px-3 py-2 text-sm text-slate-700 hover:bg-slate-50"
+              >
+                <span>Theme</span>
+                <span className="text-xs font-semibold">{theme === "dark" ? "Dark" : "Light"}</span>
+              </button>
               <div className="my-2 h-px bg-slate-200" />
               <Link
                 href="/request-demo"
@@ -281,6 +315,24 @@ function FooterLink({ href, children }: { href: string; children: ReactNode }) {
     <Link href={href} className="focus-ring text-slate-600 hover:text-slate-900">
       {children}
     </Link>
+  );
+}
+
+function ThemeIcon({ isDark }: { isDark: boolean }) {
+  return isDark ? (
+    <svg viewBox="0 0 24 24" className="h-4 w-4" aria-hidden="true" fill="currentColor">
+      <path d="M21 14.5A8.5 8.5 0 1 1 9.5 3 7 7 0 0 0 21 14.5Z" />
+    </svg>
+  ) : (
+    <svg viewBox="0 0 24 24" className="h-4 w-4" aria-hidden="true" fill="none">
+      <circle cx="12" cy="12" r="4" stroke="currentColor" strokeWidth="1.6" />
+      <path
+        d="M12 3v2.5M12 18.5V21M3 12h2.5M18.5 12H21M5.6 5.6l1.8 1.8M16.6 16.6l1.8 1.8M18.4 5.6l-1.8 1.8M7.4 16.6l-1.8 1.8"
+        stroke="currentColor"
+        strokeWidth="1.6"
+        strokeLinecap="round"
+      />
+    </svg>
   );
 }
 
