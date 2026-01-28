@@ -15,13 +15,9 @@ export async function getServerSideProps({ params }: any) {
     const episodes =
         json?.data?.map((item: any) => ({
             id: item.id,
-            title: item.attributes.title,
-            slug: item.attributes.slug,
-            tags:
-                item.attributes.tags?.data?.map((t: any) => ({
-                    name: t.attributes.name,
-                    slug: t.attributes.slug,
-                })) || [],
+            title: item.title,
+            slug: item.slug,
+            tags: item.tags || [],
         })) || [];
 
     const filtered = episodes.filter((e: any) =>
