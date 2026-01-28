@@ -58,7 +58,7 @@ export default function AIXcelerator() {
             href="/resources"
             className="mt-3 inline-flex items-center justify-center rounded-full bg-slate-900 bg-gradient-to-r from-brand-blue to-brand-aqua px-4 py-2.5 text-sm font-semibold text-white shadow-sm hover:from-brand-deep hover:to-brand-teal focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-slate-300 focus-visible:ring-offset-2 sm:mt-0"
           >
-            Explore layers
+            Explore resource layers
           </Link>
         </div>
 
@@ -92,7 +92,7 @@ function NavCard({
   return (
     <Link
       href={href}
-      className="surface-panel surface-hover group border-t-4 border-brand-blue/20 p-5"
+      className="surface-panel surface-hover surface-interactive group border-t-4 border-brand-blue/20 p-5"
     >
       <div className="flex items-start justify-between gap-4">
         <div>

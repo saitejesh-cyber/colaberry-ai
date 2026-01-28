@@ -50,7 +50,7 @@ export default function Podcasts({ episodes }: { episodes: PodcastEpisode[] }) {
             {episodes.map((ep) => (
               <li
                 key={ep.id}
-                className="surface-panel surface-hover border-t-4 border-brand-blue/20 p-4"
+                className="surface-panel border-t-4 border-brand-blue/20 p-4"
               >
                 <h4 className="text-sm font-semibold text-slate-900">{ep.title}</h4>
                 <p className="mt-1 text-xs text-slate-500">{ep.publishedDate}</p>

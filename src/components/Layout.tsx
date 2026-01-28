@@ -29,43 +29,43 @@ export default function Layout({ children }: { children: ReactNode }) {
           <nav className="hidden items-center gap-1 text-sm lg:flex">
             <Link
               href="/aixcelerator"
-              className="rounded-full px-3 py-2 font-medium text-slate-600 hover:bg-slate-100/80 hover:text-slate-900"
+              className="focus-ring rounded-full px-3 py-2 font-medium text-slate-600 hover:bg-slate-100/80 hover:text-slate-900"
             >
               Platform
             </Link>
             <Link
               href="/aixcelerator/agents"
-              className="rounded-full px-3 py-2 font-medium text-slate-600 hover:bg-slate-100/80 hover:text-slate-900"
+              className="focus-ring rounded-full px-3 py-2 font-medium text-slate-600 hover:bg-slate-100/80 hover:text-slate-900"
             >
               Agents
             </Link>
             <Link
               href="/aixcelerator/mcp"
-              className="rounded-full px-3 py-2 font-medium text-slate-600 hover:bg-slate-100/80 hover:text-slate-900"
+              className="focus-ring rounded-full px-3 py-2 font-medium text-slate-600 hover:bg-slate-100/80 hover:text-slate-900"
             >
               MCP
             </Link>
             <Link
               href="/industries"
-              className="rounded-full px-3 py-2 font-medium text-slate-600 hover:bg-slate-100/80 hover:text-slate-900"
+              className="focus-ring rounded-full px-3 py-2 font-medium text-slate-600 hover:bg-slate-100/80 hover:text-slate-900"
             >
               Industries
             </Link>
             <Link
               href="/solutions"
-              className="rounded-full px-3 py-2 font-medium text-slate-600 hover:bg-slate-100/80 hover:text-slate-900"
+              className="focus-ring rounded-full px-3 py-2 font-medium text-slate-600 hover:bg-slate-100/80 hover:text-slate-900"
             >
               Solutions
             </Link>
             <Link
               href="/resources"
-              className="rounded-full px-3 py-2 font-medium text-slate-600 hover:bg-slate-100/80 hover:text-slate-900"
+              className="focus-ring rounded-full px-3 py-2 font-medium text-slate-600 hover:bg-slate-100/80 hover:text-slate-900"
             >
               Resources
             </Link>
             <Link
               href="/updates"
-              className="rounded-full px-3 py-2 font-medium text-slate-600 hover:bg-slate-100/80 hover:text-slate-900"
+              className="focus-ring rounded-full px-3 py-2 font-medium text-slate-600 hover:bg-slate-100/80 hover:text-slate-900"
             >
               Updates
             </Link>
@@ -269,7 +269,7 @@ function MobileLink({ href, children }: { href: string; children: ReactNode }) {
   return (
     <Link
       href={href}
-      className="block rounded-lg px-3 py-2 text-sm text-slate-700 hover:bg-slate-50"
+      className="focus-ring block rounded-lg px-3 py-2 text-sm text-slate-700 hover:bg-slate-50"
     >
       {children}
     </Link>
@@ -278,7 +278,7 @@ function MobileLink({ href, children }: { href: string; children: ReactNode }) {
 
 function FooterLink({ href, children }: { href: string; children: ReactNode }) {
   return (
-    <Link href={href} className="text-slate-600 hover:text-slate-900">
+    <Link href={href} className="focus-ring text-slate-600 hover:text-slate-900">
       {children}
     </Link>
   );
@@ -298,7 +298,7 @@ function SocialIcon({
       href={href}
       target="_blank"
       rel="noreferrer"
-      className="inline-flex h-10 w-10 items-center justify-center rounded-full border border-slate-200 bg-white text-slate-500 transition hover:border-brand-blue/40 hover:text-brand-blue"
+      className="focus-ring inline-flex h-10 w-10 items-center justify-center rounded-full border border-slate-200 bg-white text-slate-500 transition hover:border-brand-blue/40 hover:text-brand-blue"
       aria-label={label}
     >
       <svg viewBox="0 0 24 24" className="h-5 w-5" aria-hidden="true">

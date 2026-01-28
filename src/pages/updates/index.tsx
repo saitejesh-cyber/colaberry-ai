@@ -41,7 +41,7 @@ export default function Updates() {
       <div className="mt-8 flex flex-col gap-3 sm:flex-row">
         <Link
           href="/resources"
-          className="inline-flex items-center justify-center rounded-full border border-slate-300 bg-white px-4 py-2.5 text-sm font-semibold text-brand-ink hover:bg-slate-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-slate-300 focus-visible:ring-offset-2"
+          className="focus-ring inline-flex items-center justify-center rounded-full border border-slate-300 bg-white px-4 py-2.5 text-sm font-semibold text-brand-ink hover:bg-slate-50"
         >
           Explore resources
         </Link>
@@ -49,7 +49,7 @@ export default function Updates() {
           href="/aixcelerator"
           className="inline-flex items-center justify-center rounded-full bg-slate-900 bg-gradient-to-r from-brand-blue to-brand-aqua px-4 py-2.5 text-sm font-semibold text-white shadow-sm hover:from-brand-deep hover:to-brand-teal focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-slate-300 focus-visible:ring-offset-2"
         >
-          Explore platform
+          Explore AIXcelerator
         </Link>
       </div>
     </Layout>
@@ -66,7 +66,7 @@ function Panel({
   children: React.ReactNode;
 }) {
   return (
-    <div className="surface-panel surface-hover border-t-4 border-brand-blue/20 p-6">
+    <div className="surface-panel border-t-4 border-brand-blue/20 p-6">
       <div className="text-base font-semibold text-slate-900">{title}</div>
       <div className="mt-1 text-sm text-slate-600">{description}</div>
       <div className="mt-4 grid gap-2">{children}</div>

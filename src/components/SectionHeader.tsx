@@ -27,17 +27,20 @@ export default function SectionHeader({
         ? "text-2xl sm:text-3xl lg:text-4xl"
         : "text-xl sm:text-2xl";
   const alignClass = align === "center" ? "items-center text-center" : "items-start text-left";
+  const spacingClass = size === "xl" ? "gap-3" : "gap-2";
 
   return (
-    <div className={`flex w-full max-w-3xl flex-col gap-2 ${alignClass}`}>
+    <div className={`flex w-full max-w-3xl flex-col ${spacingClass} ${alignClass}`}>
       {kicker ? (
         <div className="text-[11px] font-semibold uppercase tracking-[0.25em] text-slate-500">
           {kicker}
         </div>
       ) : null}
-      <HeadingTag className={`font-semibold text-slate-900 ${titleClass}`}>{title}</HeadingTag>
+      <HeadingTag className={`font-semibold leading-tight tracking-tight text-slate-900 ${titleClass}`}>
+        {title}
+      </HeadingTag>
       {description ? (
-        <p className="text-sm text-slate-600 sm:text-base">{description}</p>
+        <p className="text-sm leading-relaxed text-slate-600 sm:text-base">{description}</p>
       ) : null}
       {children ? <div className="pt-1">{children}</div> : null}
     </div>

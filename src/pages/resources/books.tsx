@@ -32,7 +32,7 @@ export default function Books() {
       <div className="mt-8 flex flex-col gap-3 sm:flex-row">
         <Link
           href="/resources"
-          className="inline-flex items-center justify-center rounded-full border border-brand-blue/25 bg-white px-4 py-2.5 text-sm font-semibold text-brand-ink hover:bg-slate-50"
+          className="focus-ring inline-flex items-center justify-center rounded-full border border-brand-blue/25 bg-white px-4 py-2.5 text-sm font-semibold text-brand-ink hover:bg-slate-50"
         >
           Back to Resources
         </Link>
@@ -49,7 +49,7 @@ export default function Books() {
 
 function Card({ title, description, badge }: { title: string; description: string; badge: string }) {
   return (
-    <div className="surface-panel surface-hover border-t-4 border-brand-blue/20 p-6">
+    <div className="surface-panel border-t-4 border-brand-blue/20 p-6">
       <div className="flex items-start justify-between gap-4">
         <div>
           <div className="text-base font-semibold text-slate-900">{title}</div>

@@ -47,10 +47,7 @@ export default function Solutions() {
 
       <div className="mt-6 grid gap-4 sm:mt-8 sm:grid-cols-2 lg:grid-cols-3">
         {solutions.map((item) => (
-          <div
-            key={item.title}
-            className="surface-panel surface-hover border-t-4 border-brand-blue/20 p-5"
-          >
+          <div key={item.title} className="surface-panel border-t-4 border-brand-blue/20 p-5">
             <div className="text-base font-semibold text-slate-900">{item.title}</div>
             <div className="mt-1 text-sm text-slate-600">{item.description}</div>
             <div className="mt-4 inline-flex items-center rounded-full border border-slate-200/80 bg-white px-2.5 py-1 text-xs font-semibold text-slate-700">
@@ -63,7 +60,7 @@ export default function Solutions() {
       <div className="mt-8 flex flex-col gap-3 sm:flex-row">
         <Link
           href="/industries"
-          className="inline-flex items-center justify-center rounded-full border border-brand-blue/25 bg-white px-4 py-2.5 text-sm font-semibold text-brand-ink hover:bg-slate-50"
+          className="focus-ring inline-flex items-center justify-center rounded-full border border-brand-blue/25 bg-white px-4 py-2.5 text-sm font-semibold text-brand-ink hover:bg-slate-50"
         >
           View industries
         </Link>

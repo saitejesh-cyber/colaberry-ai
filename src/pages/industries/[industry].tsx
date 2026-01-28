@@ -33,7 +33,7 @@ export default function Industry() {
             >
               Book a demo
             </Link>
-            <button className="inline-flex items-center justify-center rounded-full border border-slate-300 bg-white px-4 py-2.5 text-sm font-medium text-slate-900 hover:bg-slate-50">
+            <button className="focus-ring inline-flex items-center justify-center rounded-full border border-slate-300 bg-white px-4 py-2.5 text-sm font-medium text-slate-900 hover:bg-slate-50">
               Subscribe
             </button>
           </div>
@@ -106,7 +106,7 @@ function CaseStudyCard({
   };
 }) {
   return (
-    <div className="surface-panel surface-hover border-t-4 border-brand-blue/20 p-5">
+    <div className="surface-panel border-t-4 border-brand-blue/20 p-5">
       <div className="text-base font-semibold text-slate-900">{item.title}</div>
 
       <div className="mt-4 grid gap-4">
@@ -137,7 +137,7 @@ function Section({ title, items }: { title: string; items: string[] }) {
 
 function InfoCard({ title, body }: { title: string; body: string }) {
   return (
-    <div className="surface-panel surface-hover border-t-4 border-brand-blue/20 p-5">
+    <div className="surface-panel border-t-4 border-brand-blue/20 p-5">
       <div className="text-base font-semibold text-slate-900">{title}</div>
       <div className="mt-1 text-sm leading-relaxed text-slate-600">{body}</div>
     </div>

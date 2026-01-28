@@ -58,7 +58,7 @@ export default function Agents() {
             <Link
               key={industry}
               href={`/industries/${encodeURIComponent(industry)}`}
-              className="rounded-full border border-brand-blue/25 bg-brand-blue/10 px-3 py-1 text-xs font-semibold text-brand-deep hover:bg-brand-blue/15"
+              className="focus-ring rounded-full border border-brand-blue/25 bg-brand-blue/10 px-3 py-1 text-xs font-semibold text-brand-deep hover:bg-brand-blue/15"
             >
               {industry}
             </Link>

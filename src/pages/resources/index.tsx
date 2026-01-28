@@ -30,15 +30,19 @@ export default function Resources() {
             id="resource-search"
             type="search"
             placeholder="Search podcasts, white papers, case studies..."
+            aria-describedby="resource-search-help"
             className="w-full rounded-full border border-slate-200/80 bg-white px-4 py-2.5 text-sm text-slate-900 placeholder:text-slate-400 shadow-sm focus:border-brand-blue/40 focus:outline-none focus:ring-2 focus:ring-brand-blue/25"
           />
           <button
             type="button"
-            className="inline-flex items-center justify-center rounded-full bg-slate-900 px-4 py-2.5 text-xs font-semibold uppercase tracking-wide text-white shadow-sm hover:bg-slate-800"
+            className="focus-ring inline-flex items-center justify-center rounded-full bg-slate-900 px-4 py-2.5 text-xs font-semibold uppercase tracking-wide text-white shadow-sm hover:bg-slate-800"
           >
             Search
           </button>
         </div>
+        <p id="resource-search-help" className="mt-2 text-xs text-slate-500">
+          Search is rolling out—use the category cards below for now.
+        </p>
         <div className="mt-3 flex flex-wrap gap-2 text-xs text-slate-600">
           {["Podcasts", "White papers", "Case studies", "Updates", "Artifacts"].map((label) => (
             <span
@@ -127,7 +131,7 @@ function ResourceCard({
   return (
     <Link
       href={href}
-      className="surface-panel surface-hover group border-t-4 border-brand-blue/20 p-5"
+      className="surface-panel surface-hover surface-interactive group border-t-4 border-brand-blue/20 p-5"
     >
       <div className="flex items-start justify-between gap-4">
         <div>

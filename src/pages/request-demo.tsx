@@ -30,9 +30,9 @@ export default function RequestDemo() {
             </a>
             <Link
               href="/aixcelerator"
-              className="inline-flex items-center justify-center rounded-full border border-slate-300 bg-white px-4 py-2.5 text-sm font-semibold text-slate-900 hover:bg-slate-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-slate-300 focus-visible:ring-offset-2"
+              className="focus-ring inline-flex items-center justify-center rounded-full border border-slate-300 bg-white px-4 py-2.5 text-sm font-semibold text-slate-900 hover:bg-slate-50"
             >
-              Explore platform
+              Explore AIXcelerator
             </Link>
           </div>
 

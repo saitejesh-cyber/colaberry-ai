@@ -72,6 +72,19 @@ h6 {
   box-shadow: var(--shadow-md);
 }
 
+.surface-interactive {
+  outline: none;
+}
+
+.surface-interactive:focus-visible {
+  box-shadow: var(--shadow-md), 0 0 0 3px rgba(47, 111, 237, 0.28);
+}
+
+.focus-ring:focus-visible {
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(47, 111, 237, 0.28);
+}
+
 @keyframes rise-in {
   from {
     opacity: 0;

@@ -153,7 +153,7 @@ export default function Home() {
               </Link>
               <Link
                 href="/resources"
-                className="inline-flex items-center justify-center rounded-full border border-brand-blue/25 bg-white/90 px-5 py-2.5 text-sm font-semibold text-brand-ink shadow-sm hover:bg-white"
+                className="focus-ring inline-flex items-center justify-center rounded-full border border-brand-blue/25 bg-white/90 px-5 py-2.5 text-sm font-semibold text-brand-ink shadow-sm hover:bg-white"
               >
                 Explore the catalog
               </Link>
@@ -175,15 +175,19 @@ export default function Home() {
                   id="catalog-search"
                   type="search"
                   placeholder="Search agents, MCP servers, podcasts, use cases..."
+                  aria-describedby="catalog-search-help"
                   className="w-full rounded-full border border-slate-200/80 bg-white px-4 py-2.5 text-sm text-slate-900 placeholder:text-slate-400 shadow-sm focus:border-brand-blue/40 focus:outline-none focus:ring-2 focus:ring-brand-blue/25"
                 />
                 <button
                   type="button"
-                  className="inline-flex items-center justify-center rounded-full bg-slate-900 px-4 py-2.5 text-xs font-semibold uppercase tracking-wide text-white shadow-sm hover:bg-slate-800"
+                  className="focus-ring inline-flex items-center justify-center rounded-full bg-slate-900 px-4 py-2.5 text-xs font-semibold uppercase tracking-wide text-white shadow-sm hover:bg-slate-800"
                 >
                   Search
                 </button>
               </div>
+              <p id="catalog-search-help" className="mt-2 text-xs text-slate-500">
+                Search is rolling out—use tags or the catalog sections below for now.
+              </p>
               <div className="mt-3 flex flex-wrap gap-2 text-xs text-slate-600">
                 {heroTags.map((tag) => (
                   <span
@@ -333,7 +337,7 @@ export default function Home() {
           </div>
           <Link
             href="/aixcelerator/mcp"
-            className="mt-3 inline-flex items-center justify-center rounded-full border border-slate-300 bg-white px-4 py-2.5 text-sm font-semibold text-slate-900 hover:bg-slate-50 sm:mt-0"
+            className="focus-ring mt-3 inline-flex items-center justify-center rounded-full border border-slate-300 bg-white px-4 py-2.5 text-sm font-semibold text-slate-900 hover:bg-slate-50 sm:mt-0"
           >
             Explore MCP servers
           </Link>
@@ -375,13 +379,13 @@ export default function Home() {
           <div className="mt-5 flex flex-col gap-3 sm:flex-row">
             <Link
               href="/aixcelerator"
-              className="inline-flex items-center justify-center rounded-full bg-slate-900 px-4 py-2.5 text-sm font-semibold text-white hover:bg-slate-800"
+              className="focus-ring inline-flex items-center justify-center rounded-full bg-slate-900 px-4 py-2.5 text-sm font-semibold text-white hover:bg-slate-800"
             >
-              Explore the platform
+              Explore AIXcelerator
             </Link>
             <Link
               href="/industries/agriculture"
-              className="inline-flex items-center justify-center rounded-full border border-slate-300 bg-white px-4 py-2.5 text-sm font-semibold text-slate-900 hover:bg-slate-50"
+              className="focus-ring inline-flex items-center justify-center rounded-full border border-slate-300 bg-white px-4 py-2.5 text-sm font-semibold text-slate-900 hover:bg-slate-50"
             >
               View industries
             </Link>
@@ -453,7 +457,7 @@ function PillarCard({
 }) {
   return (
     <div
-      className={`surface-panel surface-hover border-t-4 border-brand-blue/30 p-4 ${className ?? ""}`.trim()}
+      className={`surface-panel border-t-4 border-brand-blue/30 p-4 ${className ?? ""}`.trim()}
     >
       <div className="text-xs font-semibold uppercase tracking-[0.2em] text-slate-400">
         {String(index + 1).padStart(2, "0")}
@@ -478,7 +482,7 @@ function CatalogCard({
   return (
     <Link
       href={href}
-      className="surface-panel surface-hover group flex h-full flex-col border-t-4 border-brand-blue/20 p-5"
+      className="surface-panel surface-hover surface-interactive group flex h-full flex-col border-t-4 border-brand-blue/20 p-5"
     >
       <div className="flex items-start justify-between gap-4">
         <div>
@@ -506,7 +510,7 @@ function QuickLink({
   description: string;
 }) {
   return (
-    <Link href={href} className="surface-panel surface-hover group p-4">
+    <Link href={href} className="surface-panel surface-hover surface-interactive group p-4">
       <div className="flex items-start justify-between gap-3">
         <div>
           <div className="text-sm font-semibold text-slate-900">{title}</div>
@@ -522,7 +526,7 @@ function QuickLink({
 
 function FeatureCard({ title, description }: { title: string; description: string }) {
   return (
-    <div className="surface-panel surface-hover border-t-4 border-brand-blue/20 p-5">
+    <div className="surface-panel border-t-4 border-brand-blue/20 p-5">
       <div className="text-sm font-semibold text-slate-900">{title}</div>
       <div className="mt-1 text-sm leading-relaxed text-slate-600">{description}</div>
     </div>
@@ -591,7 +595,7 @@ function IndustryTile({
   return (
     <Link
       href={href}
-      className="surface-panel surface-hover group relative flex flex-col items-center gap-3 p-4 text-center"
+      className="surface-panel surface-hover surface-interactive group relative flex flex-col items-center gap-3 p-4 text-center"
     >
       <div className="absolute right-4 top-4 text-slate-400 transition-transform group-hover:translate-x-0.5 group-hover:text-brand-deep">
         →
