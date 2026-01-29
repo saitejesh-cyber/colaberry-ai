@@ -7,6 +7,8 @@ export async function getServerSideProps({ params }: any) {
     const res = await fetch(
         `${process.env.NEXT_PUBLIC_CMS_URL}/api/podcast-episodes` +
         `?filters[tags][slug][$eq]=${params.tag}` +
+        `&filters[podcastStatus][$eq]=published` +
+        `&publicationState=live` +
         `&populate[tags][fields][0]=name` +
         `&populate[tags][fields][1]=slug` +
         `&populate[companies][fields][0]=name` +
@@ -56,8 +58,8 @@ export default function PodcastTagPage({ tag, episodes }: { tag: string; episode
               {e.companies?.map((company: any) => (
                 <Link
                   key={company.slug ?? company.id}
-                  href={`/resources/podcasts/${company.slug}`}
-                  className="rounded-full border border-brand-blue/20 bg-white/90 px-2.5 py-1 text-xs font-semibold text-brand-deep hover:text-brand-blue"
+                  href={`/podcast/${company.slug}`}
+                  className="chip chip-brand rounded-full border border-brand-blue/20 bg-white/90 px-2.5 py-1 text-xs font-semibold text-brand-deep hover:text-brand-blue"
                 >
                   {company.name ?? company.attributes?.name}
                 </Link>

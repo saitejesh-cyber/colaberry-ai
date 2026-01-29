@@ -28,6 +28,7 @@ export type PodcastEpisode = {
   duration?: string | null;
   audioUrl?: string | null;
   buzzsproutEmbedCode?: string | null;
+  useNativePlayer?: boolean | null;
   tags: Tag[];
   companies: Company[];
   platformLinks: PlatformLink[];
@@ -78,6 +79,7 @@ function mapEpisode(item: any): PodcastEpisode {
     duration: attrs?.duration ?? null,
     audioUrl: attrs?.audioUrl ?? null,
     buzzsproutEmbedCode: attrs?.buzzsproutEmbedCode ?? null,
+    useNativePlayer: attrs?.useNativePlayer ?? null,
     tags,
     companies,
     platformLinks: attrs?.platformLinks ?? [],
@@ -90,6 +92,8 @@ export async function fetchPodcastEpisodes() {
   const res = await fetch(
     `${CMS_URL}/api/podcast-episodes` +
       `?sort=publishedDate:desc` +
+      `&filters[podcastStatus][$eq]=published` +
+      `&publicationState=live` +
       `&populate[tags][fields][0]=name` +
       `&populate[tags][fields][1]=slug` +
       `&populate[companies][fields][0]=name` +
@@ -112,6 +116,8 @@ export async function fetchPodcastBySlug(slug: string) {
   const res = await fetch(
     `${CMS_URL}/api/podcast-episodes` +
       `?filters[slug][$eq]=${slug}` +
+      `&filters[podcastStatus][$eq]=published` +
+      `&publicationState=live` +
       `&populate[tags][fields][0]=name` +
       `&populate[tags][fields][1]=slug` +
       `&populate[companies][fields][0]=name` +

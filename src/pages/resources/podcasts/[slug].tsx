@@ -5,61 +5,37 @@ import RichText from "../../../components/RichText";
 import SectionHeader from "../../../components/SectionHeader";
 import PodcastPlayer from "../../../components/PodcastPlayer";
 import { fetchPodcastBySlug } from "../../../lib/cms";
+import sanitizeHtml from "sanitize-html";
 
 export async function getServerSideProps({ params }: any) {
   const episode = await fetchPodcastBySlug(params.slug);
 
-  if (episode) {
-    return { props: { episode } };
-  }
-
-  const res = await fetch(
-    `${process.env.NEXT_PUBLIC_CMS_URL}/api/podcast-episodes` +
-      `?filters[companies][slug][$eq]=${params.slug}` +
-      `&populate[companies][fields][0]=name` +
-      `&populate[companies][fields][1]=slug` +
-      `&populate[tags][fields][0]=name` +
-      `&populate[tags][fields][1]=slug`,
-    { cache: "no-store" }
-  );
-
-  const json = await res.json();
-  const episodes =
-    json?.data?.map((item: any) => {
-      const attrs = item.attributes ?? item;
-      return {
-        id: item.id,
-        title: attrs.title,
-        slug: attrs.slug,
-        tags: attrs.tags?.data ?? attrs.tags ?? [],
-        companies: attrs.companies?.data ?? attrs.companies ?? [],
-      };
-    }) || [];
-
-  if (!episodes.length) {
+  if (!episode) {
     return { notFound: true };
   }
 
-  const companyName =
-    episodes?.[0]?.companies?.[0]?.attributes?.name ??
-    episodes?.[0]?.companies?.[0]?.name ??
-    params.slug;
+  const rawTranscript = typeof episode.transcript === "string" ? episode.transcript : "";
+  const sanitizedTranscript = rawTranscript
+    ? sanitizeHtml(rawTranscript, {
+        allowedTags: ["p", "br", "strong", "em", "b", "i", "u", "ul", "ol", "li", "h2", "h3", "h4", "a"],
+        allowedAttributes: {
+          a: ["href", "target", "rel"],
+        },
+        allowedSchemes: ["http", "https", "mailto"],
+      })
+    : null;
 
   return {
     props: {
-      episode: null,
-      companyName,
-      companySlug: params.slug,
-      companyEpisodes: episodes,
+      episode: {
+        ...episode,
+        transcript: sanitizedTranscript,
+      },
     },
   };
 }
 
-export default function PodcastDetail({
-  episode,
-  companyName,
-  companyEpisodes,
-}: any) {
+export default function PodcastDetail({ episode }: any) {
   const platformLabels: Record<string, string> = {
     apple: "Apple Podcasts",
     spotify: "Spotify",
@@ -67,47 +43,9 @@ export default function PodcastDetail({
     substack: "Substack",
     twitter: "X (Twitter)",
   };
-
-  if (!episode && companyEpisodes) {
-    return (
-      <Layout>
-        <div className="flex flex-col gap-3">
-          <SectionHeader
-            as="h1"
-            size="xl"
-            kicker="Company"
-            title={`${companyName} podcasts`}
-            description={`Episodes connected to ${companyName}.`}
-          />
-        </div>
-
-        <ul className="mt-6 grid gap-4">
-          {companyEpisodes.map((e: any) => (
-            <li key={e.id} className="surface-panel border-t-4 border-brand-blue/20 p-4">
-              <div className="text-sm font-semibold text-slate-900">{e.title}</div>
-              <div className="mt-3 flex flex-wrap gap-2">
-                {e.tags?.map((tag: any) => (
-                  <Link
-                    key={tag.slug ?? tag.id}
-                    href={`/resources/podcasts/tag/${tag.slug}`}
-                    className="rounded-full border border-slate-200/80 bg-white/90 px-2.5 py-1 text-xs font-semibold text-slate-600 hover:text-brand-deep"
-                  >
-                    #{tag.name ?? tag.attributes?.name}
-                  </Link>
-                ))}
-              </div>
-              <Link
-                href={`/resources/podcasts/${e.slug}`}
-                className="mt-2 inline-flex items-center gap-1 text-sm font-semibold text-brand-deep hover:text-brand-blue"
-              >
-                View →
-              </Link>
-            </li>
-          ))}
-        </ul>
-      </Layout>
-    );
-  }
+  const preferNative = Boolean(episode.useNativePlayer && episode.audioUrl);
+  const embedCode = preferNative ? null : episode.buzzsproutEmbedCode;
+  const audioUrl = episode.audioUrl;
 
   const publishedLabel = episode.publishedDate
     ? new Date(episode.publishedDate).toLocaleDateString("en-US", {
@@ -151,10 +89,7 @@ export default function PodcastDetail({
           Listen to the podcast
         </div>
         <div className="mt-3">
-          <PodcastPlayer
-            embedCode={episode.buzzsproutEmbedCode}
-            audioUrl={episode.audioUrl}
-          />
+          <PodcastPlayer embedCode={embedCode} audioUrl={audioUrl} />
         </div>
 
         <div className="mt-4 flex flex-wrap gap-2">
@@ -162,7 +97,7 @@ export default function PodcastDetail({
             <Link
               key={tag.slug}
               href={`/resources/podcasts/tag/${tag.slug}`}
-              className="rounded-full border border-slate-200/80 bg-white/80 px-2.5 py-1 text-xs font-semibold text-slate-600 hover:text-brand-deep"
+              className="chip rounded-full border border-slate-200/80 bg-white/80 px-2.5 py-1 text-xs font-semibold text-slate-600 hover:text-brand-deep"
             >
               #{tag.name}
             </Link>
@@ -170,8 +105,8 @@ export default function PodcastDetail({
           {episode.companies.map((company: any) => (
             <Link
               key={company.slug}
-              href={`/resources/podcasts/${company.slug}`}
-              className="rounded-full border border-brand-blue/20 bg-white/80 px-2.5 py-1 text-xs font-semibold text-brand-deep hover:text-brand-blue"
+              href={`/podcast/${company.slug}`}
+              className="chip chip-brand rounded-full border border-brand-blue/20 bg-white/80 px-2.5 py-1 text-xs font-semibold text-brand-deep hover:text-brand-blue"
             >
               {company.name}
             </Link>
@@ -188,7 +123,7 @@ export default function PodcastDetail({
                 href={link.url}
                 target="_blank"
                 rel="noreferrer"
-                className="rounded-full border border-slate-200/80 bg-white/80 px-3 py-1 font-semibold text-slate-600 hover:text-brand-deep"
+                className="chip chip-muted rounded-full border border-slate-200/80 bg-white/80 px-3 py-1 font-semibold text-slate-600 hover:text-brand-deep"
               >
                 {platformLabels[String(link.platform)] || String(link.platform || "platform")}
               </a>
@@ -207,7 +142,7 @@ export default function PodcastDetail({
         </div>
       </div>
 
-      {episode.transcript && (
+      {episode.transcript && String(episode.transcript).trim() && (
         <div className="surface-panel mt-6 border-t-4 border-brand-blue/20 p-6">
           <details>
             <summary className="cursor-pointer text-sm font-semibold text-slate-900">

@@ -24,7 +24,7 @@ export default function Podcasts({ episodes }: { episodes: PodcastEpisode[] }) {
         <section className="surface-panel border-t-4 border-brand-blue/20 p-6">
           <div className="flex items-center justify-between gap-4">
             <h3 className="text-base font-semibold text-slate-900">Internal podcasts</h3>
-            <span className="rounded-full border border-slate-200/80 bg-white/90 px-2.5 py-1 text-xs font-semibold text-slate-600">
+            <span className="chip chip-muted rounded-full border border-slate-200/80 bg-white/90 px-2.5 py-1 text-xs font-semibold text-slate-600">
               {episodes.length} episodes
             </span>
           </div>
@@ -57,7 +57,7 @@ export default function Podcasts({ episodes }: { episodes: PodcastEpisode[] }) {
                     <Link
                       key={tag.slug}
                       href={`/resources/podcasts/tag/${tag.slug}`}
-                      className="rounded-full border border-slate-200/80 bg-white/90 px-2.5 py-1 text-xs font-semibold text-slate-600 hover:text-brand-deep"
+                      className="chip rounded-full border border-slate-200/80 bg-white/90 px-2.5 py-1 text-xs font-semibold text-slate-600 hover:text-brand-deep"
                     >
                       #{tag.name}
                     </Link>
@@ -65,8 +65,8 @@ export default function Podcasts({ episodes }: { episodes: PodcastEpisode[] }) {
                   {ep.companies.map((company) => (
                     <Link
                       key={company.slug}
-                      href={`/resources/podcasts/${company.slug}`}
-                      className="rounded-full border border-brand-blue/20 bg-white/90 px-2.5 py-1 text-xs font-semibold text-brand-deep hover:text-brand-blue"
+                      href={`/podcast/${company.slug}`}
+                      className="chip chip-brand rounded-full border border-brand-blue/20 bg-white/90 px-2.5 py-1 text-xs font-semibold text-brand-deep hover:text-brand-blue"
                     >
                       {company.name}
                     </Link>

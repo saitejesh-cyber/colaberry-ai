@@ -7,7 +7,7 @@ export default function AIXcelerator() {
   return (
     <Layout>
       <div className="flex flex-col gap-3">
-        <div className="inline-flex w-fit items-center gap-2 rounded-full border border-brand-blue/20 bg-white py-1 pl-2 pr-3 text-xs text-brand-deep">
+        <div className="chip chip-brand inline-flex w-fit items-center gap-2 rounded-full border border-brand-blue/20 bg-white py-1 pl-2 pr-3 text-xs text-brand-deep">
           <span className="h-1.5 w-1.5 shrink-0 rounded-full bg-brand-aqua" />
           Core platform + modular layers
         </div>

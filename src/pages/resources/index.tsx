@@ -6,7 +6,7 @@ export default function Resources() {
   return (
     <Layout>
       <div className="flex flex-col gap-3">
-        <div className="inline-flex w-fit items-center gap-2 rounded-full border border-brand-blue/25 bg-white/80 px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.2em] text-brand-deep shadow-sm">
+        <div className="chip chip-brand inline-flex w-fit items-center gap-2 rounded-full border border-brand-blue/25 bg-white/80 px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.2em] text-brand-deep shadow-sm">
           <span className="h-1.5 w-1.5 shrink-0 rounded-full bg-brand-aqua" />
           Modular layer
         </div>
@@ -41,13 +41,13 @@ export default function Resources() {
           </button>
         </div>
         <p id="resource-search-help" className="mt-2 text-xs text-slate-500">
-          Search is rolling out—use the category cards below for now.
+          Search is rolling out-use the category cards below for now.
         </p>
         <div className="mt-3 flex flex-wrap gap-2 text-xs text-slate-600">
           {["Podcasts", "White papers", "Case studies", "Updates", "Artifacts"].map((label) => (
             <span
               key={label}
-              className="rounded-full border border-slate-200/80 bg-white px-3 py-1 font-semibold"
+              className="chip rounded-full border border-slate-200/80 bg-white px-3 py-1 font-semibold"
             >
               {label}
             </span>
@@ -142,7 +142,7 @@ function ResourceCard({
           →
         </div>
       </div>
-      <div className="mt-4 inline-flex items-center rounded-full border border-slate-200/80 bg-white/80 px-2.5 py-1 text-xs font-semibold text-slate-700">
+      <div className="chip chip-muted mt-4 inline-flex items-center rounded-full border border-slate-200/80 bg-white/80 px-2.5 py-1 text-xs font-semibold text-slate-700">
         {meta}
       </div>
     </Link>

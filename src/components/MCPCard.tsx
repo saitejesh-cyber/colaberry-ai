@@ -16,13 +16,13 @@ export default function MCPCard({ mcp }: { mcp: MCP }) {
             {mcp.description}
           </p>
         </div>
-        <span className="shrink-0 rounded-full border border-brand-blue/20 bg-white px-2.5 py-1 text-xs font-semibold text-brand-deep">
+        <span className="chip chip-brand shrink-0 rounded-full border border-brand-blue/20 bg-white px-2.5 py-1 text-xs font-semibold text-brand-deep">
           MCP
         </span>
       </div>
 
       <div className="mt-4 flex flex-wrap items-center gap-2">
-        <span className="rounded-full border border-brand-blue/20 bg-white px-2.5 py-1 text-xs font-semibold text-brand-deep">
+        <span className="chip chip-brand rounded-full border border-brand-blue/20 bg-white px-2.5 py-1 text-xs font-semibold text-brand-deep">
           {mcp.industry}
         </span>
         <span className="text-xs text-slate-500">TLS • Auth-ready • Observability</span>

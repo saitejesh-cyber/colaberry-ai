@@ -55,7 +55,7 @@ function Card({ title, description, badge }: { title: string; description: strin
           <div className="text-base font-semibold text-slate-900">{title}</div>
           <div className="mt-1 text-sm text-slate-600">{description}</div>
         </div>
-        <span className="rounded-full border border-slate-200/80 bg-white px-2.5 py-1 text-xs font-semibold text-slate-700">
+        <span className="chip chip-muted rounded-full border border-slate-200/80 bg-white px-2.5 py-1 text-xs font-semibold text-slate-700">
           {badge}
         </span>
       </div>

@@ -6,7 +6,7 @@ export default function Updates() {
   return (
     <Layout>
       <div className="flex flex-col gap-3">
-        <div className="inline-flex w-fit items-center gap-2 rounded-full border border-brand-blue/20 bg-white py-1 pl-2 pr-3 text-xs text-brand-deep">
+        <div className="chip chip-brand inline-flex w-fit items-center gap-2 rounded-full border border-brand-blue/20 bg-white py-1 pl-2 pr-3 text-xs text-brand-deep">
           <span className="h-1.5 w-1.5 shrink-0 rounded-full bg-brand-aqua" />
           Modular layer
         </div>
@@ -78,7 +78,7 @@ function PlaceholderItem({ label }: { label: string }) {
   return (
     <div className="flex items-center justify-between gap-3 rounded-xl border border-slate-200/80 bg-white px-3 py-2">
       <div className="text-sm text-slate-700">{label}</div>
-      <span className="rounded-full border border-slate-200/80 bg-white px-2.5 py-1 text-xs font-semibold text-slate-700">
+      <span className="chip chip-muted rounded-full border border-slate-200/80 bg-white px-2.5 py-1 text-xs font-semibold text-slate-700">
         Planned
       </span>
     </div>

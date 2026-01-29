@@ -33,7 +33,7 @@ export default function Solutions() {
   return (
     <Layout>
       <div className="flex flex-col gap-3">
-        <div className="inline-flex w-fit items-center gap-2 rounded-full border border-brand-blue/20 bg-white py-1 pl-2 pr-3 text-xs text-brand-deep">
+        <div className="chip chip-brand inline-flex w-fit items-center gap-2 rounded-full border border-brand-blue/20 bg-white py-1 pl-2 pr-3 text-xs text-brand-deep">
           <span className="h-1.5 w-1.5 shrink-0 rounded-full bg-brand-aqua" />
           Modular layer
         </div>
@@ -50,7 +50,7 @@ export default function Solutions() {
           <div key={item.title} className="surface-panel border-t-4 border-brand-blue/20 p-5">
             <div className="text-base font-semibold text-slate-900">{item.title}</div>
             <div className="mt-1 text-sm text-slate-600">{item.description}</div>
-            <div className="mt-4 inline-flex items-center rounded-full border border-slate-200/80 bg-white px-2.5 py-1 text-xs font-semibold text-slate-700">
+            <div className="chip chip-muted mt-4 inline-flex items-center rounded-full border border-slate-200/80 bg-white px-2.5 py-1 text-xs font-semibold text-slate-700">
               Planned
             </div>
           </div>

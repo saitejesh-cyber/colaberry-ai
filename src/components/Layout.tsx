@@ -51,43 +51,43 @@ export default function Layout({ children }: { children: ReactNode }) {
           <nav className="hidden items-center gap-1 text-sm lg:flex">
             <Link
               href="/aixcelerator"
-              className="focus-ring rounded-full px-3 py-2 font-medium text-slate-600 hover:bg-slate-100/80 hover:text-slate-900"
+              className="focus-ring rounded-full px-3 py-2 font-medium text-slate-600 hover:bg-slate-100/80 hover:text-slate-900 dark:text-slate-300 dark:hover:bg-slate-800/70 dark:hover:text-white"
             >
               Platform
             </Link>
             <Link
               href="/aixcelerator/agents"
-              className="focus-ring rounded-full px-3 py-2 font-medium text-slate-600 hover:bg-slate-100/80 hover:text-slate-900"
+              className="focus-ring rounded-full px-3 py-2 font-medium text-slate-600 hover:bg-slate-100/80 hover:text-slate-900 dark:text-slate-300 dark:hover:bg-slate-800/70 dark:hover:text-white"
             >
               Agents
             </Link>
             <Link
               href="/aixcelerator/mcp"
-              className="focus-ring rounded-full px-3 py-2 font-medium text-slate-600 hover:bg-slate-100/80 hover:text-slate-900"
+              className="focus-ring rounded-full px-3 py-2 font-medium text-slate-600 hover:bg-slate-100/80 hover:text-slate-900 dark:text-slate-300 dark:hover:bg-slate-800/70 dark:hover:text-white"
             >
               MCP
             </Link>
             <Link
               href="/industries"
-              className="focus-ring rounded-full px-3 py-2 font-medium text-slate-600 hover:bg-slate-100/80 hover:text-slate-900"
+              className="focus-ring rounded-full px-3 py-2 font-medium text-slate-600 hover:bg-slate-100/80 hover:text-slate-900 dark:text-slate-300 dark:hover:bg-slate-800/70 dark:hover:text-white"
             >
               Industries
             </Link>
             <Link
               href="/solutions"
-              className="focus-ring rounded-full px-3 py-2 font-medium text-slate-600 hover:bg-slate-100/80 hover:text-slate-900"
+              className="focus-ring rounded-full px-3 py-2 font-medium text-slate-600 hover:bg-slate-100/80 hover:text-slate-900 dark:text-slate-300 dark:hover:bg-slate-800/70 dark:hover:text-white"
             >
               Solutions
             </Link>
             <Link
               href="/resources"
-              className="focus-ring rounded-full px-3 py-2 font-medium text-slate-600 hover:bg-slate-100/80 hover:text-slate-900"
+              className="focus-ring rounded-full px-3 py-2 font-medium text-slate-600 hover:bg-slate-100/80 hover:text-slate-900 dark:text-slate-300 dark:hover:bg-slate-800/70 dark:hover:text-white"
             >
               Resources
             </Link>
             <Link
               href="/updates"
-              className="focus-ring rounded-full px-3 py-2 font-medium text-slate-600 hover:bg-slate-100/80 hover:text-slate-900"
+              className="focus-ring rounded-full px-3 py-2 font-medium text-slate-600 hover:bg-slate-100/80 hover:text-slate-900 dark:text-slate-300 dark:hover:bg-slate-800/70 dark:hover:text-white"
             >
               Updates
             </Link>
@@ -105,7 +105,7 @@ export default function Layout({ children }: { children: ReactNode }) {
                   name="q"
                   type="search"
                   placeholder="Search what you need:"
-                  className="w-64 rounded-full border border-slate-200/60 bg-white/80 px-4 py-2 pr-10 text-sm text-slate-900 placeholder:text-slate-400 shadow-sm focus:border-brand-blue/40 focus:outline-none focus:ring-2 focus:ring-brand-blue/25"
+                  className="w-64 rounded-full border border-slate-200/60 bg-white/80 px-4 py-2 pr-10 text-sm text-slate-900 placeholder:text-slate-400 shadow-sm focus:border-brand-blue/40 focus:outline-none focus:ring-2 focus:ring-brand-blue/25 dark:border-slate-700 dark:bg-slate-900/70 dark:text-slate-200 dark:placeholder:text-slate-500"
                 />
                 <svg
                   aria-hidden="true"
@@ -128,11 +128,11 @@ export default function Layout({ children }: { children: ReactNode }) {
               </div>
             </form>
 
-            <span className="mx-2 h-5 w-px bg-slate-200" />
+            <span className="mx-2 h-5 w-px bg-slate-200 dark:bg-slate-700" />
             <button
               type="button"
               onClick={toggleTheme}
-              className="focus-ring inline-flex items-center gap-2 rounded-full border border-slate-200/60 bg-white/80 px-3 py-2 text-xs font-semibold text-slate-600 hover:bg-slate-100/80"
+              className="focus-ring inline-flex items-center gap-2 rounded-full border border-slate-200/60 bg-white/80 px-3 py-2 text-xs font-semibold text-slate-600 hover:bg-slate-100/80 dark:border-slate-700 dark:bg-slate-900/70 dark:text-slate-200 dark:hover:bg-slate-800/70"
               aria-label="Toggle light and dark mode"
             >
               {theme === "dark" ? "Dark" : "Light"}
@@ -147,22 +147,22 @@ export default function Layout({ children }: { children: ReactNode }) {
           </nav>
 
           <details className="relative lg:hidden">
-            <summary className="list-none rounded-full border border-slate-200/60 bg-white/80 px-4 py-2 text-sm font-medium text-slate-700 hover:bg-slate-50">
+            <summary className="list-none rounded-full border border-slate-200/60 bg-white/80 px-4 py-2 text-sm font-medium text-slate-700 hover:bg-slate-50 dark:border-slate-700 dark:bg-slate-900/70 dark:text-slate-200 dark:hover:bg-slate-800/70">
               Menu
             </summary>
-            <div className="absolute right-0 mt-2 w-60 rounded-2xl border border-slate-200/60 bg-white/90 p-2 shadow-lg">
+            <div className="absolute right-0 mt-2 w-60 rounded-2xl border border-slate-200/60 bg-white/90 p-2 shadow-lg dark:border-slate-700 dark:bg-slate-900/90">
               <form className="px-1 pb-2" onSubmit={(event) => event.preventDefault()}>
-                <label htmlFor="site-search-mobile" className="sr-only">
-                  Search
-                </label>
-                <div className="relative">
-                  <input
-                    id="site-search-mobile"
-                    name="q"
-                    type="search"
-                    placeholder="Search what you need:"
-                    className="w-full rounded-full border border-slate-200/60 bg-white px-3 py-2 pr-10 text-sm text-slate-900 placeholder:text-slate-400 shadow-sm focus:border-brand-blue/40 focus:outline-none focus:ring-2 focus:ring-brand-blue/25"
-                  />
+              <label htmlFor="site-search-mobile" className="sr-only">
+                Search
+              </label>
+              <div className="relative">
+                <input
+                  id="site-search-mobile"
+                  name="q"
+                  type="search"
+                  placeholder="Search what you need:"
+                  className="w-full rounded-full border border-slate-200/60 bg-white px-3 py-2 pr-10 text-sm text-slate-900 placeholder:text-slate-400 shadow-sm focus:border-brand-blue/40 focus:outline-none focus:ring-2 focus:ring-brand-blue/25 dark:border-slate-700 dark:bg-slate-900/70 dark:text-slate-200 dark:placeholder:text-slate-500"
+                />
                   <svg
                     aria-hidden="true"
                     viewBox="0 0 24 24"
@@ -193,12 +193,12 @@ export default function Layout({ children }: { children: ReactNode }) {
               <button
                 type="button"
                 onClick={toggleTheme}
-                className="focus-ring mt-2 flex w-full items-center justify-between rounded-lg px-3 py-2 text-sm text-slate-700 hover:bg-slate-50"
+                className="focus-ring mt-2 flex w-full items-center justify-between rounded-lg px-3 py-2 text-sm text-slate-700 hover:bg-slate-50 dark:text-slate-200 dark:hover:bg-slate-800/70"
               >
                 <span>Theme</span>
                 <span className="text-xs font-semibold">{theme === "dark" ? "Dark" : "Light"}</span>
               </button>
-              <div className="my-2 h-px bg-slate-200" />
+              <div className="my-2 h-px bg-slate-200 dark:bg-slate-700" />
               <Link
                 href="/request-demo"
                 className="mt-1 block rounded-full bg-slate-900 bg-gradient-to-r from-brand-blue to-brand-aqua px-3 py-2 text-center text-xs font-semibold text-white shadow-sm hover:from-brand-deep hover:to-brand-teal focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-slate-300 focus-visible:ring-offset-2"
@@ -210,7 +210,7 @@ export default function Layout({ children }: { children: ReactNode }) {
         </div>
       </header>
 
-      <main className="relative w-full flex-1 px-4 pb-10 pt-24 sm:px-6 sm:pb-12 sm:pt-24 lg:px-8">
+      <main className="main-offset relative w-full flex-1 px-4 sm:px-6 lg:px-8">
         {children}
       </main>
 
@@ -308,7 +308,7 @@ function MobileLink({ href, children }: { href: string; children: ReactNode }) {
   return (
     <Link
       href={href}
-      className="focus-ring block rounded-lg px-3 py-2 text-sm text-slate-700 hover:bg-slate-50"
+      className="focus-ring block rounded-lg px-3 py-2 text-sm text-slate-700 hover:bg-slate-50 dark:text-slate-200 dark:hover:bg-slate-800/70"
     >
       {children}
     </Link>
@@ -317,7 +317,7 @@ function MobileLink({ href, children }: { href: string; children: ReactNode }) {
 
 function FooterLink({ href, children }: { href: string; children: ReactNode }) {
   return (
-    <Link href={href} className="focus-ring text-slate-600 hover:text-slate-900">
+    <Link href={href} className="focus-ring text-slate-600 hover:text-slate-900 dark:text-slate-300 dark:hover:text-white">
       {children}
     </Link>
   );
@@ -355,7 +355,7 @@ function SocialIcon({
       href={href}
       target="_blank"
       rel="noreferrer"
-      className="focus-ring inline-flex h-11 w-11 items-center justify-center rounded-full border border-slate-200/70 bg-white/80 text-slate-500 transition hover:border-brand-blue/40 hover:text-brand-blue hover:shadow-sm"
+      className="social-button focus-ring inline-flex h-11 w-11 items-center justify-center rounded-full border border-slate-200/70 bg-white/80 text-slate-500 transition hover:border-brand-blue/40 hover:text-brand-blue hover:shadow-sm"
       aria-label={label}
     >
       <svg viewBox="0 0 24 24" className="h-5 w-5" aria-hidden="true">

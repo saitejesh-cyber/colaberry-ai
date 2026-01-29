@@ -186,13 +186,13 @@ export default function Home() {
                 </button>
               </div>
               <p id="catalog-search-help" className="mt-2 text-xs text-slate-500">
-                Search is rolling out—use tags or the catalog sections below for now.
+                Search is rolling out-use tags or the catalog sections below for now.
               </p>
               <div className="mt-3 flex flex-wrap gap-2 text-xs text-slate-600">
                 {heroTags.map((tag) => (
                   <span
                     key={tag}
-                    className="rounded-full border border-slate-200/80 bg-white px-3 py-1 font-semibold"
+                    className="chip rounded-full border border-slate-200/80 bg-white px-3 py-1 font-semibold"
                   >
                     {tag}
                   </span>
@@ -253,7 +253,7 @@ export default function Home() {
                 {rootIndustries.map((industry) => (
                   <span
                     key={industry}
-                    className="rounded-full border border-slate-200/80 bg-white px-3 py-1 font-semibold"
+                    className="chip rounded-full border border-slate-200/80 bg-white px-3 py-1 font-semibold"
                   >
                     {industry}
                   </span>
@@ -360,7 +360,7 @@ export default function Home() {
           ].map((name) => (
             <span
               key={name}
-              className="rounded-full border border-slate-200/80 bg-white px-3 py-1 text-xs font-semibold text-slate-700"
+              className="chip chip-muted rounded-full border border-slate-200/80 bg-white px-3 py-1 text-xs font-semibold text-slate-700"
             >
               {name}
             </span>
@@ -493,7 +493,7 @@ function CatalogCard({
           →
         </div>
       </div>
-      <div className="mt-4 inline-flex w-fit items-center rounded-full border border-slate-200/80 bg-white px-2.5 py-1 text-xs font-semibold text-slate-700">
+      <div className="chip chip-muted mt-4 inline-flex w-fit items-center rounded-full border border-slate-200/80 bg-white px-2.5 py-1 text-xs font-semibold text-slate-700">
         {meta}
       </div>
     </Link>
@@ -546,7 +546,7 @@ function Metric({ label, value }: { label: string; value: string }) {
 
 function Badge({ children }: { children: string }) {
   return (
-    <span className="rounded-full border border-slate-200/80 bg-white px-2.5 py-1 text-xs font-semibold text-slate-700">
+    <span className="chip chip-muted rounded-full border border-slate-200/80 bg-white px-2.5 py-1 text-xs font-semibold text-slate-700">
       {children}
     </span>
   );
