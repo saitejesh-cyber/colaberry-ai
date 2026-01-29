@@ -5,6 +5,7 @@ import { ReactNode, useEffect, useState } from "react";
 
 export default function Layout({ children }: { children: ReactNode }) {
   const [theme, setTheme] = useState<"light" | "dark">("light");
+  const logoSrc = theme === "dark" ? "/brand/colaberry-ai-logo-dark.svg" : "/brand/colaberry-ai-logo.svg";
 
   useEffect(() => {
     const stored = window.localStorage.getItem("theme");
@@ -36,7 +37,7 @@ export default function Layout({ children }: { children: ReactNode }) {
             <Link href="/" className="flex min-w-0 items-center gap-2">
               <span className="inline-flex items-center justify-center px-1">
                 <Image
-                  src="/brand/colaberry-ai-logo.svg"
+                  src={logoSrc}
                   alt="Colaberry.AI"
                   width={260}
                   height={60}
@@ -223,7 +224,7 @@ export default function Layout({ children }: { children: ReactNode }) {
             <div className="flex items-center gap-2">
               <span className="inline-flex items-center justify-center px-1">
                 <Image
-                  src="/brand/colaberry-ai-logo.svg"
+                  src={logoSrc}
                   alt="Colaberry.AI"
                   width={260}
                   height={60}
