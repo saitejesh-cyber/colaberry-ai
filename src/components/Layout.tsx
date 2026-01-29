@@ -54,43 +54,43 @@ export default function Layout({ children }: { children: ReactNode }) {
           <nav className="hidden items-center gap-1 text-sm lg:flex">
             <Link
               href="/aixcelerator"
-              className="focus-ring rounded-full px-3 py-2 font-semibold text-slate-900 hover:bg-slate-100/90 hover:text-slate-900 dark:text-slate-300 dark:hover:bg-slate-800/70 dark:hover:text-white"
+              className="nav-link focus-ring"
             >
               Platform
             </Link>
             <Link
               href="/aixcelerator/agents"
-              className="focus-ring rounded-full px-3 py-2 font-semibold text-slate-900 hover:bg-slate-100/90 hover:text-slate-900 dark:text-slate-300 dark:hover:bg-slate-800/70 dark:hover:text-white"
+              className="nav-link focus-ring"
             >
               Agents
             </Link>
             <Link
               href="/aixcelerator/mcp"
-              className="focus-ring rounded-full px-3 py-2 font-semibold text-slate-900 hover:bg-slate-100/90 hover:text-slate-900 dark:text-slate-300 dark:hover:bg-slate-800/70 dark:hover:text-white"
+              className="nav-link focus-ring"
             >
               MCP
             </Link>
             <Link
               href="/industries"
-              className="focus-ring rounded-full px-3 py-2 font-semibold text-slate-900 hover:bg-slate-100/90 hover:text-slate-900 dark:text-slate-300 dark:hover:bg-slate-800/70 dark:hover:text-white"
+              className="nav-link focus-ring"
             >
               Industries
             </Link>
             <Link
               href="/solutions"
-              className="focus-ring rounded-full px-3 py-2 font-semibold text-slate-900 hover:bg-slate-100/90 hover:text-slate-900 dark:text-slate-300 dark:hover:bg-slate-800/70 dark:hover:text-white"
+              className="nav-link focus-ring"
             >
               Solutions
             </Link>
             <Link
               href="/resources"
-              className="focus-ring rounded-full px-3 py-2 font-semibold text-slate-900 hover:bg-slate-100/90 hover:text-slate-900 dark:text-slate-300 dark:hover:bg-slate-800/70 dark:hover:text-white"
+              className="nav-link focus-ring"
             >
               Resources
             </Link>
             <Link
               href="/updates"
-              className="focus-ring rounded-full px-3 py-2 font-semibold text-slate-900 hover:bg-slate-100/90 hover:text-slate-900 dark:text-slate-300 dark:hover:bg-slate-800/70 dark:hover:text-white"
+              className="nav-link focus-ring"
             >
               Updates
             </Link>
@@ -322,7 +322,7 @@ function FooterLink({ href, children }: { href: string; children: ReactNode }) {
   return (
     <Link
       href={href}
-      className="focus-ring font-semibold text-slate-900 hover:text-brand-ink dark:text-slate-300 dark:hover:text-white"
+      className="focus-ring font-semibold text-slate-800 hover:text-slate-900 hover:underline underline-offset-4 dark:text-slate-300 dark:hover:text-white"
     >
       {children}
     </Link>

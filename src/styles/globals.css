@@ -432,6 +432,30 @@ h6 {
   box-shadow: 0 0 0 3px rgba(47, 111, 237, 0.28);
 }
 
+.nav-link {
+  border-radius: 999px;
+  padding: 0.5rem 0.9rem;
+  font-weight: 600;
+  color: #0f172a;
+  transition: background-color 160ms ease, color 160ms ease;
+}
+
+.nav-link:hover,
+.nav-link:focus-visible {
+  background-color: rgba(15, 23, 42, 0.06);
+  color: #0f172a;
+}
+
+.dark .nav-link {
+  color: #e2e8f0;
+}
+
+.dark .nav-link:hover,
+.dark .nav-link:focus-visible {
+  background-color: rgba(226, 232, 240, 0.16);
+  color: #ffffff;
+}
+
 .skip-link {
   position: absolute;
   left: 1rem;
