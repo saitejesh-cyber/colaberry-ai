@@ -30,7 +30,7 @@ export default function Layout({ children }: { children: ReactNode }) {
       <a href="#main-content" className="skip-link focus-ring">
         Skip to content
       </a>
-      <header className="sticky top-0 z-40 border-b border-slate-200/60 bg-white/90 backdrop-blur-md shadow-[0_12px_30px_rgba(15,23,42,0.08)]">
+      <header className="sticky top-0 z-40 border-b border-slate-200/70 bg-white shadow-[0_12px_30px_rgba(15,23,42,0.08)]">
         <div className="flex w-full items-center justify-between gap-4 px-4 py-3 sm:px-6 lg:px-8">
           <div className="flex items-center gap-3">
             <Link href="/" className="flex min-w-0 items-center gap-2">
@@ -54,43 +54,43 @@ export default function Layout({ children }: { children: ReactNode }) {
           <nav className="hidden items-center gap-1 text-sm lg:flex">
             <Link
               href="/aixcelerator"
-              className="focus-ring rounded-full px-3 py-2 font-semibold text-slate-900 hover:bg-brand-blue/10 hover:text-slate-900 dark:text-slate-300 dark:hover:bg-slate-800/70 dark:hover:text-white"
+              className="focus-ring rounded-full px-3 py-2 font-semibold text-slate-900 hover:bg-slate-100/90 hover:text-slate-900 dark:text-slate-300 dark:hover:bg-slate-800/70 dark:hover:text-white"
             >
               Platform
             </Link>
             <Link
               href="/aixcelerator/agents"
-              className="focus-ring rounded-full px-3 py-2 font-semibold text-slate-900 hover:bg-brand-blue/10 hover:text-slate-900 dark:text-slate-300 dark:hover:bg-slate-800/70 dark:hover:text-white"
+              className="focus-ring rounded-full px-3 py-2 font-semibold text-slate-900 hover:bg-slate-100/90 hover:text-slate-900 dark:text-slate-300 dark:hover:bg-slate-800/70 dark:hover:text-white"
             >
               Agents
             </Link>
             <Link
               href="/aixcelerator/mcp"
-              className="focus-ring rounded-full px-3 py-2 font-semibold text-slate-900 hover:bg-brand-blue/10 hover:text-slate-900 dark:text-slate-300 dark:hover:bg-slate-800/70 dark:hover:text-white"
+              className="focus-ring rounded-full px-3 py-2 font-semibold text-slate-900 hover:bg-slate-100/90 hover:text-slate-900 dark:text-slate-300 dark:hover:bg-slate-800/70 dark:hover:text-white"
             >
               MCP
             </Link>
             <Link
               href="/industries"
-              className="focus-ring rounded-full px-3 py-2 font-semibold text-slate-900 hover:bg-brand-blue/10 hover:text-slate-900 dark:text-slate-300 dark:hover:bg-slate-800/70 dark:hover:text-white"
+              className="focus-ring rounded-full px-3 py-2 font-semibold text-slate-900 hover:bg-slate-100/90 hover:text-slate-900 dark:text-slate-300 dark:hover:bg-slate-800/70 dark:hover:text-white"
             >
               Industries
             </Link>
             <Link
               href="/solutions"
-              className="focus-ring rounded-full px-3 py-2 font-semibold text-slate-900 hover:bg-brand-blue/10 hover:text-slate-900 dark:text-slate-300 dark:hover:bg-slate-800/70 dark:hover:text-white"
+              className="focus-ring rounded-full px-3 py-2 font-semibold text-slate-900 hover:bg-slate-100/90 hover:text-slate-900 dark:text-slate-300 dark:hover:bg-slate-800/70 dark:hover:text-white"
             >
               Solutions
             </Link>
             <Link
               href="/resources"
-              className="focus-ring rounded-full px-3 py-2 font-semibold text-slate-900 hover:bg-brand-blue/10 hover:text-slate-900 dark:text-slate-300 dark:hover:bg-slate-800/70 dark:hover:text-white"
+              className="focus-ring rounded-full px-3 py-2 font-semibold text-slate-900 hover:bg-slate-100/90 hover:text-slate-900 dark:text-slate-300 dark:hover:bg-slate-800/70 dark:hover:text-white"
             >
               Resources
             </Link>
             <Link
               href="/updates"
-              className="focus-ring rounded-full px-3 py-2 font-semibold text-slate-900 hover:bg-brand-blue/10 hover:text-slate-900 dark:text-slate-300 dark:hover:bg-slate-800/70 dark:hover:text-white"
+              className="focus-ring rounded-full px-3 py-2 font-semibold text-slate-900 hover:bg-slate-100/90 hover:text-slate-900 dark:text-slate-300 dark:hover:bg-slate-800/70 dark:hover:text-white"
             >
               Updates
             </Link>
@@ -135,7 +135,7 @@ export default function Layout({ children }: { children: ReactNode }) {
             <button
               type="button"
               onClick={toggleTheme}
-              className="focus-ring inline-flex items-center gap-2 rounded-full border border-slate-400 bg-white/95 px-3 py-2 text-xs font-semibold text-slate-900 hover:bg-slate-100/90 dark:border-slate-700 dark:bg-slate-900/70 dark:text-slate-200 dark:hover:bg-slate-800/70"
+              className="focus-ring inline-flex items-center gap-2 rounded-full border border-slate-400 bg-white px-3 py-2 text-xs font-semibold text-slate-900 hover:bg-slate-100/90 dark:border-slate-700 dark:bg-slate-900/70 dark:text-slate-200 dark:hover:bg-slate-800/70"
               aria-label="Toggle light and dark mode"
             >
               {theme === "dark" ? "Dark" : "Light"}
@@ -217,8 +217,8 @@ export default function Layout({ children }: { children: ReactNode }) {
         {children}
       </main>
 
-      <footer className="border-t border-slate-200/60 bg-white/80">
-        <div className="grid w-full grid-cols-1 gap-6 px-4 py-8 text-sm text-slate-700 sm:grid-cols-4 sm:px-6 lg:px-8">
+      <footer className="border-t border-slate-200/60 bg-white/90">
+        <div className="grid w-full grid-cols-1 gap-6 px-4 py-8 text-sm text-slate-800 sm:grid-cols-4 sm:px-6 lg:px-8">
           <div>
             <div className="flex items-center gap-2">
               <span className="inline-flex items-center justify-center px-1">
@@ -320,7 +320,10 @@ function MobileLink({ href, children }: { href: string; children: ReactNode }) {
 
 function FooterLink({ href, children }: { href: string; children: ReactNode }) {
   return (
-    <Link href={href} className="focus-ring text-slate-900 hover:text-brand-ink dark:text-slate-300 dark:hover:text-white">
+    <Link
+      href={href}
+      className="focus-ring font-semibold text-slate-900 hover:text-brand-ink dark:text-slate-300 dark:hover:text-white"
+    >
       {children}
     </Link>
   );
