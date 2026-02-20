@@ -1,8 +1,8 @@
 import Layout from "../../components/Layout";
-import Link from "next/link";
 import SectionHeader from "../../components/SectionHeader";
 import MediaPanel from "../../components/MediaPanel";
 import PremiumMediaCard from "../../components/PremiumMediaCard";
+import EnterpriseCtaBand from "../../components/EnterpriseCtaBand";
 import { heroImage } from "../../lib/media";
 
 export default function IndustriesIndex() {
@@ -97,20 +97,15 @@ export default function IndustriesIndex() {
         ))}
       </div>
 
-      <div className="mt-8 flex flex-col gap-3 sm:flex-row">
-        <Link
-          href="/resources/case-studies"
-          className="btn btn-secondary"
-        >
-          Browse case studies
-        </Link>
-        <Link
-          href="/solutions"
-          className="btn btn-primary"
-        >
-          Explore solutions
-        </Link>
-      </div>
+      <EnterpriseCtaBand
+        kicker="Industry expansion"
+        title="Move from catalog to outcome with domain-ready AI delivery"
+        description="Combine industry context, governed agents, and MCP integrations into repeatable playbooks that teams can deploy with confidence."
+        primaryHref="/solutions"
+        primaryLabel="Explore solutions"
+        secondaryHref="/resources/case-studies"
+        secondaryLabel="Browse case studies"
+      />
     </Layout>
   );
 }

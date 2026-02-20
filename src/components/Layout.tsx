@@ -855,14 +855,14 @@ export default function Layout({ children }: { children: ReactNode }) {
                   className="brand-logo-dark h-8 w-auto sm:h-9 lg:h-10"
                 />
               </span>
-              <div className="hidden leading-tight sm:block">
+              <div className={`hidden leading-tight ${isCatalogWorkspace ? "min-[1760px]:block" : "sm:block"}`}>
                 <div className="text-sm font-semibold text-brand-ink">AI Platform</div>
                 <div className="text-xs text-slate-700">Consulting • AIXcelerator • Labs</div>
               </div>
             </Link>
           </div>
 
-          <nav className="hidden items-center gap-1.5 text-sm lg:flex">
+          <nav className="hidden min-w-0 items-center gap-1.5 text-sm lg:flex">
             {isCatalogWorkspace ? (
               <>
                 <button
@@ -879,22 +879,24 @@ export default function Layout({ children }: { children: ReactNode }) {
                       strokeLinecap="round"
                     />
                   </svg>
-                  <span>{workspaceRailCollapsed ? "Expand menu" : "Collapse menu"}</span>
+                  <span className="hidden min-[1380px]:inline">
+                    {workspaceRailCollapsed ? "Expand menu" : "Collapse menu"}
+                  </span>
                 </button>
-                <Link href="/assistant" className="btn btn-ghost btn-sm">
+                <Link href="/assistant" className="btn btn-ghost btn-sm hidden min-[1500px]:inline-flex">
                   Assistant
                 </Link>
-                <span className="hidden rounded-full border border-slate-200/80 bg-white/80 px-2.5 py-1 text-xs font-semibold uppercase tracking-[0.14em] text-slate-500 2xl:inline-flex dark:border-slate-700/80 dark:bg-slate-900/70 dark:text-slate-300">
+                <span className="hidden rounded-full border border-slate-200/80 bg-white/80 px-2.5 py-1 text-xs font-semibold uppercase tracking-[0.14em] text-slate-500 min-[1760px]:inline-flex dark:border-slate-700/80 dark:bg-slate-900/70 dark:text-slate-300">
                   Catalog workspace
                 </span>
-                <div className="hidden h-6 w-px bg-slate-200/80 xl:block dark:bg-slate-700/80" />
-                <div className="hidden items-center gap-1.5 xl:flex">{desktopHeaderItems}</div>
+                <div className="hidden h-6 w-px bg-slate-200/80 min-[1760px]:block dark:bg-slate-700/80" />
+                <div className="hidden items-center gap-1.5 min-[1760px]:flex">{desktopHeaderItems}</div>
               </>
             ) : (
               desktopHeaderItems
             )}
 
-            <div className="ml-2 flex items-center gap-2 border-l border-slate-200/80 pl-3 dark:border-slate-700/80">
+            <div className="ml-2 flex shrink-0 items-center gap-2 border-l border-slate-200/80 pl-3 dark:border-slate-700/80">
               <button
                 type="button"
                 onClick={openSearch}
@@ -931,7 +933,7 @@ export default function Layout({ children }: { children: ReactNode }) {
                 href={globalNav.cta.href}
                 target={globalNav.cta.target ?? undefined}
                 rel={getLinkRel(globalNav.cta.target)}
-                className="btn btn-primary ml-1 h-10 px-4 text-sm"
+                className="btn btn-primary ml-1 h-10 shrink-0 whitespace-nowrap px-4 text-sm max-[1500px]:h-9 max-[1500px]:px-3 max-[1500px]:text-xs"
                 onClick={(event) => handleDemoCtaClick(event, globalNav.cta?.href)}
               >
                 <span>{getRequestDemoLabel(globalNav.cta.label)}</span>

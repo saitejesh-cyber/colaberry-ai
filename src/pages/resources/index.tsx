@@ -3,6 +3,7 @@ import Head from "next/head";
 import SectionHeader from "../../components/SectionHeader";
 import MediaPanel from "../../components/MediaPanel";
 import PremiumMediaCard from "../../components/PremiumMediaCard";
+import EnterpriseCtaBand from "../../components/EnterpriseCtaBand";
 import { heroImage } from "../../lib/media";
 
 export default function Resources() {
@@ -192,6 +193,16 @@ export default function Resources() {
           </div>
         </div>
       </div>
+
+      <EnterpriseCtaBand
+        kicker="Knowledge engine"
+        title="Publish faster. Curate better. Keep every resource indexable."
+        description="Use one structured workflow for podcasts, articles, white papers, books, and case studies so teams and LLMs can discover trusted content quickly."
+        primaryHref="/resources/podcasts"
+        primaryLabel="Browse podcasts"
+        secondaryHref="/updates"
+        secondaryLabel="Open updates feed"
+      />
     </Layout>
   );
 }

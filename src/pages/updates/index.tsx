@@ -1,11 +1,11 @@
 import Layout from "../../components/Layout";
-import Link from "next/link";
 import Head from "next/head";
 import { GetStaticProps } from "next";
 import SectionHeader from "../../components/SectionHeader";
 import MediaPanel from "../../components/MediaPanel";
 import StatePanel from "../../components/StatePanel";
 import PremiumMediaCard from "../../components/PremiumMediaCard";
+import EnterpriseCtaBand from "../../components/EnterpriseCtaBand";
 import NewsletterSignup from "../../components/NewsletterSignup";
 import { heroImage } from "../../lib/media";
 import {
@@ -296,20 +296,15 @@ export default function Updates({ ratings, briefing, fetchError }: UpdatesProps)
         </div>
       </section>
 
-      <div className="mt-8 flex flex-col gap-3 sm:flex-row">
-        <Link
-          href="/resources"
-          className="btn btn-secondary"
-        >
-          Explore resources
-        </Link>
-        <Link
-          href="/aixcelerator"
-          className="btn btn-primary"
-        >
-          Explore AIXcelerator
-        </Link>
-      </div>
+      <EnterpriseCtaBand
+        kicker="Update workflow"
+        title="Turn AI signals into enterprise action"
+        description="Connect product releases, curated news, and implementation playbooks into one decision surface for delivery teams."
+        primaryHref="/aixcelerator"
+        primaryLabel="Explore AIXcelerator"
+        secondaryHref="/resources"
+        secondaryLabel="Explore resources"
+      />
     </Layout>
   );
 }
