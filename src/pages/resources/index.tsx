@@ -13,14 +13,14 @@ export default function Resources() {
       title: "Podcasts + transcripts",
       description: "Searchable conversations tied to agents and MCP servers.",
       meta: "Audio",
-      image: heroImage("hero-podcasts-premium-v2.svg"),
+      image: heroImage("hero-podcasts-cinematic.webp"),
     },
     {
       href: "/resources/white-papers",
       title: "White papers + POVs",
       description: "Technical guidance, frameworks, and executive summaries.",
       meta: "Research",
-      image: heroImage("hero-whitepapers-premium-v2.svg"),
+      image: heroImage("hero-whitepapers-cinematic.webp"),
     },
     {
       href: "/resources/articles",
@@ -34,14 +34,14 @@ export default function Resources() {
       title: "Case studies",
       description: "Outcome stories with measurable impact and context.",
       meta: "Outcomes",
-      image: heroImage("hero-case-studies-premium-v2.svg"),
+      image: heroImage("hero-case-studies-cinematic.webp"),
     },
     {
       href: "/resources/books",
       title: "Books + artifacts",
       description: "Reference material, templates, and delivery assets.",
       meta: "Artifacts",
-      image: heroImage("hero-books-premium-v2.svg"),
+      image: heroImage("hero-books-cinematic.webp"),
     },
   ];
 
@@ -128,28 +128,28 @@ export default function Resources() {
           title="Podcasts"
           description="Colaberry AI podcast + curated ai podcast."
           meta="Internal + External"
-          image={heroImage("hero-podcasts-premium-v2.svg")}
+          image={heroImage("hero-podcasts-cinematic.webp")}
         />
         <ResourceCard
           href="/resources/books"
           title="Books & artifacts"
           description="Books, companion assets, templates, and working artifacts."
           meta="Artifacts"
-          image={heroImage("hero-books-premium-v2.svg")}
+          image={heroImage("hero-books-cinematic.webp")}
         />
         <ResourceCard
           href="/resources/case-studies"
           title="Case studies"
           description="Outcomes and delivery stories, organized by industry."
           meta="By industry"
-          image={heroImage("hero-case-studies-premium-v2.svg")}
+          image={heroImage("hero-case-studies-cinematic.webp")}
         />
         <ResourceCard
           href="/resources/white-papers"
           title="White papers"
           description="Technical deep-dives, POVs, and best-practice guidance."
           meta="Research"
-          image={heroImage("hero-whitepapers-premium-v2.svg")}
+          image={heroImage("hero-whitepapers-cinematic.webp")}
         />
         <ResourceCard
           href="/resources/articles"

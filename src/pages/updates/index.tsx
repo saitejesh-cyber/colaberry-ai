@@ -2,11 +2,11 @@ import Layout from "../../components/Layout";
 import Head from "next/head";
 import { GetStaticProps } from "next";
 import SectionHeader from "../../components/SectionHeader";
-import MediaPanel from "../../components/MediaPanel";
 import StatePanel from "../../components/StatePanel";
 import PremiumMediaCard from "../../components/PremiumMediaCard";
 import EnterpriseCtaBand from "../../components/EnterpriseCtaBand";
 import NewsletterSignup from "../../components/NewsletterSignup";
+import EnterprisePageHero from "../../components/EnterprisePageHero";
 import { heroImage } from "../../lib/media";
 import {
   fetchGaiInsightsBriefing,
@@ -100,43 +100,39 @@ export default function Updates({ ratings, briefing, fetchError }: UpdatesProps)
       <Head>
         <title>Updates | Colaberry AI</title>
       </Head>
-      <div className="grid gap-6 lg:grid-cols-[1.1fr_0.9fr] lg:items-start">
-        <div className="flex flex-col gap-3">
-          <div className="chip chip-brand inline-flex w-fit items-center gap-2 rounded-full border border-brand-blue/20 bg-white py-1 pl-2 pr-3 text-xs text-brand-deep">
-            <span className="h-1.5 w-1.5 shrink-0 rounded-full bg-brand-aqua" />
-            Modular layer
-          </div>
-          <SectionHeader
-            as="h1"
-            size="xl"
-            title="News & product"
-            description="Announcements, product updates, and curated industry news-combined into a single signal feed."
+      <EnterprisePageHero
+        kicker="Modular layer"
+        title="News & product"
+        description="Announcements, releases, and curated AI ecosystem signals in one enterprise feed."
+        image={heroImage("hero-updates-cinematic.webp")}
+        alt="City skyline highlighting update signals"
+        imageKicker="Signal feed"
+        imageTitle="Updates and announcements"
+        imageDescription="Product shipping notes, curated headlines, and briefing-level intelligence."
+        chips={["Product releases", "Daily briefings", "Top-rated AI news", "Research drops"]}
+        primaryAction={{ label: "Open updates feed", href: "/updates" }}
+        secondaryAction={{ label: "View GAI Insights", href: "https://gaiinsights.com/ratings", external: true, variant: "secondary" }}
+        metrics={[
+          { label: "Top-rated news", value: `${ratings.length}`, note: "Curated items in current refresh." },
+          { label: "Briefing signals", value: `${briefing.items.length}`, note: "Headlines in current briefing." },
+          { label: "Refresh cycle", value: "6h", note: "Cache and revalidation cadence." },
+        ]}
+      />
+
+      <section className="mt-6 grid gap-3 sm:grid-cols-2">
+        {updateHighlights.map((item) => (
+          <PremiumMediaCard
+            key={item.title}
+            href={item.href}
+            title={item.title}
+            description={item.description}
+            image={item.image}
+            meta={item.meta}
+            external={item.external}
+            size="sm"
           />
-          <div className="mt-4 grid gap-3 sm:grid-cols-2">
-            {updateHighlights.map((item) => (
-              <PremiumMediaCard
-                key={item.title}
-                href={item.href}
-                title={item.title}
-                description={item.description}
-                image={item.image}
-                meta={item.meta}
-                external={item.external}
-                size="sm"
-              />
-            ))}
-          </div>
-        </div>
-        <MediaPanel
-          kicker="Signal feed"
-          title="Updates and announcements"
-          description="Product releases and ecosystem signals in one place."
-          image={heroImage("hero-updates-cinematic.webp")}
-          alt="City skyline highlighting update signals"
-          aspect="wide"
-          fit="cover"
-        />
-      </div>
+        ))}
+      </section>
 
       {fetchError && (
         <div className="mt-6">

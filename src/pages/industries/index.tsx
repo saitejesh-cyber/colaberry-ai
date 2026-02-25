@@ -1,8 +1,7 @@
 import Layout from "../../components/Layout";
-import SectionHeader from "../../components/SectionHeader";
-import MediaPanel from "../../components/MediaPanel";
 import PremiumMediaCard from "../../components/PremiumMediaCard";
 import EnterpriseCtaBand from "../../components/EnterpriseCtaBand";
+import EnterprisePageHero from "../../components/EnterprisePageHero";
 import { heroImage } from "../../lib/media";
 
 export default function IndustriesIndex() {
@@ -49,39 +48,38 @@ export default function IndustriesIndex() {
 
   return (
     <Layout>
-      <div className="grid gap-6 lg:grid-cols-[1.1fr_0.9fr] lg:items-start">
-        <div className="flex flex-col gap-3">
-          <SectionHeader
-            as="h1"
-            size="xl"
-            kicker="Industry expertise"
-            title="Industries"
-            description="Domain-led delivery. Explore industry pages with aligned solutions, case studies, and AI workspaces."
+      <EnterprisePageHero
+        kicker="Industry expertise"
+        title="Industries"
+        description="Domain-led delivery surfaces for sector-specific agents, MCP patterns, use cases, and outcomes."
+        image={heroImage("hero-industries-cinematic.webp")}
+        alt="Industry landscape overview"
+        imageKicker="Coverage"
+        imageTitle="Service line coverage map"
+        imageDescription="Industry-aligned AI delivery contexts with playbooks and measurable outcomes."
+        chips={["Agriculture", "Energy", "Utilities", "Healthcare", "Manufacturing", "Supply chain"]}
+        primaryAction={{ label: "Explore solutions", href: "/solutions" }}
+        secondaryAction={{ label: "Browse case studies", href: "/resources/case-studies", variant: "secondary" }}
+        metrics={[
+          { label: "Industry tracks", value: `${industries.length}`, note: "Current vertical delivery surfaces." },
+          { label: "Launch path", value: "Catalog → outcome", note: "From signals to deployable patterns." },
+          { label: "Distribution", value: "Global", note: "Shared framework, domain-adapted execution." },
+        ]}
+      />
+
+      <section className="mt-6 grid gap-3 sm:grid-cols-2">
+        {industryHighlights.map((item) => (
+          <PremiumMediaCard
+            key={item.title}
+            href={item.href}
+            title={item.title}
+            description={item.description}
+            meta={item.meta}
+            image={item.image}
+            size="sm"
           />
-          <div className="mt-4 grid gap-3 sm:grid-cols-2">
-            {industryHighlights.map((item) => (
-              <PremiumMediaCard
-                key={item.title}
-                href={item.href}
-                title={item.title}
-                description={item.description}
-                meta={item.meta}
-                image={item.image}
-                size="sm"
-              />
-            ))}
-          </div>
-        </div>
-        <MediaPanel
-          kicker="Industry coverage"
-          title="Service line coverage map"
-          description="A quick view of industry-aligned AI service lines."
-          image={heroImage("hero-industries-cinematic.webp")}
-          alt="Industry landscape overview"
-          aspect="wide"
-          fit="cover"
-        />
-      </div>
+        ))}
+      </section>
 
       <div className="mt-6 grid gap-4 sm:mt-8 sm:grid-cols-2 lg:grid-cols-3">
         {industries.map((item) => (
