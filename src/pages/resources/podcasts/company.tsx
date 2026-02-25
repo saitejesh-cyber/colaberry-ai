@@ -1,9 +1,11 @@
 import Layout from "../../../components/Layout";
 import Link from "next/link";
+import Head from "next/head";
 import type { GetServerSideProps } from "next";
-import SectionHeader from "../../../components/SectionHeader";
+import EnterprisePageHero from "../../../components/EnterprisePageHero";
 import StatePanel from "../../../components/StatePanel";
 import type { Company, Tag } from "../../../lib/cms";
+import { heroImage } from "../../../lib/media";
 
 type CompanyEpisode = {
   id: number;
@@ -95,11 +97,23 @@ export const getServerSideProps: GetServerSideProps<PodcastCompanyPageProps> = a
 
 export default function PodcastCompanyPage({
   companyName,
+  companySlug,
   episodes,
   fetchError,
 }: PodcastCompanyPageProps) {
+  const uniqueTagCount = new Set(
+    episodes.flatMap((episode) => (episode.tags || []).map((tag) => tag.slug).filter(Boolean))
+  ).size;
+
   return (
     <Layout>
+      <Head>
+        <title>{`${companyName} Podcasts | Colaberry AI`}</title>
+        <meta
+          name="description"
+          content={`Podcast episodes connected to ${companyName}, with tag context and direct episode links.`}
+        />
+      </Head>
       {fetchError && (
         <div className="mb-6">
           <StatePanel
@@ -109,15 +123,36 @@ export default function PodcastCompanyPage({
           />
         </div>
       )}
-      <div className="flex flex-col gap-3">
-        <SectionHeader
-          as="h1"
-          size="xl"
-          kicker="Company"
-          title={`${companyName} podcasts`}
-          description={`Episodes connected to ${companyName}.`}
-        />
-      </div>
+      <EnterprisePageHero
+        kicker="Company signal"
+        title={`${companyName} podcasts`}
+        description={`Episodes connected to ${companyName}, with direct links into podcast detail pages.`}
+        image={heroImage("hero-podcasts-cinematic.webp")}
+        alt={`${companyName} podcast signal`}
+        imageKicker="Company feed"
+        imageTitle={`${companyName} episode distribution`}
+        imageDescription="Company-tagged episodes surfaced for fast discovery."
+        chips={[`Company: ${companyName}`, `${episodes.length} episodes`, `${uniqueTagCount} linked tags`]}
+        primaryAction={{ label: "All podcasts", href: "/resources/podcasts" }}
+        secondaryAction={{ label: "Resources hub", href: "/resources", variant: "secondary" }}
+        metrics={[
+          {
+            label: "Company slug",
+            value: companySlug,
+            note: "Canonical company key for filtering.",
+          },
+          {
+            label: "Episodes",
+            value: String(episodes.length),
+            note: "Current company-tagged episodes.",
+          },
+          {
+            label: "Tag coverage",
+            value: String(uniqueTagCount),
+            note: "Distinct tags across these episodes.",
+          },
+        ]}
+      />
 
       <ul className="mt-6 grid gap-4">
         {episodes.map((episode) => (

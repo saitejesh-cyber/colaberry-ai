@@ -1,9 +1,11 @@
 import Layout from "../../../../components/Layout";
 import Link from "next/link";
+import Head from "next/head";
 import type { GetServerSideProps } from "next";
-import SectionHeader from "../../../../components/SectionHeader";
+import EnterprisePageHero from "../../../../components/EnterprisePageHero";
 import StatePanel from "../../../../components/StatePanel";
 import type { Company, Tag } from "../../../../lib/cms";
+import { heroImage } from "../../../../lib/media";
 
 type TaggedEpisode = {
   id: number;
@@ -93,8 +95,19 @@ export default function PodcastTagPage({
   episodes,
   fetchError,
 }: PodcastTagPageProps) {
+  const uniqueCompanyCount = new Set(
+    episodes.flatMap((episode) => (episode.companies || []).map((company) => company.slug).filter(Boolean))
+  ).size;
+
   return (
     <Layout>
+      <Head>
+        <title>{`#${tag} Podcasts | Colaberry AI`}</title>
+        <meta
+          name="description"
+          content={`Podcast episodes tagged with #${tag}, including linked companies and direct episode access.`}
+        />
+      </Head>
       {fetchError && (
         <div className="mb-6">
           <StatePanel
@@ -104,15 +117,36 @@ export default function PodcastTagPage({
           />
         </div>
       )}
-      <div className="flex flex-col gap-3">
-        <SectionHeader
-          as="h1"
-          size="xl"
-          kicker="Resources"
-          title={`#${tag} Podcasts`}
-          description={`Episodes tagged with #${tag}.`}
-        />
-      </div>
+      <EnterprisePageHero
+        kicker="Tag signal"
+        title={`#${tag} podcasts`}
+        description={`Episodes tagged with #${tag}, with company mappings and direct episode links.`}
+        image={heroImage("hero-podcasts-cinematic.webp")}
+        alt={`Podcast tag ${tag} signal`}
+        imageKicker="Tag feed"
+        imageTitle={`#${tag} episode lane`}
+        imageDescription="Topic-tagged episodes surfaced for focused discovery."
+        chips={[`#${tag}`, `${episodes.length} episodes`, `${uniqueCompanyCount} linked companies`]}
+        primaryAction={{ label: "All podcasts", href: "/resources/podcasts" }}
+        secondaryAction={{ label: "Resources hub", href: "/resources", variant: "secondary" }}
+        metrics={[
+          {
+            label: "Tag",
+            value: `#${tag}`,
+            note: "Current taxonomy filter.",
+          },
+          {
+            label: "Episodes",
+            value: String(episodes.length),
+            note: "Current episodes in this tag lane.",
+          },
+          {
+            label: "Company links",
+            value: String(uniqueCompanyCount),
+            note: "Distinct company relationships.",
+          },
+        ]}
+      />
 
       <ul className="mt-6 grid gap-4">
         {episodes.map((e) => (
