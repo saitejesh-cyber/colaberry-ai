@@ -1,32 +1,42 @@
 import Layout from "../../components/Layout";
 import Link from "next/link";
 import SectionHeader from "../../components/SectionHeader";
-import MediaPanel from "../../components/MediaPanel";
+import EnterprisePageHero from "../../components/EnterprisePageHero";
 import { heroImage } from "../../lib/media";
 
 export default function Books() {
   return (
     <Layout>
-      <div className="grid gap-6 lg:grid-cols-[1.1fr_0.9fr] lg:items-start">
-        <div className="flex flex-col gap-3">
-          <SectionHeader
-            as="h1"
-            size="xl"
-            kicker="Resources"
-            title="Books & artifacts"
-            description="Books and companion artifacts (templates, worksheets, code samples, and related assets)."
-          />
-        </div>
-        <MediaPanel
-          kicker="Artifacts"
-          title="Learning assets"
-          description="Curated books and reusable artifacts."
-          image={heroImage("hero-books-premium-v2.svg")}
-          alt="Curated books and artifact knowledge surface"
-          aspect="wide"
-          fit="cover"
-        />
-      </div>
+      <EnterprisePageHero
+        kicker="Resources"
+        title="Books & artifacts"
+        description="Books and companion artifacts including templates, worksheets, code samples, and reusable delivery assets."
+        image={heroImage("hero-books-cinematic.webp")}
+        alt="Curated books and artifact knowledge surface"
+        imageKicker="Artifacts"
+        imageTitle="Learning assets"
+        imageDescription="Curated books and reusable artifacts for delivery teams."
+        chips={["Books", "Templates", "Worksheets", "Companion assets"]}
+        primaryAction={{ label: "View featured book", href: "#trust-before-intelligence" }}
+        secondaryAction={{ label: "Back to resources", href: "/resources", variant: "secondary" }}
+        metrics={[
+          {
+            label: "Featured title",
+            value: "1",
+            note: "Current flagship publication.",
+          },
+          {
+            label: "Artifact model",
+            value: "Companion-first",
+            note: "Books linked to practical assets.",
+          },
+          {
+            label: "Usage",
+            value: "Leadership + delivery",
+            note: "Built for strategy and implementation.",
+          },
+        ]}
+      />
 
       <section id="trust-before-intelligence" className="surface-panel mt-6 p-6 sm:mt-8">
         <SectionHeader

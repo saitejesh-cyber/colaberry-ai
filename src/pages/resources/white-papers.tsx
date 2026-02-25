@@ -1,32 +1,41 @@
 import Layout from "../../components/Layout";
 import Link from "next/link";
-import SectionHeader from "../../components/SectionHeader";
-import MediaPanel from "../../components/MediaPanel";
+import EnterprisePageHero from "../../components/EnterprisePageHero";
 import { heroImage } from "../../lib/media";
 
 export default function WhitePapers() {
   return (
     <Layout>
-      <div className="grid gap-6 lg:grid-cols-[1.1fr_0.9fr] lg:items-start">
-        <div className="flex flex-col gap-3">
-          <SectionHeader
-            as="h1"
-            size="xl"
-            kicker="Resources"
-            title="White papers"
-            description="Technical deep-dives, POVs, and reference architectures."
-          />
-        </div>
-        <MediaPanel
-          kicker="Research"
-          title="Reference architectures"
-          description="Technical guidance with ready-to-use frameworks."
-          image={heroImage("hero-whitepapers-premium-v2.svg")}
-          alt="Enterprise research and architecture review surface"
-          aspect="wide"
-          fit="cover"
-        />
-      </div>
+      <EnterprisePageHero
+        kicker="Resources"
+        title="White papers"
+        description="Technical deep-dives, POVs, and reference architectures for enterprise teams deploying AI at scale."
+        image={heroImage("hero-whitepapers-cinematic.webp")}
+        alt="Enterprise research and architecture review surface"
+        imageKicker="Research"
+        imageTitle="Reference architectures"
+        imageDescription="Technical guidance with reusable frameworks and governance patterns."
+        chips={["Architecture", "Governance", "Playbooks", "POVs"]}
+        primaryAction={{ label: "Open updates feed", href: "/updates" }}
+        secondaryAction={{ label: "Back to resources", href: "/resources", variant: "secondary" }}
+        metrics={[
+          {
+            label: "Focus",
+            value: "Technical depth",
+            note: "Implementation-ready guidance.",
+          },
+          {
+            label: "Coverage",
+            value: "Architecture + governance",
+            note: "From system design to controls.",
+          },
+          {
+            label: "Audience",
+            value: "Engineering + leadership",
+            note: "Built for cross-functional adoption.",
+          },
+        ]}
+      />
 
       <div className="mt-6 grid gap-4 sm:mt-8 lg:grid-cols-3">
         <Card title="Reference architectures" description="Platform patterns and enterprise rollout." />

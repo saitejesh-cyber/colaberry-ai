@@ -1,9 +1,8 @@
 import Layout from "../../components/Layout";
 import Head from "next/head";
-import SectionHeader from "../../components/SectionHeader";
-import MediaPanel from "../../components/MediaPanel";
 import PremiumMediaCard from "../../components/PremiumMediaCard";
 import EnterpriseCtaBand from "../../components/EnterpriseCtaBand";
+import EnterprisePageHero from "../../components/EnterprisePageHero";
 import { heroImage } from "../../lib/media";
 
 export default function Resources() {
@@ -50,42 +49,50 @@ export default function Resources() {
       <Head>
         <title>Resources | Colaberry AI</title>
       </Head>
-      <div className="grid gap-6 lg:grid-cols-[1.1fr_0.9fr] lg:items-start">
-        <div className="flex flex-col gap-3">
-          <div className="chip chip-brand inline-flex w-fit items-center gap-2 rounded-full border border-brand-blue/25 bg-white/80 px-3 py-1 text-xs font-semibold uppercase tracking-[0.2em] text-brand-deep shadow-sm">
-            <span className="h-1.5 w-1.5 shrink-0 rounded-full bg-brand-aqua" />
-            Modular layer
-          </div>
-          <SectionHeader
-            as="h1"
-            size="xl"
-            title="Resources"
-            description="A home for research, artifacts, and updates-built to support both internal publishing and curated external sources as we evolve."
+      <EnterprisePageHero
+        kicker="Modular layer"
+        title="Resources"
+        description="A structured knowledge layer for podcasts, books, white papers, case studies, and editorial signals-ready for teams, SEO, and LLM indexing."
+        image={heroImage("hero-resources-cinematic.webp")}
+        alt="Research workspace overview"
+        imageKicker="Knowledge hub"
+        imageTitle="Research and artifacts"
+        imageDescription="Podcasts, books, white papers, and curated signals in one governed publishing surface."
+        chips={["Podcasts", "White papers", "Books", "Case studies", "Articles"]}
+        primaryAction={{ label: "Browse podcasts", href: "/resources/podcasts" }}
+        secondaryAction={{ label: "Open updates feed", href: "/updates", variant: "secondary" }}
+        metrics={[
+          {
+            label: "Resource lanes",
+            value: `${resourceHighlights.length}`,
+            note: "Core resource surfaces in active navigation.",
+          },
+          {
+            label: "Publishing model",
+            value: "Internal + curated",
+            note: "Owned content with selective external aggregation.",
+          },
+          {
+            label: "Discovery",
+            value: "Search-ready",
+            note: "Metadata-first structure for users and assistants.",
+          },
+        ]}
+      />
+
+      <section className="mt-6 grid gap-3 sm:grid-cols-2">
+        {resourceHighlights.map((item) => (
+          <PremiumMediaCard
+            key={item.title}
+            href={item.href}
+            title={item.title}
+            description={item.description}
+            image={item.image}
+            meta={item.meta}
+            size="sm"
           />
-          <div className="mt-4 grid gap-3 sm:grid-cols-2">
-            {resourceHighlights.map((item) => (
-              <PremiumMediaCard
-                key={item.title}
-                href={item.href}
-                title={item.title}
-                description={item.description}
-                image={item.image}
-                meta={item.meta}
-                size="sm"
-              />
-            ))}
-          </div>
-        </div>
-        <MediaPanel
-          kicker="Knowledge hub"
-          title="Research and artifacts"
-          description="Podcasts, books, white papers, and curated signals."
-          image={heroImage("hero-resources-cinematic.webp")}
-          alt="Research workspace overview"
-          aspect="wide"
-          fit="cover"
-        />
-      </div>
+        ))}
+      </section>
 
       <div className="surface-panel mt-6 border border-slate-200/80 bg-white/90 p-4 sm:mt-8">
         <div className="text-xs font-semibold uppercase tracking-[0.2em] text-slate-600 dark:text-slate-300">

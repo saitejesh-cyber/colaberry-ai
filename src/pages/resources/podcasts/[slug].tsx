@@ -2,10 +2,10 @@
 import Layout from "../../../components/Layout";
 import Link from "next/link";
 import Head from "next/head";
-import Image from "next/image";
 import type { GetServerSideProps } from "next";
 import RichText from "../../../components/RichText";
 import SectionHeader from "../../../components/SectionHeader";
+import EnterprisePageHero from "../../../components/EnterprisePageHero";
 import PodcastPlayer from "../../../components/PodcastPlayer";
 import TranscriptTimeline from "../../../components/TranscriptTimeline";
 import {
@@ -26,6 +26,8 @@ type PodcastDetailProps = {
 type RouteParams = {
   slug?: string;
 };
+
+const PODCAST_BRAND_IMAGE = "/media/podcast/colaberry-ai-podcast-qr.png";
 
 export const getServerSideProps: GetServerSideProps<PodcastDetailProps, RouteParams> = async ({
   params,
@@ -242,39 +244,46 @@ export default function PodcastDetail({ episode, relatedEpisodes }: PodcastDetai
         {episode.coverImageUrl ? <meta property="og:image" content={episode.coverImageUrl} /> : null}
         <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
       </Head>
-      <div className="flex flex-col gap-3">
-        <SectionHeader
-          as="h1"
-          size="xl"
-          kicker="Podcast"
-          title={episode.title}
-          description="Listen to the episode or read the full narrative and transcript."
-        >
-          <div className="flex flex-wrap items-center gap-3 text-xs font-semibold uppercase tracking-[0.2em] text-slate-500">
-            {publishedLabel ? <span>{publishedLabel}</span> : null}
-            {episode.duration ? <span>{episode.duration}</span> : null}
-            {episode.episodeNumber ? <span>Episode {episode.episodeNumber}</span> : null}
-          </div>
-        </SectionHeader>
-      </div>
-
-      {episode.coverImageUrl && (
-        <div className="surface-panel mt-6 overflow-hidden border border-slate-200/80">
-          <Image
-            src={episode.coverImageUrl}
-            alt={episode.coverImageAlt || episode.title}
-            width={1600}
-            height={800}
-            className="h-64 w-full object-cover sm:h-80"
-            unoptimized
-            loading="lazy"
-          />
-        </div>
-      )}
+      <EnterprisePageHero
+        kicker="Podcast"
+        title={episode.title}
+        description="Listen to the episode or read the full narrative and transcript."
+        image={PODCAST_BRAND_IMAGE}
+        alt="Colaberry AI podcast artwork"
+        imageKicker="Audio signal"
+        imageTitle="Episode brief"
+        imageDescription={`${publishedLabel || "Date pending"}${episode.duration ? ` • ${episode.duration}` : ""}${
+          episode.episodeNumber ? ` • Episode ${episode.episodeNumber}` : ""
+        }`}
+        chips={[
+          ...(episode.tags || []).slice(0, 3).map((tag) => `#${tag.name}`),
+          hasTranscriptContent ? "Transcript available" : "Transcript pending",
+          subscribeLinks.length > 0 ? `${subscribeLinks.length} platform links` : "Platform links pending",
+        ]}
+        primaryAction={{ label: "Play episode", href: "#player" }}
+        secondaryAction={{ label: "All podcasts", href: "/resources/podcasts", variant: "secondary" }}
+        metrics={[
+          {
+            label: "Plays",
+            value: formatMetricCount(episode.playCount),
+            note: "Playback interactions.",
+          },
+          {
+            label: "Views",
+            value: formatMetricCount(episode.viewCount),
+            note: "Episode detail opens.",
+          },
+          {
+            label: "Shares",
+            value: formatMetricCount(episode.shareCount),
+            note: "Cross-channel distribution.",
+          },
+        ]}
+      />
 
       <div className="mt-6 grid gap-6 lg:grid-cols-[minmax(0,1fr)_320px]">
         <div className="flex flex-col gap-6">
-          <div ref={playerRef} className="surface-panel border border-slate-200/80 bg-white/90 p-6">
+          <div id="player" ref={playerRef} className="surface-panel border border-slate-200/80 bg-white/90 p-6">
             <div className="text-xs font-semibold uppercase tracking-[0.2em] text-slate-600 dark:text-slate-300">
               Listen to the podcast
             </div>
@@ -622,4 +631,12 @@ function formatDate(value?: string | null) {
     day: "numeric",
     timeZone: "UTC",
   });
+}
+
+function formatMetricCount(value?: number | null) {
+  const safe = typeof value === "number" && Number.isFinite(value) ? value : 0;
+  return new Intl.NumberFormat("en-US", {
+    notation: "compact",
+    maximumFractionDigits: 1,
+  }).format(safe);
 }

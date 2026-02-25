@@ -5,8 +5,8 @@ import Image from "next/image";
 import type { GetServerSideProps } from "next";
 import { useMemo, useState } from "react";
 import SectionHeader from "../../../components/SectionHeader";
+import EnterprisePageHero from "../../../components/EnterprisePageHero";
 import PodcastPlayer from "../../../components/PodcastPlayer";
-import MediaPanel from "../../../components/MediaPanel";
 import StatePanel from "../../../components/StatePanel";
 import {
   fetchPodcastEpisodes,
@@ -136,34 +136,41 @@ export default function Podcasts({
         </div>
       ) : null}
 
-      <div className="grid gap-6 lg:grid-cols-[1.1fr_0.9fr] lg:items-start">
-        <div className="flex flex-col gap-3">
-          <SectionHeader
-            as="h1"
-            size="xl"
-            kicker="Resources"
-            title="Podcast library"
-            description="Structured podcast destination with latest episodes, trending signals, inline listening, and transcript-ready detail pages."
-          />
-        </div>
-        <MediaPanel
-          kicker="Audio signal"
-          title="Enterprise AI conversations"
-          description="Listen directly on this page or open full episode narratives and transcripts."
-          image={PODCAST_BRAND_IMAGE}
-          alt="Colaberry AI podcast artwork with QR code"
-          aspect="wide"
-          fit="cover"
-        />
-      </div>
-
-      <section className="surface-panel mt-6 p-6">
-        <div className="grid gap-3 sm:grid-cols-3">
-          <MetricCard label="Total episodes" value={String(internalCount + externalCount)} note="Full chronological archive" />
-          <MetricCard label="Colaberry episodes" value={String(internalCount)} note="Internal production" />
-          <MetricCard label="External episodes" value={String(externalCount)} note="Curated third-party sources" />
-        </div>
-      </section>
+      <EnterprisePageHero
+        kicker="Resources"
+        title="Podcast library"
+        description="Structured podcast destination with latest episodes, trending signals, inline listening, and transcript-ready detail pages."
+        image={PODCAST_BRAND_IMAGE}
+        alt="Colaberry AI podcast artwork with QR code"
+        imageKicker="Audio signal"
+        imageTitle="Enterprise AI conversations"
+        imageDescription="Listen directly on this page or open full episode narratives and transcripts."
+        chips={[
+          "Inline player",
+          "Transcript-ready detail pages",
+          activeSort === "trending" ? "Trending order" : "Latest order",
+          activeType === "all" ? "All sources" : activeType === "internal" ? "Colaberry only" : "External only",
+        ]}
+        primaryAction={{ label: "Browse companies", href: "#company-search" }}
+        secondaryAction={{ label: "Back to resources", href: "/resources", variant: "secondary" }}
+        metrics={[
+          {
+            label: "Total episodes",
+            value: String(internalCount + externalCount),
+            note: "Full chronological archive.",
+          },
+          {
+            label: "Colaberry episodes",
+            value: String(internalCount),
+            note: "Internal production catalog.",
+          },
+          {
+            label: "External episodes",
+            value: String(externalCount),
+            note: "Curated third-party sources.",
+          },
+        ]}
+      />
 
       <section className="surface-panel mt-6 p-6">
         <div className="grid gap-5 lg:grid-cols-[1.2fr_0.8fr] lg:items-center">
@@ -540,16 +547,6 @@ function PodcastArtwork({
         }
       }}
     />
-  );
-}
-
-function MetricCard({ label, value, note }: { label: string; value: string; note: string }) {
-  return (
-    <article className="rounded-2xl border border-slate-200/80 bg-white/90 p-4 shadow-sm dark:border-slate-700/80 dark:bg-slate-900/70">
-      <div className="text-xs font-semibold uppercase tracking-[0.18em] text-slate-500 dark:text-slate-300">{label}</div>
-      <div className="mt-2 text-2xl font-semibold text-slate-900 dark:text-slate-100">{value}</div>
-      <p className="mt-1 text-xs text-slate-600 dark:text-slate-300">{note}</p>
-    </article>
   );
 }
 

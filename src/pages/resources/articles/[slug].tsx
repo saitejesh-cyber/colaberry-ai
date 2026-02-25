@@ -4,9 +4,10 @@ import Image from "next/image";
 import Link from "next/link";
 import sanitizeHtml from "sanitize-html";
 import Layout from "../../../components/Layout";
-import SectionHeader from "../../../components/SectionHeader";
+import EnterprisePageHero from "../../../components/EnterprisePageHero";
 import StatePanel from "../../../components/StatePanel";
 import { Article, ArticleMedia, fetchArticleBySlug } from "../../../lib/cms";
+import { heroImage } from "../../../lib/media";
 
 type ArticleDetailProps = {
   article: Article;
@@ -71,26 +72,44 @@ export default function ArticleDetailPage({ article }: ArticleDetailProps) {
         </span>
       </nav>
 
-      <div className="hero-surface mt-4 rounded-[32px] p-8 sm:p-10">
-        <SectionHeader
-          as="h1"
-          size="xl"
+      <div className="mt-4">
+        <EnterprisePageHero
           kicker={article.category?.name || "Article"}
           title={article.title}
           description={
-            article.description || "Structured CMS article for discoverability, indexing, and enterprise AI delivery."
+            article.description ||
+            "Structured CMS article for discoverability, indexing, and enterprise AI delivery."
           }
+          image={heroImage("hero-updates-cinematic.webp")}
+          alt="Editorial analysis surface"
+          imageKicker="Editorial"
+          imageTitle="Article narrative"
+          imageDescription="Long-form analysis with structured blocks and LLM-ready context."
+          chips={[
+            article.category?.name || "Article",
+            article.author?.name ? `By ${article.author.name}` : "Colaberry editorial",
+            `${blocks.length} content block${blocks.length === 1 ? "" : "s"}`,
+          ]}
+          primaryAction={{ label: "Back to articles", href: "/resources/articles" }}
+          secondaryAction={{ label: "Explore resources", href: "/resources", variant: "secondary" }}
+          metrics={[
+            {
+              label: "Category",
+              value: article.category?.name || "Article",
+              note: "Primary taxonomy classification.",
+            },
+            {
+              label: "Author",
+              value: article.author?.name || "Colaberry editorial",
+              note: "Article ownership and provenance.",
+            },
+            {
+              label: "Published",
+              value: publishedLabel || "Pending",
+              note: "UTC normalized publication date.",
+            },
+          ]}
         />
-        <div className="mt-5 flex flex-wrap items-center gap-3 text-xs text-slate-500">
-          {publishedLabel ? (
-            <span className="chip chip-muted rounded-full px-3 py-1 font-semibold">{publishedLabel}</span>
-          ) : null}
-          {article.author?.name ? (
-            <span className="chip chip-muted rounded-full px-3 py-1 font-semibold">
-              By {article.author.name}
-            </span>
-          ) : null}
-        </div>
       </div>
 
       {article.coverImageUrl ? (
