@@ -168,7 +168,7 @@ export default function UseCaseDetailPage({ useCase, allowPrivate }: UseCaseDeta
       </div>
 
       {!hasOverview && !safeLongDescription ? (
-        <div className="mt-6">
+        <div className="section-spacing">
           <StatePanel
             variant="empty"
             title="Use case content is being populated"
@@ -176,9 +176,9 @@ export default function UseCaseDetailPage({ useCase, allowPrivate }: UseCaseDeta
           />
         </div>
       ) : (
-        <div className="mt-6 grid gap-6">
+        <div className="section-spacing grid gap-6">
           {safeLongDescription ? (
-            <section className="surface-panel border border-slate-200/80 bg-white/90 p-6">
+            <section className="surface-panel section-shell p-6">
               <SectionHeader
                 as="h2"
                 size="md"
@@ -194,7 +194,7 @@ export default function UseCaseDetailPage({ useCase, allowPrivate }: UseCaseDeta
           ) : null}
 
           {hasOverview ? (
-            <section className="surface-panel border border-slate-200/80 bg-white/90 p-6">
+            <section className="surface-panel section-shell p-6">
               <SectionHeader
                 as="h2"
                 size="md"
@@ -213,7 +213,7 @@ export default function UseCaseDetailPage({ useCase, allowPrivate }: UseCaseDeta
           ) : null}
 
           {hasExecutionDetails ? (
-            <section className="surface-panel border border-slate-200/80 bg-white/90 p-6">
+            <section className="surface-panel section-shell p-6">
               <SectionHeader
                 as="h2"
                 size="md"
@@ -237,7 +237,7 @@ export default function UseCaseDetailPage({ useCase, allowPrivate }: UseCaseDeta
       )}
 
       {hasRelations ? (
-        <section className="surface-panel mt-6 border border-slate-200/80 bg-white/90 p-6">
+        <section className="surface-panel section-shell section-spacing p-6">
           <SectionHeader
             as="h2"
             size="md"
@@ -267,7 +267,7 @@ export default function UseCaseDetailPage({ useCase, allowPrivate }: UseCaseDeta
       ) : null}
 
       {hasLinks ? (
-        <section className="surface-panel mt-6 border border-slate-200/80 bg-white/90 p-6">
+        <section className="surface-panel section-shell section-spacing p-6">
           <SectionHeader
             as="h2"
             size="md"
@@ -295,7 +295,7 @@ export default function UseCaseDetailPage({ useCase, allowPrivate }: UseCaseDeta
         </section>
       ) : null}
 
-      <div className="mt-8 flex flex-col gap-3 sm:flex-row">
+      <div className="section-spacing flex flex-col gap-3 sm:flex-row">
         <Link href="/use-cases" className="btn btn-secondary">
           Back to Use Cases
         </Link>
@@ -358,7 +358,7 @@ function sanitizeRichText(value?: string | null) {
 
 function InfoBlock({ title, body }: { title: string; body?: string | null }) {
   return (
-    <div className="rounded-2xl border border-slate-200/80 bg-white/80 p-4 shadow-sm">
+    <div className="section-card rounded-2xl p-4">
       <h3 className="text-sm font-semibold text-slate-900">{title}</h3>
       <p className="mt-1 text-sm text-slate-600">{body || "Not documented yet."}</p>
     </div>
@@ -367,7 +367,7 @@ function InfoBlock({ title, body }: { title: string; body?: string | null }) {
 
 function ListBlock({ title, items, empty }: { title: string; items: string[]; empty: string }) {
   return (
-    <div className="rounded-2xl border border-slate-200/80 bg-white/80 p-4 shadow-sm">
+    <div className="section-card rounded-2xl p-4">
       <h3 className="text-sm font-semibold text-slate-900">{title}</h3>
       {items.length === 0 ? (
         <p className="mt-1 text-sm text-slate-600">{empty}</p>
@@ -392,7 +392,7 @@ function RelationList({
   empty: string;
 }) {
   return (
-    <div className="rounded-2xl border border-slate-200/80 bg-white/80 p-4 shadow-sm">
+    <div className="section-card rounded-2xl p-4">
       <h3 className="text-sm font-semibold text-slate-900">{title}</h3>
       {links.length === 0 ? (
         <p className="mt-1 text-sm text-slate-600">{empty}</p>

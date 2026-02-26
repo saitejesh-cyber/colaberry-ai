@@ -219,9 +219,9 @@ export default function MCPDetail({ mcp, allowPrivate, relatedServers }: MCPDeta
         />
       </div>
 
-      <section className="mt-6 grid gap-6 lg:grid-cols-[minmax(0,1fr)_360px] lg:items-start">
+      <section className="section-spacing grid gap-6 lg:grid-cols-[minmax(0,1fr)_360px] lg:items-start">
         <div className="grid gap-6">
-          <div className="surface-panel p-6">
+          <div className="surface-panel section-shell p-6">
             <SectionHeader
               as="h2"
               size="md"
@@ -311,7 +311,7 @@ export default function MCPDetail({ mcp, allowPrivate, relatedServers }: MCPDeta
           </div>
 
           {hasAboutSection ? (
-            <section className="surface-panel p-6">
+            <section className="surface-panel section-shell p-6">
               <SectionHeader
                 as="h2"
                 size="md"
@@ -327,7 +327,7 @@ export default function MCPDetail({ mcp, allowPrivate, relatedServers }: MCPDeta
                 }`}
               >
                 {mcp.primaryFunction || mcp.description || mcp.longDescription ? (
-                  <div className="rounded-2xl border border-slate-200/80 bg-white p-5 shadow-sm">
+                  <div className="section-card rounded-2xl p-5">
                     <div className="text-xs font-semibold uppercase tracking-wide text-slate-500">
                       Summary
                     </div>
@@ -352,7 +352,7 @@ export default function MCPDetail({ mcp, allowPrivate, relatedServers }: MCPDeta
           ) : null}
 
           {hasValueSection ? (
-            <section className="surface-panel p-6">
+            <section className="surface-panel section-shell p-6">
               <SectionHeader
                 as="h2"
                 size="md"
@@ -384,7 +384,7 @@ export default function MCPDetail({ mcp, allowPrivate, relatedServers }: MCPDeta
           ) : null}
 
           {hasExecutionSection ? (
-            <section className="surface-panel p-6">
+            <section className="surface-panel section-shell p-6">
               <SectionHeader
                 as="h2"
                 size="md"
@@ -403,7 +403,7 @@ export default function MCPDetail({ mcp, allowPrivate, relatedServers }: MCPDeta
                   <ListSection title="Use cases" items={useCases} empty="Use cases not documented yet." />
                 ) : null}
                 {mcp.exampleWorkflow || requirements.length > 0 ? (
-                  <div className="rounded-2xl border border-slate-200/80 bg-white p-5 shadow-sm">
+                  <div className="section-card rounded-2xl p-5">
                     {mcp.exampleWorkflow ? (
                       <>
                         <div className="text-xs font-semibold uppercase tracking-wide text-slate-500">
@@ -436,7 +436,7 @@ export default function MCPDetail({ mcp, allowPrivate, relatedServers }: MCPDeta
           ) : null}
 
           {hasToolsSection ? (
-            <section className="surface-panel p-6">
+            <section className="surface-panel section-shell p-6">
               <SectionHeader
                 as="h2"
                 size="md"
@@ -464,7 +464,7 @@ export default function MCPDetail({ mcp, allowPrivate, relatedServers }: MCPDeta
           ) : null}
 
           {hasSecuritySection ? (
-            <section className="surface-panel p-6">
+            <section className="surface-panel section-shell p-6">
               <SectionHeader
                 as="h2"
                 size="md"
@@ -496,7 +496,7 @@ export default function MCPDetail({ mcp, allowPrivate, relatedServers }: MCPDeta
           ) : null}
 
           {hasCompatibilitySection ? (
-            <section className="surface-panel p-6">
+            <section className="surface-panel section-shell p-6">
               <SectionHeader
                 as="h2"
                 size="md"
@@ -528,7 +528,7 @@ export default function MCPDetail({ mcp, allowPrivate, relatedServers }: MCPDeta
           ) : null}
 
           {hasResourcesSection ? (
-            <section className="surface-panel p-6">
+            <section className="surface-panel section-shell p-6">
               <SectionHeader
                 as="h2"
                 size="md"
@@ -557,7 +557,7 @@ export default function MCPDetail({ mcp, allowPrivate, relatedServers }: MCPDeta
           ) : null}
 
           {hasAdoptionSection ? (
-            <section className="surface-panel p-6">
+            <section className="surface-panel section-shell p-6">
               <SectionHeader
                 as="h2"
                 size="md"
@@ -599,7 +599,7 @@ export default function MCPDetail({ mcp, allowPrivate, relatedServers }: MCPDeta
           ) : null}
 
           {relatedServers.length > 0 && (
-            <section className="surface-panel p-6">
+            <section className="surface-panel section-shell p-6">
               <SectionHeader
                 as="h2"
                 size="md"
@@ -657,7 +657,7 @@ export default function MCPDetail({ mcp, allowPrivate, relatedServers }: MCPDeta
 
 function MetadataRow({ label, value, href }: { label: string; value: string; href?: string }) {
   return (
-    <div className="rounded-2xl border border-slate-200/80 bg-white p-4 shadow-sm">
+    <div className="section-card rounded-2xl p-4">
       <dt className="text-xs font-semibold uppercase tracking-wide text-slate-500">{label}</dt>
       <dd className="mt-2 text-sm font-semibold text-slate-900">
         {href ? (
@@ -689,7 +689,7 @@ function DetailCard({
   description: string;
 }) {
   return (
-    <div className="rounded-2xl border border-slate-200/80 bg-white p-4 shadow-sm">
+    <div className="section-card rounded-2xl p-4">
       <div className="text-xs font-semibold uppercase tracking-wide text-slate-500">{label}</div>
       <div className="mt-2 text-lg font-semibold text-slate-900">{value}</div>
       <div className="mt-1 text-xs text-slate-600">{description}</div>
@@ -707,14 +707,14 @@ function ListBlock({
   emptyLabel: string;
 }) {
   return (
-    <div className="rounded-2xl border border-slate-200/80 bg-white p-4 shadow-sm">
+    <div className="section-card rounded-2xl p-4">
       <div className="text-xs font-semibold uppercase tracking-wide text-slate-500">{label}</div>
       {items.length ? (
         <div className="mt-3 flex flex-wrap gap-2">
           {items.map((item) => (
             <span
               key={`${label}-${item}`}
-              className="chip chip-muted rounded-full border border-slate-200/80 bg-white px-2.5 py-1 text-xs font-semibold text-slate-700"
+              className="chip chip-muted rounded-full px-2.5 py-1 text-xs font-semibold"
             >
               {item}
             </span>
@@ -729,7 +729,7 @@ function ListBlock({
 
 function ListSection({ title, items, empty }: { title: string; items: string[]; empty: string }) {
   return (
-    <div className="rounded-2xl border border-slate-200/80 bg-white p-5 shadow-sm">
+    <div className="section-card rounded-2xl p-5">
       <div className="text-xs font-semibold uppercase tracking-wide text-slate-500">{title}</div>
       {items.length ? (
         <ul className="mt-3 space-y-2 text-sm text-slate-700">
@@ -749,7 +749,7 @@ function ListSection({ title, items, empty }: { title: string; items: string[]; 
 
 function SignalStat({ label, value, note }: { label: string; value: string; note: string }) {
   return (
-    <div className="rounded-2xl border border-slate-200/80 bg-white p-4 shadow-sm">
+    <div className="section-card rounded-2xl p-4">
       <div className="text-xs font-semibold uppercase tracking-wide text-slate-500">{label}</div>
       <div className="mt-2 text-lg font-semibold text-slate-900">{value}</div>
       <div className="mt-1 text-xs text-slate-600">{note}</div>
@@ -809,7 +809,7 @@ function GuidanceBlock({
   actions?: ReactNode;
 }) {
   return (
-    <div className="rounded-2xl border border-slate-200/80 bg-white p-5 shadow-sm">
+    <div className="section-card rounded-2xl p-5">
       <div className="text-xs font-semibold uppercase tracking-wide text-slate-500">{title}</div>
       <ul className="mt-3 space-y-2 text-sm text-slate-700">
         {items.map((item, index) => (

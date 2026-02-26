@@ -80,7 +80,7 @@ export default function Resources() {
         ]}
       />
 
-      <section className="mt-6 grid gap-3 sm:grid-cols-2">
+      <section className="section-spacing grid gap-3 sm:grid-cols-2">
         {resourceHighlights.map((item) => (
           <PremiumMediaCard
             key={item.title}
@@ -94,7 +94,7 @@ export default function Resources() {
         ))}
       </section>
 
-      <div className="surface-panel mt-6 border border-slate-200/80 bg-white/90 p-4 sm:mt-8">
+      <div className="surface-panel section-shell section-spacing p-4">
         <div className="text-xs font-semibold uppercase tracking-[0.2em] text-slate-600 dark:text-slate-300">
           Search resources
         </div>
@@ -121,7 +121,7 @@ export default function Resources() {
           {["Podcasts", "White papers", "Case studies", "Updates", "Artifacts"].map((label) => (
             <span
               key={label}
-              className="chip rounded-full border border-slate-200/80 bg-white px-3 py-1 font-semibold"
+              className="chip chip-muted rounded-full border border-slate-200/80 bg-white px-3 py-1 font-semibold"
             >
               {label}
             </span>
@@ -129,7 +129,7 @@ export default function Resources() {
         </div>
       </div>
 
-      <div className="mt-6 grid gap-4 sm:mt-8 sm:grid-cols-2 lg:grid-cols-3">
+      <div className="section-spacing grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
         <ResourceCard
           href="/resources/podcasts"
           title="Podcasts"
@@ -181,18 +181,18 @@ export default function Resources() {
         />
       </div>
 
-      <div className="surface-panel mt-10 p-6 sm:mt-12">
+      <div className="surface-panel section-shell section-spacing p-6">
         <div className="text-xs font-semibold uppercase tracking-[0.2em] text-slate-600 dark:text-slate-300">
           How this evolves
         </div>
         <div className="mt-3 grid gap-3 text-sm text-slate-700 sm:grid-cols-2">
-          <div className="rounded-2xl border border-slate-200/80 bg-white/80 p-4 shadow-sm">
+          <div className="section-card rounded-2xl p-4">
             <div className="font-semibold text-slate-900">Internal publishing</div>
             <div className="mt-1 text-slate-600">
               Structured posting for podcasts, books, white papers, and curated collections.
             </div>
           </div>
-          <div className="rounded-2xl border border-slate-200/80 bg-white/80 p-4 shadow-sm">
+          <div className="section-card rounded-2xl p-4">
             <div className="font-semibold text-slate-900">External aggregation</div>
             <div className="mt-1 text-slate-600">
               Pull in relevant sources (feeds, links, announcements) with light editorial control.

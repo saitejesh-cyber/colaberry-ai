@@ -115,7 +115,7 @@ export default function PodcastCompanyPage({
         />
       </Head>
       {fetchError && (
-        <div className="mb-6">
+        <div className="section-spacing">
           <StatePanel
             variant="error"
             title="Podcast data is temporarily unavailable"
@@ -154,16 +154,16 @@ export default function PodcastCompanyPage({
         ]}
       />
 
-      <ul className="mt-6 grid gap-4">
+      <ul className="section-spacing grid gap-4">
         {episodes.map((episode) => (
-          <li key={episode.id} className="surface-panel border border-slate-200/80 bg-white/90 p-4">
+          <li key={episode.id} className="surface-panel section-shell p-4">
             <div className="text-sm font-semibold text-slate-900">{episode.title}</div>
             <div className="mt-3 flex flex-wrap gap-2">
               {episode.tags?.map((tag) => (
                 <Link
                   key={tag.slug}
                   href={`/resources/podcasts/tag/${tag.slug}`}
-                  className="chip rounded-full border border-slate-200/80 bg-white/90 px-2.5 py-1 text-xs font-semibold text-slate-600 hover:text-brand-deep"
+                  className="chip chip-muted rounded-full px-2.5 py-1 text-xs font-semibold"
                 >
                   #{tag.name}
                 </Link>
@@ -171,7 +171,7 @@ export default function PodcastCompanyPage({
             </div>
             <Link
               href={`/resources/podcasts/${episode.slug}`}
-              className="mt-2 inline-flex items-center gap-1 text-sm font-semibold text-brand-deep hover:text-brand-blue"
+              className="mt-2 inline-flex items-center gap-1 text-sm font-semibold text-brand-deep transition hover:translate-x-0.5 hover:text-brand-blue"
               aria-label={`View episode ${episode.title}`}
             >
               View <span aria-hidden="true">→</span>

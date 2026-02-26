@@ -37,13 +37,13 @@ export default function WhitePapers() {
         ]}
       />
 
-      <div className="mt-6 grid gap-4 sm:mt-8 lg:grid-cols-3">
+      <div className="section-spacing grid gap-4 lg:grid-cols-3">
         <Card title="Reference architectures" description="Platform patterns and enterprise rollout." />
         <Card title="Governance" description="Controls, auditability, and risk management." />
         <Card title="Industry playbooks" description="Domain-specific delivery frameworks." />
       </div>
 
-      <div className="mt-8 flex flex-col gap-3 sm:flex-row">
+      <div className="section-spacing flex flex-col gap-3 sm:flex-row">
         <Link
           href="/resources"
           className="btn btn-secondary"
@@ -63,13 +63,13 @@ export default function WhitePapers() {
 
 function Card({ title, description }: { title: string; description: string }) {
   return (
-    <div className="surface-panel border border-slate-200/80 bg-white/90 p-6">
+    <div className="surface-panel section-shell p-6">
       <div className="flex items-start justify-between gap-4">
         <div>
           <div className="text-base font-semibold text-slate-900">{title}</div>
           <div className="mt-1 text-sm text-slate-600">{description}</div>
         </div>
-        <span className="chip chip-muted rounded-full border border-slate-200/80 bg-white px-2.5 py-1 text-xs font-semibold text-slate-700">
+        <span className="chip chip-muted rounded-full px-2.5 py-1 text-xs font-semibold">
           Planned
         </span>
       </div>

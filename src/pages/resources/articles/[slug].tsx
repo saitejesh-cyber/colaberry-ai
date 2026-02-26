@@ -113,7 +113,7 @@ export default function ArticleDetailPage({ article }: ArticleDetailProps) {
       </div>
 
       {article.coverImageUrl ? (
-        <div className="surface-panel mt-6 overflow-hidden border border-slate-200/80 p-0">
+        <div className="surface-panel section-shell section-spacing overflow-hidden p-0">
           <div className="relative aspect-[16/7] w-full">
             <Image
               src={article.coverImageUrl}
@@ -128,7 +128,7 @@ export default function ArticleDetailPage({ article }: ArticleDetailProps) {
       ) : null}
 
       {blocks.length === 0 ? (
-        <div className="mt-6">
+        <div className="section-spacing">
           <StatePanel
             variant="empty"
             title="Article body is not available yet"
@@ -136,7 +136,7 @@ export default function ArticleDetailPage({ article }: ArticleDetailProps) {
           />
         </div>
       ) : (
-        <article className="surface-panel mt-6 border border-slate-200/80 bg-white/90 p-6 sm:p-8">
+        <article className="surface-panel section-shell section-spacing p-6 sm:p-8">
           <div className="prose max-w-none text-slate-700 dark:text-slate-200">
             {blocks.map((block, index) => {
               const component = block.__component || "";
@@ -176,7 +176,7 @@ export default function ArticleDetailPage({ article }: ArticleDetailProps) {
                 const quoteTitle = typeof block.title === "string" ? block.title : "";
                 if (!quoteBody && !quoteTitle) return null;
                 return (
-                  <blockquote key={`quote-${index}`} className="my-6 rounded-2xl border border-slate-200/80 bg-slate-50/80 p-5">
+                  <blockquote key={`quote-${index}`} className="section-card my-6 rounded-2xl p-5">
                     {quoteTitle ? <div className="mb-2 text-sm font-semibold text-slate-900">{quoteTitle}</div> : null}
                     {quoteBody ? <p className="m-0 text-slate-700">{quoteBody}</p> : null}
                   </blockquote>
@@ -228,7 +228,7 @@ export default function ArticleDetailPage({ article }: ArticleDetailProps) {
         </article>
       )}
 
-      <div className="mt-8 flex flex-col gap-3 sm:flex-row">
+      <div className="section-spacing flex flex-col gap-3 sm:flex-row">
         <Link href="/resources/articles" className="btn btn-secondary">
           Back to Articles
         </Link>

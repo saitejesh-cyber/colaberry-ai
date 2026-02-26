@@ -134,6 +134,8 @@ select:disabled {
   border: 1px solid rgba(148, 163, 184, 0.2);
   background: rgba(248, 250, 252, 0.9);
   color: #334155;
+  transition: border-color 180ms ease, background-color 180ms ease, color 180ms ease,
+    box-shadow 180ms ease, transform 180ms ease;
 }
 
 .chip-brand {
@@ -169,6 +171,8 @@ select:disabled {
 .chip:hover {
   border-color: rgba(59, 130, 246, 0.45);
   color: #0f172a;
+  background: rgba(255, 255, 255, 0.96);
+  transform: translateY(-1px);
 }
 
 .chip:focus-visible {
@@ -179,11 +183,13 @@ select:disabled {
 .chip-brand:hover {
   border-color: rgba(37, 99, 235, 0.55);
   color: #0f172a;
+  background: rgba(219, 234, 254, 0.8);
 }
 
 .chip-muted:hover {
   border-color: rgba(59, 130, 246, 0.35);
   color: #0f172a;
+  background: rgba(248, 250, 252, 0.96);
 }
 
 .dark .chip:hover,
@@ -191,6 +197,7 @@ select:disabled {
 .dark .chip-muted:hover {
   border-color: rgba(125, 211, 252, 0.74);
   color: #f8fafc;
+  transform: translateY(-1px);
 }
 
 .badge-external {
@@ -661,6 +668,14 @@ button:focus-visible {
     box-shadow 160ms ease, transform 160ms ease;
 }
 
+.btn:hover {
+  transform: translateY(-1px);
+}
+
+.btn:active {
+  transform: translateY(0);
+}
+
 .btn:focus-visible {
   outline: none;
   box-shadow: 0 0 0 3px rgba(47, 111, 237, 0.28);
@@ -682,6 +697,7 @@ button:focus-visible {
 
 .btn-primary:hover {
   background: linear-gradient(104deg, #061022 0%, #0f6a86 46%, #1ec2d7 100%);
+  box-shadow: 0 14px 30px rgba(10, 18, 32, 0.24), 0 8px 20px rgba(21, 168, 191, 0.24);
 }
 
 .btn-secondary {
@@ -694,6 +710,8 @@ button:focus-visible {
 .btn-secondary:hover {
   border-color: rgba(47, 111, 237, 0.45);
   color: #0b1220;
+  background: rgba(255, 255, 255, 1);
+  box-shadow: 0 8px 20px rgba(15, 23, 42, 0.08);
 }
 
 .btn-ghost {
@@ -706,6 +724,7 @@ button:focus-visible {
   background: rgba(255, 255, 255, 0.86);
   border-color: rgba(47, 111, 237, 0.45);
   color: #0f172a;
+  box-shadow: 0 6px 16px rgba(15, 23, 42, 0.06);
 }
 
 .btn-icon {
@@ -735,6 +754,8 @@ button:focus-visible {
 .dark .btn-secondary:hover {
   border-color: rgba(96, 165, 250, 0.6);
   color: #ffffff;
+  background: rgba(15, 23, 42, 0.92);
+  box-shadow: 0 10px 24px rgba(2, 6, 23, 0.36);
 }
 
 .dark .btn-ghost {
@@ -746,6 +767,52 @@ button:focus-visible {
 .dark .btn-ghost:hover {
   border-color: rgba(96, 165, 250, 0.6);
   color: #ffffff;
+  background: rgba(15, 23, 42, 0.86);
+  box-shadow: 0 10px 22px rgba(2, 6, 23, 0.3);
+}
+
+.section-spacing {
+  margin-top: 1.5rem;
+}
+
+@media (min-width: 640px) {
+  .section-spacing {
+    margin-top: 1.875rem;
+  }
+}
+
+.section-shell {
+  border-color: rgba(148, 163, 184, 0.26);
+  background: rgba(255, 255, 255, 0.9);
+  box-shadow: var(--shadow-sm);
+}
+
+.dark .section-shell {
+  border-color: rgba(148, 163, 184, 0.4);
+  background: rgba(15, 27, 48, 0.86);
+}
+
+.section-card {
+  border: 1px solid rgba(148, 163, 184, 0.26);
+  background: rgba(255, 255, 255, 0.9);
+  box-shadow: var(--shadow-sm);
+  transition: border-color 180ms ease, box-shadow 180ms ease, transform 180ms ease;
+}
+
+.section-card:hover {
+  border-color: rgba(47, 111, 237, 0.35);
+  transform: translateY(-1px);
+  box-shadow: var(--shadow-md);
+}
+
+.dark .section-card {
+  border-color: rgba(148, 163, 184, 0.4);
+  background: rgba(15, 27, 48, 0.86);
+}
+
+.dark .section-card:hover {
+  border-color: rgba(125, 211, 252, 0.68);
+  box-shadow: 0 20px 42px rgba(2, 6, 23, 0.52);
 }
 
 .nav-link {
