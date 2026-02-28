@@ -1,3 +1,4 @@
+import { useState } from "react";
 import Layout from "../../components/Layout";
 import Head from "next/head";
 import { GetStaticProps } from "next";
@@ -14,6 +15,7 @@ import {
   GaiBriefing,
   GaiRatingItem,
 } from "../../lib/gaiInsights";
+import { seoTags, canonicalUrl as buildCanonical, type SeoMeta } from "../../lib/seo";
 
 type UpdatesProps = {
   ratings: GaiRatingItem[];
@@ -62,7 +64,23 @@ export const getStaticProps: GetStaticProps<UpdatesProps> = async () => {
   };
 };
 
+type CategoryTab = "All" | "Product" | "AI News" | "Research";
+
+const CATEGORY_TABS: CategoryTab[] = ["All", "Product", "AI News", "Research"];
+
+const CATEGORY_MAP: Record<string, CategoryTab> = {
+  Product: "Product",
+  Signals: "AI News",
+  Research: "Research",
+  Roadmap: "Product",
+};
+
+const COLLAPSED_RATINGS_COUNT = 8;
+
 export default function Updates({ ratings, briefing, fetchError }: UpdatesProps) {
+  const [activeCategory, setActiveCategory] = useState<CategoryTab>("All");
+  const [showAllRatings, setShowAllRatings] = useState(false);
+
   const updateHighlights = [
     {
       href: "/updates",
@@ -95,10 +113,42 @@ export default function Updates({ ratings, briefing, fetchError }: UpdatesProps)
     },
   ];
 
+  const filteredHighlights =
+    activeCategory === "All"
+      ? updateHighlights
+      : updateHighlights.filter(
+          (item) => CATEGORY_MAP[item.meta] === activeCategory
+        );
+
+  const visibleRatings = showAllRatings
+    ? ratings
+    : ratings.slice(0, COLLAPSED_RATINGS_COUNT);
+
+  const seoMeta: SeoMeta = {
+    title: "Updates | Colaberry AI",
+    description: "Announcements, releases, and curated AI ecosystem signals in one enterprise feed.",
+    canonical: buildCanonical("/updates"),
+  };
+
   return (
     <Layout>
       <Head>
-        <title>Updates | Colaberry AI</title>
+        <title>{seoMeta.title}</title>
+        {seoTags(seoMeta).map(({ key, ...props }) => (
+          "rel" in props ? <link key={key} {...props} /> : <meta key={key} {...props} />
+        ))}
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{
+            __html: JSON.stringify({
+              "@context": "https://schema.org",
+              "@type": "CollectionPage",
+              "name": "Colaberry AI Updates",
+              "description": "Announcements, releases, and curated AI ecosystem signals in one enterprise feed.",
+              "url": `${process.env.NEXT_PUBLIC_SITE_URL || "https://colaberry.ai"}/updates`,
+            }),
+          }}
+        />
       </Head>
       <EnterprisePageHero
         kicker="Modular layer"
@@ -119,19 +169,46 @@ export default function Updates({ ratings, briefing, fetchError }: UpdatesProps)
         ]}
       />
 
-      <section className="mt-6 grid gap-3 sm:grid-cols-2">
-        {updateHighlights.map((item) => (
-          <PremiumMediaCard
-            key={item.title}
-            href={item.href}
-            title={item.title}
-            description={item.description}
-            image={item.image}
-            meta={item.meta}
-            external={item.external}
-            size="sm"
-          />
+      {/* Category filter tabs */}
+      <nav className="mt-6 flex flex-wrap gap-2" aria-label="Update categories">
+        {CATEGORY_TABS.map((tab) => (
+          <button
+            key={tab}
+            onClick={() => setActiveCategory(tab)}
+            className={`rounded-full border px-4 py-1.5 text-xs font-semibold transition-colors ${
+              activeCategory === tab
+                ? "border-brand-deep bg-brand-deep text-white dark:border-brand-deep dark:bg-brand-deep"
+                : "border-slate-200/80 bg-white text-slate-700 hover:border-slate-300 hover:bg-slate-50 dark:border-slate-600 dark:bg-[var(--surface-soft)] dark:text-slate-200 dark:hover:border-slate-500 dark:hover:bg-slate-600"
+            }`}
+          >
+            {tab}
+          </button>
         ))}
+      </nav>
+
+      <section className="mt-4 grid gap-3 sm:grid-cols-2">
+        {filteredHighlights.length > 0 ? (
+          filteredHighlights.map((item) => (
+            <PremiumMediaCard
+              key={item.title}
+              href={item.href}
+              title={item.title}
+              description={item.description}
+              image={item.image}
+              meta={item.meta}
+              external={item.external}
+              size="sm"
+            />
+          ))
+        ) : (
+          <div className="col-span-full">
+            <StatePanel
+              variant="empty"
+              title="No items in this category"
+              description="Switch to another category to see update highlights."
+            />
+          </div>
+        )}
       </section>
 
       {fetchError && (
@@ -182,40 +259,52 @@ export default function Updates({ ratings, briefing, fetchError }: UpdatesProps)
               />
             </div>
           ) : (
-            <ul className="mt-5 grid gap-4">
-              {ratings.slice(0, 8).map((item, index) => (
-                <li
-                  key={`${item.title}-${item.date || index}`}
-                  className="rounded-2xl border border-slate-200/80 bg-white p-4 shadow-sm"
-                >
-                  <div className="flex flex-wrap items-center justify-between gap-3">
-                    <span className="text-xs font-semibold text-slate-500">
-                      {item.date || "Latest rating"}
-                    </span>
-                    {item.rating ? (
-                      <span
-                        className={`rounded-full px-2.5 py-1 text-xs font-semibold uppercase ${ratingTone(
-                          item.rating
-                        )}`}
-                      >
-                        {item.rating}
-                      </span>
-                    ) : null}
-                  </div>
-                  <a
-                    href={item.url || "https://gaiinsights.com/ratings"}
-                    target="_blank"
-                    rel="noreferrer"
-                    className="mt-2 block text-sm font-semibold text-brand-deep hover:text-brand-blue"
+            <>
+              <ul className="mt-5 grid gap-4">
+                {visibleRatings.map((item, index) => (
+                  <li
+                    key={`${item.title}-${item.date || index}`}
+                    className={`card-elevated overflow-hidden rounded-xl p-4 ${ratingBorderLeft(item.rating)}`}
                   >
-                    {item.title}
-                  </a>
-                  {item.rationale ? (
-                    <p className="mt-2 text-xs text-slate-600 line-clamp-3">{item.rationale}</p>
-                  ) : null}
-                </li>
-              ))}
-            </ul>
+                    <div className="flex flex-wrap items-center justify-between gap-3">
+                      <span className="text-xs font-semibold text-slate-500">
+                        {item.date || "Latest rating"}
+                      </span>
+                      {item.rating ? (
+                        <span
+                          className={`rounded-md px-2.5 py-1 text-xs font-semibold uppercase ${ratingTone(
+                            item.rating
+                          )}`}
+                        >
+                          {item.rating}
+                        </span>
+                      ) : null}
+                    </div>
+                    <a
+                      href={item.url || "https://gaiinsights.com/ratings"}
+                      target="_blank"
+                      rel="noreferrer"
+                      className="mt-2 block text-sm font-semibold text-[var(--pivot-fill)] hover:text-[var(--pivot-fill)] dark:text-[var(--brand-purple-light)] dark:hover:text-[var(--text-primary)]"
+                    >
+                      {item.title}
+                    </a>
+                    {item.rationale ? (
+                      <p className="mt-2 text-xs text-slate-600 line-clamp-3">{item.rationale}</p>
+                    ) : null}
+                  </li>
+                ))}
+              </ul>
+              {ratings.length > COLLAPSED_RATINGS_COUNT && (
+                <button
+                  onClick={() => setShowAllRatings((prev) => !prev)}
+                  className="btn btn-ghost mt-4 w-full text-center text-sm"
+                >
+                  {showAllRatings
+                    ? `Show fewer`
+                    : `Show all ${ratings.length} ratings`}
+                </button>
+              )}
+            </>
           )}
         </section>
 
@@ -254,7 +343,7 @@ export default function Updates({ ratings, briefing, fetchError }: UpdatesProps)
               {briefing.items.slice(0, 12).map((item, index) => (
                 <li
                   key={`${item.title}-${index}`}
-                  className="flex items-start gap-3 rounded-xl border border-slate-200/80 bg-white px-3 py-2"
+                  className="card-elevated flex items-start gap-3 px-3 py-2"
                 >
                   <span className="mt-0.5 text-xs font-semibold text-slate-400">
                     {String(index + 1).padStart(2, "0")}
@@ -263,7 +352,7 @@ export default function Updates({ ratings, briefing, fetchError }: UpdatesProps)
                     href={item.url}
                     target="_blank"
                     rel="noreferrer"
-                    className="text-sm font-semibold text-brand-deep hover:text-brand-blue"
+                    className="text-sm font-semibold text-[var(--pivot-fill)] hover:text-[var(--pivot-fill)] dark:text-[var(--brand-purple-light)] dark:hover:text-[var(--text-primary)]"
                   >
                     {item.title}
                   </a>
@@ -305,10 +394,25 @@ export default function Updates({ ratings, briefing, fetchError }: UpdatesProps)
   );
 }
 
+function ratingBorderLeft(rating?: string) {
+  if (!rating) return "border-l-4 border-l-slate-200";
+  const normalized = rating.toLowerCase();
+  if (normalized.includes("essential")) {
+    return "border-l-4 border-l-emerald-500";
+  }
+  if (normalized.includes("important")) {
+    return "border-l-4 border-l-amber-500";
+  }
+  if (normalized.includes("watch") || normalized.includes("optional")) {
+    return "border-l-4 border-l-slate-400";
+  }
+  return "border-l-4 border-l-slate-300";
+}
+
 function ratingTone(rating: string) {
   const normalized = rating.toLowerCase();
   if (normalized.includes("essential")) {
-    return "bg-emerald-50 text-emerald-700 ring-1 ring-inset ring-emerald-200 dark:bg-emerald-900/35 dark:text-emerald-100 dark:ring-emerald-500/35";
+    return "bg-[var(--trusted-surface)] text-[var(--trusted-text)] ring-1 ring-inset ring-[var(--trusted-stroke)] dark:bg-[var(--trusted-surface)] dark:text-[var(--trusted-text)] dark:ring-[var(--trusted-stroke)]";
   }
   if (normalized.includes("important")) {
     return "bg-amber-50 text-amber-700 ring-1 ring-inset ring-amber-200 dark:bg-amber-900/30 dark:text-amber-100 dark:ring-amber-500/35";

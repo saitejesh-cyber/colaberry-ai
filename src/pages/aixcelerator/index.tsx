@@ -1,12 +1,15 @@
 import Layout from "../../components/Layout";
 import Link from "next/link";
+import Head from "next/head";
 import type { GetStaticProps } from "next";
 import SectionHeader from "../../components/SectionHeader";
 import MediaPanel from "../../components/MediaPanel";
+import EnterprisePageHero from "../../components/EnterprisePageHero";
 import StatePanel from "../../components/StatePanel";
 import { coreCapabilities, modularLayers } from "../../data/platformCapabilities";
 import { fetchUseCases, type UseCase } from "../../lib/cms";
 import { heroImage } from "../../lib/media";
+import { seoTags, canonicalUrl as buildCanonical, type SeoMeta } from "../../lib/seo";
 
 type AIXceleratorProps = {
   latestUseCases: UseCase[];
@@ -32,8 +35,29 @@ export const getStaticProps: GetStaticProps<AIXceleratorProps> = async () => {
 };
 
 export default function AIXcelerator({ latestUseCases, fetchError }: AIXceleratorProps) {
+  const seoMeta: SeoMeta = {
+    title: "AIXcelerator Platform | Colaberry AI - Enterprise Agent Delivery",
+    description: "AIXcelerator is the core platform for governed AI agent delivery. Discover agents, MCP servers, skills, and use cases in one enterprise operating surface.",
+    canonical: buildCanonical("/aixcelerator"),
+  };
+
   return (
     <Layout>
+      <Head>
+        <title>{seoMeta.title}</title>
+        {seoTags(seoMeta).map(({ key, ...props }) => (
+          "rel" in props ? <link key={key} {...props} /> : <meta key={key} {...props} />
+        ))}
+        <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify({
+          "@context": "https://schema.org",
+          "@type": "WebApplication",
+          "name": "AIXcelerator",
+          "applicationCategory": "Enterprise AI Platform",
+          "description": "Core platform for governed AI agent delivery, observability, and evaluation.",
+          "url": buildCanonical("/aixcelerator"),
+          "provider": { "@type": "Organization", "name": "Colaberry AI" },
+        }) }} />
+      </Head>
       {fetchError ? (
         <div className="mb-6">
           <StatePanel
@@ -44,31 +68,26 @@ export default function AIXcelerator({ latestUseCases, fetchError }: AIXcelerato
         </div>
       ) : null}
 
-      <div className="grid gap-6 lg:grid-cols-[1.15fr_0.85fr] lg:items-start">
-        <div className="flex flex-col gap-3">
-          <div className="chip chip-brand inline-flex w-fit items-center gap-2 rounded-full border border-brand-blue/20 bg-white py-1 pl-2 pr-3 text-xs text-brand-deep">
-            <span className="h-1.5 w-1.5 shrink-0 rounded-full bg-brand-aqua" />
-            Core platform + modular layers
-          </div>
-          <SectionHeader
-            as="h1"
-            size="xl"
-            title="AIXcelerator"
-            description="AIXcelerator is the core platform for governed agent delivery. It helps teams move from opportunity and workflow definition to production execution-then close the loop with observability and evaluation. Modular capability layers can be introduced incrementally without disrupting the core surface."
-          />
-        </div>
-        <MediaPanel
-          kicker="Platform preview"
-          title="Governed delivery surface"
-          description="A clean, visual surface for readiness, workflow alignment, and modular layers."
-          image={heroImage("hero-platform-cinematic.webp")}
-          alt="Governed delivery platform preview"
-          aspect="wide"
-          fit="cover"
-        />
-      </div>
+      <EnterprisePageHero
+        kicker="Core platform + modular layers"
+        title="AIXcelerator"
+        description="The core platform for governed agent delivery. Move from opportunity and workflow definition to production execution — then close the loop with observability and evaluation."
+        image={heroImage("hero-platform-cinematic.webp")}
+        alt="AIXcelerator platform overview"
+        imageKicker="Platform"
+        imageTitle="Governed delivery surface"
+        imageDescription="From opportunity definition to production execution and evaluation."
+        chips={["Agent delivery", "MCP patterns", "Skills", "Use cases", "Observability"]}
+        primaryAction={{ label: "Explore agents", href: "/aixcelerator/agents" }}
+        secondaryAction={{ label: "Book a demo", href: "/request-demo", variant: "secondary" }}
+        metrics={[
+          { label: "Catalog surfaces", value: "5", note: "Agents, MCP, skills, use cases, research." },
+          { label: "Governance", value: "Built-in", note: "Ownership, approval, and lifecycle tracking." },
+          { label: "Distribution", value: "Global", note: "Shared framework, domain-adapted execution." },
+        ]}
+      />
 
-      <section className="mt-8">
+      <section className="mt-10">
         <div className="flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
           <SectionHeader
             kicker="Core"
@@ -76,7 +95,7 @@ export default function AIXcelerator({ latestUseCases, fetchError }: AIXcelerato
             description="The trusted foundation for agent delivery, governance, and observability."
             size="md"
           />
-          <div className="hidden rounded-full bg-slate-100 px-2.5 py-1 text-xs font-medium text-slate-700 sm:inline-flex">
+          <div className="hidden rounded-md bg-slate-100 px-2.5 py-1 text-xs font-medium text-slate-700 sm:inline-flex">
             Stable foundation
           </div>
         </div>
@@ -105,7 +124,7 @@ export default function AIXcelerator({ latestUseCases, fetchError }: AIXcelerato
           />
           <Link
             href="/resources"
-            className="btn btn-primary mt-3 sm:mt-0"
+            className="btn btn-cta mt-3 sm:mt-0"
           >
             Explore resource layers
           </Link>
@@ -132,7 +151,7 @@ export default function AIXcelerator({ latestUseCases, fetchError }: AIXcelerato
             description="Fresh deployment patterns teams can review before moving into full execution design."
             size="md"
           />
-          <Link href="/use-cases" className="btn btn-primary mt-3 sm:mt-0">
+          <Link href="/use-cases" className="btn btn-cta mt-3 sm:mt-0">
             Open use case catalog
           </Link>
         </div>
@@ -155,15 +174,15 @@ export default function AIXcelerator({ latestUseCases, fetchError }: AIXcelerato
               >
                 <div className="flex items-start justify-between gap-3">
                   <div className="line-clamp-2 text-sm font-semibold text-slate-900">{item.title}</div>
-                  <span className="text-slate-400 transition-transform group-hover:translate-x-0.5 group-hover:text-brand-deep">
+                  <span className="text-slate-400 transition-transform group-hover:translate-x-0.5 group-hover:text-slate-600 dark:group-hover:text-slate-300">
                     →
                   </span>
                 </div>
                 <div className="mt-2 flex flex-wrap gap-2">
-                  <span className="chip chip-brand rounded-full px-2.5 py-1 text-[11px] font-semibold">
+                  <span className="chip chip-neutral rounded-md px-2.5 py-1 text-label font-semibold">
                     {item.industry || "General"}
                   </span>
-                  <span className="chip chip-muted rounded-full px-2.5 py-1 text-[11px] font-semibold">
+                  <span className="chip chip-neutral rounded-md px-2.5 py-1 text-label font-semibold">
                     {(item.status || "live").toUpperCase()}
                   </span>
                 </div>
@@ -225,24 +244,24 @@ function NavCard({
   return (
     <Link
       href={href}
-      className="surface-panel surface-hover surface-interactive group border border-slate-200/80 bg-white/90 p-5"
+      className="card-feature group p-6"
       aria-label={`Open ${title}`}
     >
       <div className="flex items-start justify-between gap-4">
         <div>
           <div className="flex items-center gap-2">
-            <div className="text-sm font-semibold text-slate-900">{title}</div>
+            <div className="text-caption font-semibold text-slate-900 dark:text-slate-100">{title}</div>
             {badge ? (
-              <span className="rounded-full bg-slate-100 px-2 py-0.5 text-xs font-medium text-slate-700">
+              <span className="rounded-md bg-slate-100 px-2 py-0.5 text-label font-semibold text-slate-600 dark:bg-slate-800 dark:text-slate-300">
                 {badge}
               </span>
             ) : null}
           </div>
-          <div className="mt-1 text-sm text-slate-600">{description}</div>
+          <div className="mt-1.5 text-sm leading-relaxed text-slate-600 dark:text-slate-400">{description}</div>
         </div>
-        <div className="mt-0.5 text-slate-400 transition-transform group-hover:translate-x-0.5 group-hover:text-brand-deep">
-          <span aria-hidden="true">→</span>
-        </div>
+        <svg aria-hidden="true" viewBox="0 0 16 16" className="mt-0.5 h-4 w-4 shrink-0 text-slate-400 transition-transform group-hover:translate-x-0.5 group-hover:text-slate-600 dark:group-hover:text-slate-300">
+          <path d="M6.5 3.5 11 8l-4.5 4.5" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" fill="none" />
+        </svg>
       </div>
     </Link>
   );
@@ -257,15 +276,17 @@ function RoadmapItem({
   status: string;
   description: string;
 }) {
+  const isLive = status.toLowerCase().includes("live");
   return (
-    <div className="surface-panel border border-slate-200/70 p-5">
+    <div className="card-elevated p-5">
       <div className="flex items-start justify-between gap-3">
-        <div className="text-base font-semibold text-slate-900">{title}</div>
-        <span className="rounded-full bg-slate-100 px-2.5 py-1 text-xs font-semibold uppercase tracking-wide text-slate-700">
+        <div className="text-caption font-semibold text-slate-900 dark:text-slate-100">{title}</div>
+        <span className={`flex items-center gap-1.5 rounded-md px-2.5 py-1 text-label font-semibold uppercase tracking-[0.1em] ${isLive ? "bg-[var(--trusted-surface)] text-[var(--trusted-text)] dark:bg-[var(--trusted-surface)] dark:text-[var(--trusted-text)]" : "bg-slate-100 text-slate-600 dark:bg-slate-800 dark:text-slate-300"}`}>
+          {isLive ? <span className="h-1.5 w-1.5 rounded-full" style={{ background: "var(--trusted-fill)" }} /> : null}
           {status}
         </span>
       </div>
-      <div className="mt-2 text-sm text-slate-600">{description}</div>
+      <div className="mt-2 text-sm leading-relaxed text-slate-600 dark:text-slate-400">{description}</div>
     </div>
   );
 }

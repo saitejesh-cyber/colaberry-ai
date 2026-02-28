@@ -1,0 +1,68 @@
+
+<svg width="2400" height="1350" viewBox="0 0 2400 1350" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Colaberry enterprise hero background">
+  <defs>
+    <linearGradient id="bg-timeline-feed" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#070B18"/>
+      <stop offset="0.54" stop-color="#131F43"/>
+      <stop offset="1" stop-color="#1A3860"/>
+    </linearGradient>
+    <radialGradient id="orb-a-timeline-feed" cx="52%" cy="42%" r="56%">
+      <stop offset="0" stop-color="#735DE2" stop-opacity="0.48"/>
+      <stop offset="1" stop-color="#735DE2" stop-opacity="0"/>
+    </radialGradient>
+    <radialGradient id="orb-b-timeline-feed" cx="56%" cy="54%" r="56%">
+      <stop offset="0" stop-color="#2EC9E4" stop-opacity="0.44"/>
+      <stop offset="1" stop-color="#2EC9E4" stop-opacity="0"/>
+    </radialGradient>
+    <linearGradient id="flow-timeline-feed" x1="1380" y1="1180" x2="2310" y2="420" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#C8BDFF" stop-opacity="0.88"/>
+      <stop offset="0.56" stop-color="#93EDFF" stop-opacity="0.84"/>
+      <stop offset="1" stop-color="#C8BDFF" stop-opacity="0.62"/>
+    </linearGradient>
+    <linearGradient id="left-scrim-timeline-feed" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0" stop-color="#030712" stop-opacity="0.94"/>
+      <stop offset="0.58" stop-color="#030712" stop-opacity="0.84"/>
+      <stop offset="1" stop-color="#030712" stop-opacity="0"/>
+    </linearGradient>
+    <pattern id="grid-timeline-feed" width="92" height="92" patternUnits="userSpaceOnUse">
+      <path d="M92 0H0V92" stroke="#A9B7D0" stroke-opacity="0.085" stroke-width="1"/>
+    </pattern>
+    <filter id="soft-blur-timeline-feed" x="-35%" y="-35%" width="170%" height="170%">
+      <feGaussianBlur stdDeviation="72"/>
+    </filter>
+  </defs>
+
+  <rect width="100%" height="100%" fill="url(#bg-timeline-feed)"/>
+  <rect width="100%" height="100%" fill="url(#grid-timeline-feed)"/>
+  <ellipse cx="1880" cy="360" rx="740" ry="450" fill="url(#orb-a-timeline-feed)" filter="url(#soft-blur-timeline-feed)"/>
+  <ellipse cx="1800" cy="980" rx="980" ry="560" fill="url(#orb-b-timeline-feed)" filter="url(#soft-blur-timeline-feed)"/>
+
+  
+        <g opacity="0.96">
+          <rect x="1400" y="300" width="820" height="740" rx="20" fill="rgba(10,22,45,0.72)" stroke="#C8BDFF" stroke-opacity="0.34"/>
+        </g>
+        <g fill="none" stroke="#93EDFF" stroke-width="2.4" stroke-linecap="round">
+          <path d="M1530 430H2080"/>
+          <path d="M1530 580H2080"/>
+          <path d="M1530 730H2080"/>
+          <path d="M1530 880H2080"/>
+        </g>
+        <g fill="#93EDFF">
+          <circle cx="1480" cy="430" r="12"/>
+          <circle cx="1480" cy="580" r="12"/>
+          <circle cx="1480" cy="730" r="12"/>
+          <circle cx="1480" cy="880" r="12"/>
+        </g>
+      
+
+  <g fill="none" stroke="url(#flow-timeline-feed)" stroke-linecap="round">
+    <path d="M1380 1100C1540 980 1680 1020 1830 900C1960 796 2090 840 2260 730" stroke-width="8"/>
+    <path d="M1380 1168C1540 1064 1690 1088 1840 990C1970 904 2100 948 2260 860" stroke-width="3.2" opacity="0.8"/>
+  </g>
+  <g fill="#EAF7FF" opacity="0.94">
+    <circle cx="1380" cy="1100" r="6"/>
+    <circle cx="1830" cy="900" r="6"/>
+    <circle cx="2260" cy="730" r="6"/>
+  </g>
+  <rect width="1300" height="1350" fill="url(#left-scrim-timeline-feed)"/>
+</svg>

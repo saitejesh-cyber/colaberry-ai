@@ -1,4 +1,5 @@
 import Image from "next/image";
+import { useState } from "react";
 
 type MediaPanelProps = {
   kicker?: string;
@@ -27,16 +28,17 @@ export default function MediaPanel({
   fit = "contain",
   className,
 }: MediaPanelProps) {
+  const [imgError, setImgError] = useState(false);
   const aspectClass = ASPECT_CLASSES[aspect];
   const fitClass = fit === "contain" ? "object-contain p-3 sm:p-4" : "object-cover";
 
   return (
     <div className={`surface-panel group relative overflow-hidden p-5 sm:p-6 ${className ?? ""}`.trim()}>
-      <div className="pointer-events-none absolute -right-10 -top-10 h-40 w-40 rounded-full bg-sky-400/20 blur-3xl" />
+      <div className="pointer-events-none absolute -right-10 -top-10 h-40 w-40 rounded-full bg-brand-teal-300/20 blur-3xl" />
       <div className="flex items-start justify-between gap-3">
         <div>
           {kicker ? (
-            <div className="inline-flex items-center gap-2 rounded-full border border-brand-blue/20 bg-white/90 px-2.5 py-1 text-xs font-semibold uppercase tracking-[0.16em] text-brand-deep dark:border-brand-teal/30 dark:text-brand-ice">
+            <div className="inline-flex items-center gap-2 rounded-md border border-brand-purple-600/20 bg-white/90 px-2.5 py-1 text-xs font-semibold uppercase tracking-[0.16em] text-brand-deep dark:border-brand-purple-400/30 dark:text-brand-teal-100">
               <span className="h-1.5 w-1.5 rounded-full bg-brand-aqua" />
               {kicker}
             </div>
@@ -44,22 +46,33 @@ export default function MediaPanel({
           <div className="mt-2 text-lg font-semibold leading-tight text-slate-900 dark:text-slate-100">{title}</div>
           {description ? <div className="mt-1.5 text-sm leading-relaxed text-slate-600 dark:text-slate-300">{description}</div> : null}
         </div>
-        <span className="rounded-full border border-slate-200/80 bg-white/90 px-2.5 py-1 text-xs font-semibold uppercase tracking-[0.14em] text-slate-600 dark:border-slate-700/80 dark:text-slate-300">
+        <span className="rounded-md border border-slate-200/80 bg-white/90 px-2.5 py-1 text-xs font-semibold uppercase tracking-[0.14em] text-slate-600 dark:border-slate-700/80 dark:text-slate-300">
           Preview
         </span>
       </div>
-      <div className="relative mt-4 overflow-hidden rounded-2xl border border-slate-200/80 bg-white/80 shadow-sm dark:border-slate-700/80">
+      <div className="relative mt-4 overflow-hidden rounded-lg border border-slate-200/80 bg-white/80 shadow-sm dark:border-slate-700/80">
         <div className={`relative ${aspectClass}`}>
-          <Image
-            src={image}
-            alt={alt}
-            fill
-            sizes="(min-width: 1920px) 820px, (min-width: 1536px) 720px, (min-width: 1280px) 640px, (min-width: 1024px) 520px, 90vw"
-            quality={90}
-            className={`${fitClass} transition duration-700 ease-out group-hover:scale-[1.03]`}
-          />
+          {imgError ? (
+            <div className="absolute inset-0 flex items-center justify-center bg-slate-100 dark:bg-[#1F2937]">
+              <svg viewBox="0 0 24 24" className="h-10 w-10 text-slate-300 dark:text-slate-600" fill="none" aria-hidden="true">
+                <rect x="3" y="3" width="18" height="18" rx="3" stroke="currentColor" strokeWidth="1.5" />
+                <circle cx="8.5" cy="8.5" r="1.5" fill="currentColor" />
+                <path d="m6 16 3.5-4.5 2.5 3 3.5-4.5L21 16" stroke="currentColor" strokeWidth="1.5" strokeLinejoin="round" />
+              </svg>
+            </div>
+          ) : (
+            <Image
+              src={image}
+              alt={alt}
+              fill
+              sizes="(min-width: 1920px) 820px, (min-width: 1536px) 720px, (min-width: 1280px) 640px, (min-width: 1024px) 520px, 90vw"
+              quality={90}
+              className={`${fitClass} transition duration-700 ease-out group-hover:scale-[1.03]`}
+              onError={() => setImgError(true)}
+            />
+          )}
           <div className="pointer-events-none absolute inset-x-0 bottom-0 h-20 bg-gradient-to-t from-slate-950/35 via-slate-900/8 to-transparent" />
-          <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_80%_18%,rgba(56,189,248,0.2),transparent_48%)]" />
+          <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_80%_18%,rgba(0,142,168,0.18),transparent_48%)]" />
         </div>
       </div>
     </div>

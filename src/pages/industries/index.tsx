@@ -1,10 +1,54 @@
+import type { GetStaticProps } from "next";
 import Layout from "../../components/Layout";
+import Head from "next/head";
 import PremiumMediaCard from "../../components/PremiumMediaCard";
 import EnterpriseCtaBand from "../../components/EnterpriseCtaBand";
 import EnterprisePageHero from "../../components/EnterprisePageHero";
 import { heroImage } from "../../lib/media";
+import { seoTags, canonicalUrl as buildCanonical, type SeoMeta } from "../../lib/seo";
+import { fetchAgents, fetchUseCases } from "../../lib/cms";
 
-export default function IndustriesIndex() {
+type IndustryCount = { agents: number; useCases: number };
+type IndustriesProps = { industryCounts: Record<string, IndustryCount> };
+
+export const getStaticProps: GetStaticProps<IndustriesProps> = async () => {
+  const industryCounts: Record<string, IndustryCount> = {};
+  try {
+    const [agentsResult, useCasesResult] = await Promise.allSettled([
+      fetchAgents("public"),
+      fetchUseCases("public"),
+    ]);
+    const agents = agentsResult.status === "fulfilled" ? agentsResult.value : [];
+    const useCases = useCasesResult.status === "fulfilled" ? useCasesResult.value : [];
+    const toSlug = (ind?: string | null) => {
+      if (!ind) return "";
+      return ind.toLowerCase().replace(/\s+/g, "-").replace(/&/g, "and");
+    };
+    for (const agent of agents) {
+      const slug = toSlug(agent.industry);
+      if (slug) {
+        if (!industryCounts[slug]) industryCounts[slug] = { agents: 0, useCases: 0 };
+        industryCounts[slug].agents++;
+      }
+    }
+    for (const uc of useCases) {
+      const slug = toSlug(uc.industry);
+      if (slug) {
+        if (!industryCounts[slug]) industryCounts[slug] = { agents: 0, useCases: 0 };
+        industryCounts[slug].useCases++;
+      }
+    }
+  } catch {}
+  return { props: { industryCounts }, revalidate: 600 };
+};
+
+export default function IndustriesIndex({ industryCounts }: IndustriesProps) {
+  const seoMeta: SeoMeta = {
+    title: "Industries | Colaberry AI",
+    description: "Industry-specific AI workspaces for agents, MCP patterns, use cases, and measurable outcomes.",
+    canonical: buildCanonical("/industries"),
+  };
+
   const industries = [
     { name: "Agriculture", slug: "agriculture", image: heroImage("hero-agents-cinematic.webp") },
     { name: "Energy", slug: "energy", image: heroImage("hero-updates-cinematic.webp") },
@@ -48,6 +92,25 @@ export default function IndustriesIndex() {
 
   return (
     <Layout>
+      <Head>
+        <title>{seoMeta.title}</title>
+        {seoTags(seoMeta).map(({ key, ...props }) => (
+          "rel" in props ? <link key={key} {...props} /> : <meta key={key} {...props} />
+        ))}
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{
+            __html: JSON.stringify({
+              "@context": "https://schema.org",
+              "@type": "CollectionPage",
+              name: "Colaberry AI Industries",
+              description:
+                "Industry-specific AI workspaces for agents, MCP patterns, use cases, and measurable outcomes.",
+              url: `${process.env.NEXT_PUBLIC_SITE_URL || "https://colaberry.ai"}/industries`,
+            }),
+          }}
+        />
+      </Head>
       <EnterprisePageHero
         kicker="Industry expertise"
         title="Industries"
@@ -87,7 +150,14 @@ export default function IndustriesIndex() {
             key={item.slug}
             href={`/industries/${item.slug}`}
             title={item.name}
-            description="Case studies, outcomes, and context."
+            description={(() => {
+              const counts = industryCounts[item.slug];
+              if (!counts || (counts.agents === 0 && counts.useCases === 0)) return "Case studies, outcomes, and context.";
+              const parts: string[] = [];
+              if (counts.agents > 0) parts.push(`${counts.agents} agent${counts.agents === 1 ? "" : "s"}`);
+              if (counts.useCases > 0) parts.push(`${counts.useCases} use case${counts.useCases === 1 ? "" : "s"}`);
+              return parts.join(" \u00b7 ") + " in the catalog.";
+            })()}
             meta="Industry"
             image={item.image}
             size="sm"

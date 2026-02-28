@@ -1,7 +1,8 @@
 import AgentCard from "../../components/AgentCard";
+import CatalogSearchBox from "../../components/CatalogSearchBox";
 import Layout from "../../components/Layout";
 import SectionHeader from "../../components/SectionHeader";
-import MediaPanel from "../../components/MediaPanel";
+import EnterprisePageHero from "../../components/EnterprisePageHero";
 import StatePanel from "../../components/StatePanel";
 import { useEffect, useMemo, useRef, useState } from "react";
 import type { GetStaticProps } from "next";
@@ -10,6 +11,7 @@ import { heroImage } from "../../lib/media";
 import { useRouter } from "next/router";
 import Head from "next/head";
 import Link from "next/link";
+import { seoTags, canonicalUrl as buildCanonical, type SeoMeta } from "../../lib/seo";
 
 type AgentsPageProps = {
   agents: Agent[];
@@ -45,24 +47,6 @@ export default function Agents({ agents, allowPrivate, fetchError }: AgentsPageP
     allowPrivate ? "all" : "public"
   );
   const [sortMode, setSortMode] = useState<AgentSortMode>("trending");
-  const agentHighlights = [
-    {
-      title: "Ownership and lifecycle",
-      description: "Track owners, approval state, and lifecycle stage for every agent.",
-    },
-    {
-      title: "Readiness signals",
-      description: "Surface evaluation status, reliability notes, and rollout readiness.",
-    },
-    {
-      title: "Visibility control",
-      description: "Segment public and private listings with governance rules.",
-    },
-    {
-      title: "Industry alignment",
-      description: "Map agents to workflows and industry workspaces.",
-    },
-  ];
   const agentSignals = ["Owner mapped", "Eval ready", "Private-aware", "LLM metadata"];
   const [search, setSearch] = useState<string | null>(null);
   const [industryFilter, setIndustryFilter] = useState("all");
@@ -72,6 +56,7 @@ export default function Agents({ agents, allowPrivate, fetchError }: AgentsPageP
   const pageSize = 24;
   const [visibleCount, setVisibleCount] = useState(pageSize);
   const sentinelRef = useRef<HTMLDivElement | null>(null);
+  const gridRef = useRef<HTMLDivElement>(null);
   const querySearch = useMemo(() => {
     const raw = Array.isArray(router.query.q) ? router.query.q[0] : router.query.q;
     return typeof raw === "string" ? raw : "";
@@ -110,10 +95,15 @@ export default function Agents({ agents, allowPrivate, fetchError }: AgentsPageP
     return acc;
   }, {});
   const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://colaberry.ai";
-  const canonicalUrl = `${siteUrl}/aixcelerator/agents`;
   const metaTitle = "AI Agents Catalog | Colaberry AI";
   const metaDescription =
     "Explore a governed marketplace of AI agents with ownership, lifecycle status, and LLM-ready metadata for enterprise discovery.";
+  const seoMeta: SeoMeta = {
+    title: metaTitle,
+    description: metaDescription,
+    canonical: buildCanonical("/aixcelerator/agents"),
+  };
+  const canonicalUrl = seoMeta.canonical!;
   const jsonLd = {
     "@context": "https://schema.org",
     "@type": "ItemList",
@@ -178,16 +168,26 @@ export default function Agents({ agents, allowPrivate, fetchError }: AgentsPageP
     return () => observer.disconnect();
   }, [sortedAgents.length, hasMore, pageSize]);
 
+  useEffect(() => {
+    const el = gridRef.current;
+    if (!el) return;
+    const obs = new IntersectionObserver(([entry]) => {
+      if (entry.isIntersecting) {
+        el.classList.add("revealed");
+        obs.disconnect();
+      }
+    }, { threshold: 0.1 });
+    obs.observe(el);
+    return () => obs.disconnect();
+  }, [visibleAgents]);
+
   return (
     <Layout>
       <Head>
-        <title>{metaTitle}</title>
-        <meta name="description" content={metaDescription} />
-        <meta property="og:title" content={metaTitle} />
-        <meta property="og:description" content={metaDescription} />
-        <meta property="og:type" content="website" />
-        <meta property="og:url" content={canonicalUrl} />
-        <link rel="canonical" href={canonicalUrl} />
+        <title>{seoMeta.title}</title>
+        {seoTags(seoMeta).map(({ key, ...props }) => (
+          "rel" in props ? <link key={key} {...props} /> : <meta key={key} {...props} />
+        ))}
         <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
       </Head>
 
@@ -210,75 +210,26 @@ export default function Agents({ agents, allowPrivate, fetchError }: AgentsPageP
         </div>
       )}
 
-      <div className="grid gap-6 lg:grid-cols-[1.2fr_0.8fr] lg:items-start">
-        <div className="flex flex-col gap-3">
-          <SectionHeader
-            as="h1"
-            size="xl"
-            kicker="Agents catalog"
-            title="AI Agents"
-            description="A governed AI marketplace of enterprise agents and assistants-aligned to teams, workflows, and industry context, with public and private listings."
-          />
-          <div className="mt-4 grid gap-3 sm:grid-cols-2">
-            {agentHighlights.map((item) => (
-              <div
-                key={item.title}
-                className="rounded-2xl border border-slate-200/80 bg-white/90 p-4 shadow-sm"
-              >
-                <div className="text-sm font-semibold text-slate-900">{item.title}</div>
-                <div className="mt-1 text-xs text-slate-600">{item.description}</div>
-              </div>
-            ))}
-          </div>
-          <div className="mt-3 flex flex-wrap gap-2 text-xs text-slate-600">
-            {agentSignals.map((signal) => (
-              <span
-                key={signal}
-                className="chip rounded-full border border-slate-200/80 bg-white px-3 py-1 font-semibold"
-              >
-                {signal}
-              </span>
-            ))}
-          </div>
-          <div className="mt-4 rounded-2xl border border-slate-200/80 bg-white/90 p-4 shadow-sm">
-            <div className="text-xs font-semibold uppercase tracking-[0.2em] text-slate-600 dark:text-slate-300">
-              Marketplace intent
-            </div>
-            <div className="mt-2 text-sm font-semibold text-slate-900">
-              SEO + LLM-ready discovery for trusted agents
-            </div>
-            <p className="mt-1 text-xs text-slate-600">
-              Each listing is structured with ownership, lifecycle state, and industry tags so
-              humans and LLMs can discover, compare, and trust deployments.
-            </p>
-            <div className="mt-3 flex flex-wrap gap-2">
-              <Link
-                href="/resources/case-studies"
-                className="btn btn-secondary btn-compact"
-              >
-                Explore case studies
-              </Link>
-              <Link
-                href="/resources/books#trust-before-intelligence"
-                className="btn btn-ghost btn-compact"
-              >
-                Read Trust Before Intelligence
-              </Link>
-            </div>
-          </div>
-        </div>
-        <MediaPanel
-          kicker="Catalog preview"
-          title="Agent coverage at a glance"
-          description="Quickly see ownership, visibility, and readiness status."
-          image={heroImage("hero-agents-cinematic.webp")}
-          alt="Operators reviewing agent coverage"
-          aspect="wide"
-          fit="cover"
-        />
-      </div>
+      <EnterprisePageHero
+        kicker="Agents catalog"
+        title="AI Agents"
+        description="A governed marketplace of enterprise agents aligned to teams, workflows, and industry context — with public and private listings."
+        image={heroImage("hero-agents-cinematic.webp")}
+        alt="AI Agents catalog"
+        imageKicker="Catalog"
+        imageTitle="Agent directory"
+        imageDescription="Compare agent ownership, readiness, and deployment context."
+        chips={agentSignals}
+        primaryAction={{ label: "Browse agents", href: "#catalog" }}
+        secondaryAction={{ label: "Book a demo", href: "/request-demo", variant: "secondary" }}
+        metrics={[
+          { label: "Total agents", value: `${agents.length}`, note: "Public and governed listings." },
+          { label: "Governance", value: "Ownership-tracked", note: "Lifecycle and approval state." },
+          { label: "Coverage", value: "Cross-industry", note: "Agriculture to fintech." },
+        ]}
+      />
 
-      <section className="surface-panel mt-6 p-5">
+      <section className="surface-panel mt-6 p-6">
         <SectionHeader
           kicker="Catalog snapshot"
           title="Coverage and readiness"
@@ -325,7 +276,7 @@ export default function Agents({ agents, allowPrivate, fetchError }: AgentsPageP
         </div>
       </section>
 
-      <section className="surface-panel mt-8 p-6">
+      <section className="surface-panel mt-6 p-6">
         <SectionHeader
           kicker="Filters"
           title="Search and filter"
@@ -348,7 +299,7 @@ export default function Agents({ agents, allowPrivate, fetchError }: AgentsPageP
                   setSearch(event.target.value);
                   setVisibleCount(pageSize);
                 }}
-                className="w-full rounded-full border border-slate-200/80 bg-white px-4 py-2 pr-11 text-sm text-slate-900 placeholder:text-slate-400 shadow-sm focus:border-brand-blue/40 focus:outline-none focus:ring-2 focus:ring-brand-blue/25 dark:border-slate-700 dark:bg-slate-900/70 dark:text-slate-200 dark:placeholder:text-slate-500"
+                className="input-premium w-full pr-11"
               />
               <svg
                 aria-hidden="true"
@@ -381,7 +332,7 @@ export default function Agents({ agents, allowPrivate, fetchError }: AgentsPageP
                 setIndustryFilter(event.target.value);
                 setVisibleCount(pageSize);
               }}
-              className="w-full rounded-full border border-slate-200/80 bg-white px-3 py-2 text-sm text-slate-700 shadow-sm focus:border-brand-blue/40 focus:outline-none focus:ring-2 focus:ring-brand-blue/25 dark:border-slate-700 dark:bg-slate-900/70 dark:text-slate-200"
+              className="input-premium w-full"
             >
               <option value="all">All industries</option>
               {industries.map((industry) => (
@@ -402,7 +353,7 @@ export default function Agents({ agents, allowPrivate, fetchError }: AgentsPageP
                 setStatusFilter(event.target.value);
                 setVisibleCount(pageSize);
               }}
-              className="w-full rounded-full border border-slate-200/80 bg-white px-3 py-2 text-sm text-slate-700 shadow-sm focus:border-brand-blue/40 focus:outline-none focus:ring-2 focus:ring-brand-blue/25 dark:border-slate-700 dark:bg-slate-900/70 dark:text-slate-200"
+              className="input-premium w-full"
             >
               <option value="all">All statuses</option>
               {statuses.map((status) => (
@@ -423,7 +374,7 @@ export default function Agents({ agents, allowPrivate, fetchError }: AgentsPageP
                 setSourceFilter(event.target.value);
                 setVisibleCount(pageSize);
               }}
-              className="w-full rounded-full border border-slate-200/80 bg-white px-3 py-2 text-sm text-slate-700 shadow-sm focus:border-brand-blue/40 focus:outline-none focus:ring-2 focus:ring-brand-blue/25 dark:border-slate-700 dark:bg-slate-900/70 dark:text-slate-200"
+              className="input-premium w-full"
             >
               <option value="all">All sources</option>
               {sources.map((source) => (
@@ -445,7 +396,7 @@ export default function Agents({ agents, allowPrivate, fetchError }: AgentsPageP
                   setTagFilter(event.target.value);
                   setVisibleCount(pageSize);
                 }}
-                className="w-full rounded-full border border-slate-200/80 bg-white px-3 py-2 text-sm text-slate-700 shadow-sm focus:border-brand-blue/40 focus:outline-none focus:ring-2 focus:ring-brand-blue/25 dark:border-slate-700 dark:bg-slate-900/70 dark:text-slate-200"
+                className="input-premium w-full"
               >
                 <option value="all">All tags</option>
                 {tagOptions.map((tag) => (
@@ -458,7 +409,7 @@ export default function Agents({ agents, allowPrivate, fetchError }: AgentsPageP
           )}
         </div>
         <div className="mt-4 flex flex-wrap items-center gap-2">
-          <span className="text-xs font-semibold uppercase tracking-[0.18em] text-slate-500 dark:text-slate-300">
+          <span className="text-xs font-semibold uppercase tracking-wide text-slate-500 dark:text-slate-400">
             Sort
           </span>
           {(
@@ -478,8 +429,8 @@ export default function Agents({ agents, allowPrivate, fetchError }: AgentsPageP
                   setVisibleCount(pageSize);
                 }}
                 aria-pressed={active}
-                className={`chip focus-ring rounded-full px-3 py-1 text-xs font-semibold ${
-                  active ? "chip-brand" : "chip-muted"
+                className={`chip focus-ring rounded-md px-3 py-1 text-xs font-semibold ${
+                  active ? "chip-neutral ring-1 ring-slate-300 dark:ring-slate-600" : "chip-neutral"
                 }`}
               >
                 {option.label}
@@ -500,8 +451,8 @@ export default function Agents({ agents, allowPrivate, fetchError }: AgentsPageP
                     setVisibleCount(pageSize);
                   }}
                   aria-pressed={active}
-                  className={`chip focus-ring rounded-full px-3 py-1 text-xs font-semibold ${
-                    active ? "chip-brand" : "chip-muted"
+                  className={`chip focus-ring rounded-md px-3 py-1 text-xs font-semibold ${
+                    active ? "chip-neutral ring-1 ring-slate-300 dark:ring-slate-600" : "chip-neutral"
                   }`}
                 >
                   {option === "all" ? "All" : option === "public" ? "Public" : "Private"}
@@ -515,7 +466,7 @@ export default function Agents({ agents, allowPrivate, fetchError }: AgentsPageP
         </div>
       </section>
 
-      <div className="mt-6 grid gap-4 sm:mt-8 sm:grid-cols-2 lg:grid-cols-3">
+      <div ref={gridRef} className="stagger-grid mt-6 grid gap-5 sm:mt-8 sm:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-4">
         {visibleAgents.map((a) => (
           <AgentCard key={a.slug || String(a.id)} agent={a} />
         ))}
@@ -549,6 +500,9 @@ export default function Agents({ agents, allowPrivate, fetchError }: AgentsPageP
         ) : null}
         <div ref={sentinelRef} className="h-1 w-full" aria-hidden="true" />
       </div>
+
+      <CatalogSearchBox placeholder="Search agents or ask a question..." />
+      <BackToTop />
     </Layout>
   );
 }
@@ -714,11 +668,11 @@ function SignalRail({
   detailType: "latest" | "trending";
 }) {
   return (
-    <article className="surface-panel border border-slate-200/80 bg-white/90 p-4">
-      <h3 className="text-sm font-semibold text-slate-900 dark:text-slate-100">{title}</h3>
-      <p className="mt-1 text-xs text-slate-600 dark:text-slate-300">{description}</p>
+    <article className="card-elevated p-5">
+      <div className="text-label font-semibold uppercase tracking-[0.14em] text-slate-500 dark:text-slate-400">{title}</div>
+      <p className="mt-1 text-xs text-slate-600 dark:text-slate-400">{description}</p>
       {items.length === 0 ? (
-        <p className="mt-3 text-xs text-slate-500 dark:text-slate-300">{emptyText}</p>
+        <p className="mt-3 text-xs text-slate-500 dark:text-slate-400">{emptyText}</p>
       ) : (
         <ul className="mt-3 grid gap-2">
           {items.map((item) => {
@@ -734,10 +688,10 @@ function SignalRail({
               <li key={item.slug || item.id}>
                 <Link
                   href={`/aixcelerator/agents/${item.slug || item.id}`}
-                  className="group flex items-center justify-between rounded-xl border border-slate-200/80 bg-white px-3 py-2 text-sm font-semibold text-slate-700 transition hover:border-brand-blue/30 hover:text-brand-deep"
+                  className="card-elevated group flex items-center justify-between px-3 py-2 text-sm font-semibold text-slate-700 dark:text-slate-200"
                 >
                   <span className="truncate pr-3">{item.name}</span>
-                  <span className="shrink-0 text-xs font-semibold uppercase tracking-[0.14em] text-slate-500 group-hover:text-brand-deep">
+                  <span className="shrink-0 text-xs font-semibold uppercase tracking-wide text-slate-500 group-hover:text-slate-600 dark:group-hover:text-slate-300 dark:text-slate-400">
                     {detail}
                   </span>
                 </Link>
@@ -752,10 +706,32 @@ function SignalRail({
 
 function Stat({ title, value, note }: { title: string; value: string; note: string }) {
   return (
-    <div className="rounded-2xl border border-slate-200/80 bg-white p-4 shadow-sm">
-      <div className="text-xs font-semibold uppercase tracking-wide text-slate-500">{title}</div>
-      <div className="mt-2 text-lg font-semibold text-slate-900">{value}</div>
-      <div className="mt-1 text-xs text-slate-600">{note}</div>
+    <div className="card-elevated p-4">
+      <div className="text-label font-semibold uppercase tracking-[0.14em] text-slate-500 dark:text-slate-400">{title}</div>
+      <div className="mt-2 text-lg font-semibold text-slate-900 dark:text-slate-100">{value}</div>
+      <div className="mt-1 text-xs text-slate-600 dark:text-slate-400">{note}</div>
     </div>
+  );
+}
+
+function BackToTop() {
+  const [visible, setVisible] = useState(false);
+  useEffect(() => {
+    const onScroll = () => setVisible(window.scrollY > 1200);
+    window.addEventListener("scroll", onScroll, { passive: true });
+    return () => window.removeEventListener("scroll", onScroll);
+  }, []);
+  if (!visible) return null;
+  return (
+    <button
+      type="button"
+      onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
+      className="back-to-top visible"
+      aria-label="Back to top"
+    >
+      <svg viewBox="0 0 24 24" className="h-5 w-5" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+        <path d="m18 15-6-6-6 6" />
+      </svg>
+    </button>
   );
 }

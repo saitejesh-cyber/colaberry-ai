@@ -7,6 +7,7 @@ type SectionHeaderProps = {
   align?: "left" | "center";
   size?: "md" | "lg" | "xl";
   as?: "h1" | "h2" | "h3";
+  gradient?: boolean;
   children?: ReactNode;
 };
 
@@ -17,40 +18,37 @@ export default function SectionHeader({
   align = "left",
   size = "lg",
   as = "h2",
+  gradient = false,
   children,
 }: SectionHeaderProps) {
   const HeadingTag = as;
   const titleClass =
     size === "xl"
-      ? "text-4xl sm:text-5xl lg:text-[3.85rem]"
+      ? "text-display-lg sm:text-display-xl lg:text-display-2xl"
       : size === "lg"
-        ? "text-[1.85rem] sm:text-[2.35rem] lg:text-[2.9rem]"
-        : "text-xl sm:text-2xl";
+        ? "text-display-sm sm:text-display-md lg:text-display-lg"
+        : "text-lg sm:text-xl font-semibold";
   const alignClass = align === "center" ? "items-center text-center" : "items-start text-left";
-  const spacingClass = size === "xl" ? "gap-4" : "gap-3";
+  const spacingClass = size === "xl" ? "gap-5" : "gap-3";
   const kickerAlign = align === "center" ? "justify-center" : "justify-start";
   const descriptionClass =
     size === "xl"
       ? "max-w-3xl text-base leading-relaxed text-slate-600 dark:text-slate-300 sm:text-lg"
       : size === "lg"
-        ? "max-w-3xl text-sm leading-relaxed text-slate-600 dark:text-slate-300 sm:text-base"
+        ? "max-w-3xl text-caption leading-relaxed text-slate-600 dark:text-slate-300 sm:text-base"
         : "max-w-3xl text-sm leading-relaxed text-slate-600 dark:text-slate-300";
 
   return (
     <div className={`flex w-full max-w-4xl flex-col ${spacingClass} ${alignClass}`}>
       {kicker ? (
         <div
-          className={`inline-flex items-center gap-2 rounded-full border border-brand-blue/25 bg-white/85 px-3 py-1 text-xs font-semibold uppercase tracking-[0.2em] text-brand-deep shadow-sm dark:border-brand-teal/35 dark:bg-slate-900/75 dark:text-brand-ice ${kickerAlign}`}
+          className={`inline-flex w-fit items-center gap-2 rounded-md border border-slate-200 bg-slate-100 px-3 py-1 text-label font-semibold uppercase tracking-[0.14em] text-slate-700 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-300 ${kickerAlign}`}
         >
-          <span aria-hidden="true" className="h-1.5 w-1.5 rounded-full bg-brand-aqua" />
+          <span aria-hidden="true" className="h-1.5 w-1.5 rounded-full bg-[#059669]" />
           <span>{kicker}</span>
-          <span
-            aria-hidden="true"
-            className="h-[2px] w-8 rounded-full bg-gradient-to-r from-brand-blue to-brand-teal"
-          />
         </div>
       ) : null}
-      <HeadingTag className={`font-display font-semibold leading-[1.05] tracking-tight text-slate-900 dark:text-slate-100 ${titleClass}`}>
+      <HeadingTag className={`font-display font-bold text-slate-900 dark:text-slate-100 ${titleClass} ${gradient ? "text-gradient" : ""}`}>
         {title}
       </HeadingTag>
       {description ? (

@@ -4,7 +4,7 @@ import { verifyUnsubscribeToken } from "../../lib/newsletterTokens";
 
 const CMS_URL = process.env.NEXT_PUBLIC_CMS_URL;
 const CMS_TOKEN = process.env.CMS_API_TOKEN;
-const HASH_SALT = process.env.NEWSLETTER_HASH_SALT || "colaberry-newsletter";
+const HASH_SALT = process.env.NEWSLETTER_HASH_SALT || (process.env.NODE_ENV === "production" ? (() => { throw new Error("NEWSLETTER_HASH_SALT env var is required in production"); })() as never : "colaberry-newsletter");
 const REQUEST_TIMEOUT_MS = Number(process.env.NEWSLETTER_API_TIMEOUT_MS || 8000);
 
 const RATE_WINDOW_MS = 10 * 60 * 1000;
@@ -107,13 +107,11 @@ async function cmsFetch<T>(path: string, init: RequestInit = {}) {
 }
 
 async function resolveEmail(req: NextApiRequest): Promise<string | null> {
+  // Only accept token-based unsubscribe — never accept plain email to prevent
+  // attackers from unsubscribing arbitrary addresses.
   const queryToken = normalizeText(req.query.token, 1000);
-  const queryEmail = normalizeText(req.query.email, 180).toLowerCase();
   if (queryToken) {
     return verifyUnsubscribeToken(queryToken);
-  }
-  if (EMAIL_PATTERN.test(queryEmail)) {
-    return queryEmail;
   }
 
   const payload = parsePayload(req);
@@ -121,10 +119,6 @@ async function resolveEmail(req: NextApiRequest): Promise<string | null> {
   const token = normalizeText(payload.token, 1000);
   if (token) {
     return verifyUnsubscribeToken(token);
-  }
-  const email = normalizeText(payload.email, 180).toLowerCase();
-  if (EMAIL_PATTERN.test(email)) {
-    return email;
   }
   return null;
 }
@@ -149,7 +143,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
   const email = await resolveEmail(req);
   if (!email || !EMAIL_PATTERN.test(email)) {
-    return res.status(400).json({ ok: false, message: "A valid unsubscribe token or email is required." });
+    return res.status(400).json({ ok: false, message: "A valid unsubscribe token is required." });
   }
 
   const requestId = crypto.randomUUID();

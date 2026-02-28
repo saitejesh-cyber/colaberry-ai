@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from "react";
+import AudioPlayerUI from "./AudioPlayerUI";
 
 type IdleCapableGlobal = typeof globalThis & {
   requestIdleCallback?: (callback: () => void, options?: { timeout?: number }) => number;
@@ -110,7 +111,7 @@ export default function PodcastPlayer({
           <div
             role="status"
             aria-live="polite"
-            className="absolute inset-0 flex items-center justify-between gap-4 rounded-2xl border border-slate-200/80 bg-white/90 px-4 py-3 text-sm text-slate-600 dark:border-slate-700 dark:bg-slate-900/80 dark:text-slate-300"
+            className="absolute inset-0 flex items-center justify-between gap-4 rounded-lg border border-slate-200/80 bg-white/90 px-4 py-3 text-sm text-slate-600 dark:border-slate-700 dark:bg-slate-900/80 dark:text-slate-300"
           >
             <span>Loading podcast player…</span>
             {!shouldLoad && (
@@ -133,17 +134,7 @@ export default function PodcastPlayer({
   }
 
   if (audioUrl) {
-    return (
-      <audio
-        ref={audioRef}
-        controls
-        onPlay={onPlay}
-        className="w-full rounded-2xl border border-slate-200/80 bg-white/90 p-3 shadow-sm"
-      >
-        <source src={audioUrl} />
-        Your browser does not support the audio element.
-      </audio>
-    );
+    return <AudioPlayerUI src={audioUrl} onPlay={onPlay} />;
   }
 
   return null;

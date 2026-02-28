@@ -1,14 +1,17 @@
+import { useState, useEffect } from "react";
 import type { GetStaticPaths, GetStaticProps } from "next";
 import Link from "next/link";
 import Head from "next/head";
 import sanitizeHtml from "sanitize-html";
 import Layout from "../../../components/Layout";
+import Breadcrumb from "../../../components/Breadcrumb";
 import SectionHeader from "../../../components/SectionHeader";
 import EnterprisePageHero from "../../../components/EnterprisePageHero";
 import MCPCard from "../../../components/MCPCard";
 import { fetchMCPServerBySlug, fetchRelatedMCPServers, MCPServer } from "../../../lib/cms";
 import { heroImage } from "../../../lib/media";
 import type { ReactNode } from "react";
+import { seoTags, canonicalUrl as buildCanonical, type SeoMeta } from "../../../lib/seo";
 
 type MCPDetailProps = {
   mcp: MCPServer;
@@ -78,6 +81,14 @@ export default function MCPDetail({ mcp, allowPrivate, relatedServers }: MCPDeta
     "MCP server profile with structured metadata for discoverability and deployment readiness.";
   const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://colaberry.ai";
   const canonicalUrl = `${siteUrl}/aixcelerator/mcp/${mcp.slug || mcp.id}`;
+  const seoMeta: SeoMeta = {
+    title: metaTitle,
+    description: metaDescription,
+    canonical: buildCanonical(`/aixcelerator/mcp/${mcp.slug || mcp.id}`),
+    ogType: "article",
+    ogImage: mcp.coverImageUrl || null,
+    ogImageAlt: mcp.coverImageAlt || `${mcp.name} MCP profile`,
+  };
   const tagNames = (mcp.tags || []).map((tag) => tag.name || tag.slug).filter(Boolean);
   const companyNames = (mcp.companies || []).map((company) => company.name || company.slug).filter(Boolean);
   const lastUpdatedValue = mcp.lastUpdated ? new Date(mcp.lastUpdated) : null;
@@ -144,29 +155,20 @@ export default function MCPDetail({ mcp, allowPrivate, relatedServers }: MCPDeta
   return (
     <Layout>
       <Head>
-        <title>{metaTitle}</title>
-        <meta name="description" content={metaDescription} />
-        <meta property="og:title" content={metaTitle} />
-        <meta property="og:description" content={metaDescription} />
-        <meta property="og:type" content="article" />
-        <meta property="og:url" content={canonicalUrl} />
-        <link rel="canonical" href={canonicalUrl} />
+        <title>{seoMeta.title}</title>
+        {seoTags(seoMeta).map(({ key, ...props }) => (
+          "rel" in props ? <link key={key} {...props} /> : <meta key={key} {...props} />
+        ))}
         <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
       </Head>
 
-      <nav className="flex flex-wrap items-center gap-2 text-xs text-slate-500" aria-label="Breadcrumb">
-        <Link href="/aixcelerator" className="hover:text-slate-700">
-          AIXcelerator
-        </Link>
-        <span>/</span>
-        <Link href="/aixcelerator/mcp" className="hover:text-slate-700">
-          MCP Servers
-        </Link>
-        <span>/</span>
-        <span className="text-slate-700" aria-current="page">
-          {mcp.name}
-        </span>
-      </nav>
+      <ScrollProgress />
+
+      <Breadcrumb items={[
+        { label: "Home", href: "/" },
+        { label: "MCP Servers", href: "/aixcelerator/mcp" },
+        { label: mcp.name },
+      ]} />
 
       <div className="mt-4">
         <EnterprisePageHero
@@ -190,7 +192,7 @@ export default function MCPDetail({ mcp, allowPrivate, relatedServers }: MCPDeta
           primaryAction={
             mcp.docsUrl
               ? { label: "View documentation", href: mcp.docsUrl, external: true }
-              : { label: "Request a demo", href: "/request-demo" }
+              : { label: "Book a demo", href: "/request-demo" }
           }
           secondaryAction={
             mcp.sourceUrl
@@ -219,8 +221,8 @@ export default function MCPDetail({ mcp, allowPrivate, relatedServers }: MCPDeta
         />
       </div>
 
-      <section className="section-spacing grid gap-6 lg:grid-cols-[minmax(0,1fr)_360px] lg:items-start">
-        <div className="grid gap-6">
+      <section className="reveal section-spacing grid gap-8 lg:grid-cols-[minmax(0,1fr)_360px] lg:items-start">
+        <div className="grid gap-8">
           <div className="surface-panel section-shell p-6">
             <SectionHeader
               as="h2"
@@ -327,11 +329,11 @@ export default function MCPDetail({ mcp, allowPrivate, relatedServers }: MCPDeta
                 }`}
               >
                 {mcp.primaryFunction || mcp.description || mcp.longDescription ? (
-                  <div className="section-card rounded-2xl p-5">
-                    <div className="text-xs font-semibold uppercase tracking-wide text-slate-500">
+                  <div className="section-card rounded-lg p-5">
+                    <div className="text-label font-semibold uppercase tracking-[0.14em] text-slate-500 dark:text-slate-400">
                       Summary
                     </div>
-                    <div className="mt-3 space-y-3 text-sm text-slate-700">
+                    <div className="mt-3 space-y-3 text-sm text-slate-700 dark:text-slate-300">
                       {mcp.primaryFunction ? <p>{mcp.primaryFunction}</p> : null}
                       {mcp.description ? <p>{mcp.description}</p> : null}
                     </div>
@@ -403,26 +405,26 @@ export default function MCPDetail({ mcp, allowPrivate, relatedServers }: MCPDeta
                   <ListSection title="Use cases" items={useCases} empty="Use cases not documented yet." />
                 ) : null}
                 {mcp.exampleWorkflow || requirements.length > 0 ? (
-                  <div className="section-card rounded-2xl p-5">
+                  <div className="section-card rounded-lg p-5">
                     {mcp.exampleWorkflow ? (
                       <>
-                        <div className="text-xs font-semibold uppercase tracking-wide text-slate-500">
+                        <div className="text-label font-semibold uppercase tracking-[0.14em] text-slate-500 dark:text-slate-400">
                           Example workflow
                         </div>
-                        <div className="mt-3 space-y-3 text-sm text-slate-700">
+                        <div className="mt-3 space-y-3 text-sm text-slate-700 dark:text-slate-300">
                           {renderParagraphs(mcp.exampleWorkflow)}
                         </div>
                       </>
                     ) : null}
                     {requirements.length ? (
                       <>
-                        <div className="mt-5 text-xs font-semibold uppercase tracking-wide text-slate-500">
+                        <div className="mt-5 text-label font-semibold uppercase tracking-[0.14em] text-slate-500 dark:text-slate-400">
                           Requirements
                         </div>
-                        <ul className="mt-3 space-y-2 text-sm text-slate-700">
+                        <ul className="mt-3 space-y-2 text-sm text-slate-700 dark:text-slate-300">
                           {requirements.map((item, index) => (
                             <li key={`req-${index}`} className="flex gap-2">
-                              <span className="mt-2 h-1.5 w-1.5 shrink-0 rounded-full bg-brand-aqua" />
+                              <span className="mt-2 h-1.5 w-1.5 shrink-0 rounded-full bg-[#059669]" />
                               <span>{item}</span>
                             </li>
                           ))}
@@ -548,7 +550,7 @@ export default function MCPDetail({ mcp, allowPrivate, relatedServers }: MCPDeta
                   </a>
                 ) : null}
                 {mcp.tryItNowUrl ? (
-                  <a href={mcp.tryItNowUrl} target="_blank" rel="noreferrer" className="btn btn-primary">
+                  <a href={mcp.tryItNowUrl} target="_blank" rel="noreferrer" className="btn btn-cta">
                     Try it now
                   </a>
                 ) : null}
@@ -609,7 +611,9 @@ export default function MCPDetail({ mcp, allowPrivate, relatedServers }: MCPDeta
               />
               <div className="mt-6 grid gap-4 lg:grid-cols-3">
                 {relatedServers.map((related) => (
-                  <MCPCard key={related.slug || String(related.id)} mcp={related} />
+                  <div key={related.slug || String(related.id)} className="card-elevated rounded-xl">
+                    <MCPCard mcp={related} />
+                  </div>
                 ))}
               </div>
             </section>
@@ -651,17 +655,69 @@ export default function MCPDetail({ mcp, allowPrivate, relatedServers }: MCPDeta
           </dl>
         </aside>
       </section>
+
+      <ShareActions title={mcp.name} />
     </Layout>
+  );
+}
+
+function ScrollProgress() {
+  const [progress, setProgress] = useState(0);
+  useEffect(() => {
+    const onScroll = () => {
+      const scrollTop = document.documentElement.scrollTop;
+      const scrollHeight = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+      setProgress(scrollHeight > 0 ? (scrollTop / scrollHeight) * 100 : 0);
+    };
+    window.addEventListener("scroll", onScroll, { passive: true });
+    return () => window.removeEventListener("scroll", onScroll);
+  }, []);
+  return (
+    <div
+      className="scroll-progress"
+      role="progressbar"
+      aria-valuenow={Math.round(progress)}
+      aria-valuemin={0}
+      aria-valuemax={100}
+      aria-label="Reading progress"
+      style={{ transform: `scaleX(${progress / 100})` }}
+    />
+  );
+}
+
+function ShareActions({ title: _title }: { title: string }) {
+  const [copied, setCopied] = useState(false);
+  const copy = () => {
+    navigator.clipboard.writeText(window.location.href).then(() => {
+      setCopied(true);
+      setTimeout(() => setCopied(false), 2000);
+    });
+  };
+  return (
+    <div className="fixed bottom-6 right-6 z-30 flex gap-2">
+      <button
+        type="button"
+        className="flex h-10 w-10 items-center justify-center rounded-full border border-[var(--stroke)] bg-[var(--surface-strong)] shadow-lg transition-colors hover:bg-[var(--surface-soft)]"
+        aria-label="Copy link"
+        onClick={copy}
+      >
+        {copied ? (
+          <svg viewBox="0 0 20 20" className="h-4 w-4 text-[var(--trust-green)]" fill="currentColor"><path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" /></svg>
+        ) : (
+          <svg viewBox="0 0 24 24" className="h-4 w-4 text-[var(--text-secondary)]" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71" /><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71" /></svg>
+        )}
+      </button>
+    </div>
   );
 }
 
 function MetadataRow({ label, value, href }: { label: string; value: string; href?: string }) {
   return (
-    <div className="section-card rounded-2xl p-4">
-      <dt className="text-xs font-semibold uppercase tracking-wide text-slate-500">{label}</dt>
-      <dd className="mt-2 text-sm font-semibold text-slate-900">
+    <div className="section-card rounded-lg p-4">
+      <dt className="text-label font-semibold uppercase tracking-[0.14em] text-slate-500 dark:text-slate-400">{label}</dt>
+      <dd className="mt-2 text-sm font-semibold text-slate-900 dark:text-slate-100">
         {href ? (
-          <a href={href} target="_blank" rel="noreferrer" className="text-brand-deep hover:underline">
+          <a href={href} target="_blank" rel="noreferrer" className="text-slate-700 dark:text-slate-200 hover:underline dark:hover:text-slate-200">
             {value}
           </a>
         ) : (
@@ -689,10 +745,10 @@ function DetailCard({
   description: string;
 }) {
   return (
-    <div className="section-card rounded-2xl p-4">
-      <div className="text-xs font-semibold uppercase tracking-wide text-slate-500">{label}</div>
-      <div className="mt-2 text-lg font-semibold text-slate-900">{value}</div>
-      <div className="mt-1 text-xs text-slate-600">{description}</div>
+    <div className="section-card rounded-lg p-4">
+      <div className="text-label font-semibold uppercase tracking-[0.14em] text-slate-500 dark:text-slate-400">{label}</div>
+      <div className="mt-2 text-lg font-semibold text-slate-900 dark:text-slate-100">{value}</div>
+      <div className="mt-1 text-xs text-slate-600 dark:text-slate-400">{description}</div>
     </div>
   );
 }
@@ -707,21 +763,21 @@ function ListBlock({
   emptyLabel: string;
 }) {
   return (
-    <div className="section-card rounded-2xl p-4">
-      <div className="text-xs font-semibold uppercase tracking-wide text-slate-500">{label}</div>
+    <div className="section-card rounded-lg p-4">
+      <div className="text-label font-semibold uppercase tracking-[0.14em] text-slate-500 dark:text-slate-400">{label}</div>
       {items.length ? (
         <div className="mt-3 flex flex-wrap gap-2">
           {items.map((item) => (
             <span
               key={`${label}-${item}`}
-              className="chip chip-muted rounded-full px-2.5 py-1 text-xs font-semibold"
+              className="chip chip-muted rounded-md px-2.5 py-1 text-xs font-semibold"
             >
               {item}
             </span>
           ))}
         </div>
       ) : (
-        <p className="mt-2 text-xs text-slate-500">{emptyLabel}</p>
+        <p className="mt-2 text-xs text-slate-500 dark:text-slate-400">{emptyLabel}</p>
       )}
     </div>
   );
@@ -729,19 +785,19 @@ function ListBlock({
 
 function ListSection({ title, items, empty }: { title: string; items: string[]; empty: string }) {
   return (
-    <div className="section-card rounded-2xl p-5">
-      <div className="text-xs font-semibold uppercase tracking-wide text-slate-500">{title}</div>
+    <div className="section-card rounded-lg p-5">
+      <div className="text-label font-semibold uppercase tracking-[0.14em] text-slate-500 dark:text-slate-400">{title}</div>
       {items.length ? (
-        <ul className="mt-3 space-y-2 text-sm text-slate-700">
+        <ul className="mt-3 space-y-2 text-sm text-slate-700 dark:text-slate-300">
           {items.map((item, index) => (
             <li key={`${title}-${index}`} className="flex gap-2">
-              <span className="mt-2 h-1.5 w-1.5 shrink-0 rounded-full bg-brand-aqua" />
+              <span className="mt-2 h-1.5 w-1.5 shrink-0 rounded-full bg-[#059669]" />
               <span>{item}</span>
             </li>
           ))}
         </ul>
       ) : (
-        <p className="mt-3 text-sm text-slate-600">{empty}</p>
+        <p className="mt-3 text-sm text-slate-600 dark:text-slate-400">{empty}</p>
       )}
     </div>
   );
@@ -749,10 +805,10 @@ function ListSection({ title, items, empty }: { title: string; items: string[]; 
 
 function SignalStat({ label, value, note }: { label: string; value: string; note: string }) {
   return (
-    <div className="section-card rounded-2xl p-4">
-      <div className="text-xs font-semibold uppercase tracking-wide text-slate-500">{label}</div>
-      <div className="mt-2 text-lg font-semibold text-slate-900">{value}</div>
-      <div className="mt-1 text-xs text-slate-600">{note}</div>
+    <div className="section-card rounded-lg p-4">
+      <div className="text-label font-semibold uppercase tracking-[0.14em] text-slate-500 dark:text-slate-400">{label}</div>
+      <div className="mt-2 text-lg font-semibold text-slate-900 dark:text-slate-100">{value}</div>
+      <div className="mt-1 text-xs text-slate-600 dark:text-slate-400">{note}</div>
     </div>
   );
 }
@@ -781,7 +837,7 @@ function renderRichText(value?: string | null): ReactNode {
   if (!clean.trim()) return null;
   return (
     <div
-      className="text-sm text-slate-700 [&_p]:mt-3 first:[&_p]:mt-0 [&_ul]:mt-3 [&_ul]:list-disc [&_ul]:pl-5 [&_ol]:mt-3 [&_ol]:list-decimal [&_ol]:pl-5 [&_a]:text-brand-deep [&_a]:underline"
+      className="text-sm text-slate-700 dark:text-slate-300 [&_p]:mt-3 first:[&_p]:mt-0 [&_ul]:mt-3 [&_ul]:list-disc [&_ul]:pl-5 [&_ol]:mt-3 [&_ol]:list-decimal [&_ol]:pl-5 [&_a]:text-slate-700 dark:[&_a]:text-slate-200 [&_a]:underline"
       dangerouslySetInnerHTML={{ __html: clean }}
     />
   );
@@ -793,7 +849,7 @@ function renderParagraphs(value: string): ReactNode[] {
     .map((line) => line.trim())
     .filter(Boolean)
     .map((line, index) => (
-      <p key={`${line}-${index}`} className="text-sm text-slate-700">
+      <p key={`${line}-${index}`} className="text-sm text-slate-700 dark:text-slate-300">
         {line}
       </p>
     ));
@@ -809,12 +865,12 @@ function GuidanceBlock({
   actions?: ReactNode;
 }) {
   return (
-    <div className="section-card rounded-2xl p-5">
-      <div className="text-xs font-semibold uppercase tracking-wide text-slate-500">{title}</div>
-      <ul className="mt-3 space-y-2 text-sm text-slate-700">
+    <div className="section-card rounded-lg p-5">
+      <div className="text-label font-semibold uppercase tracking-[0.14em] text-slate-500 dark:text-slate-400">{title}</div>
+      <ul className="mt-3 space-y-2 text-sm text-slate-700 dark:text-slate-300">
         {items.map((item, index) => (
           <li key={`${title}-${index}`} className="flex gap-2">
-            <span className="mt-2 h-1.5 w-1.5 shrink-0 rounded-full bg-brand-aqua" />
+            <span className="mt-2 h-1.5 w-1.5 shrink-0 rounded-full bg-[#059669]" />
             <span>{item}</span>
           </li>
         ))}

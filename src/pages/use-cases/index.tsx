@@ -2,12 +2,14 @@ import type { GetStaticProps } from "next";
 import Head from "next/head";
 import Link from "next/link";
 import { useEffect, useMemo, useRef, useState } from "react";
+import CatalogSearchBox from "../../components/CatalogSearchBox";
 import Layout from "../../components/Layout";
-import MediaPanel from "../../components/MediaPanel";
 import SectionHeader from "../../components/SectionHeader";
+import EnterprisePageHero from "../../components/EnterprisePageHero";
 import StatePanel from "../../components/StatePanel";
 import { fetchUseCases, UseCase } from "../../lib/cms";
 import { heroImage } from "../../lib/media";
+import { seoTags, canonicalUrl as buildCanonical, type SeoMeta } from "../../lib/seo";
 
 type UseCasesPageProps = {
   useCases: UseCase[];
@@ -53,6 +55,7 @@ export default function UseCasesPage({ useCases, allowPrivate, fetchError }: Use
   const [sortMode, setSortMode] = useState<UseCaseSortMode>("trending");
   const [visibleCount, setVisibleCount] = useState(PAGE_SIZE);
   const sentinelRef = useRef<HTMLDivElement | null>(null);
+  const gridRef = useRef<HTMLDivElement>(null);
 
   const industries = useMemo(
     () =>
@@ -150,18 +153,46 @@ export default function UseCasesPage({ useCases, allowPrivate, fetchError }: Use
     return () => observer.disconnect();
   }, [hasMore, sortedUseCases.length]);
 
+  useEffect(() => {
+    const el = gridRef.current;
+    if (!el) return;
+    const obs = new IntersectionObserver(([entry]) => {
+      if (entry.isIntersecting) {
+        el.classList.add("revealed");
+        obs.disconnect();
+      }
+    }, { threshold: 0.1 });
+    obs.observe(el);
+    return () => obs.disconnect();
+  }, [visibleUseCases]);
+
   const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://colaberry.ai";
   const canonicalUrl = `${siteUrl}/use-cases`;
+  const seoMeta: SeoMeta = {
+    title: "Use Cases | Colaberry AI",
+    description: "Discover enterprise AI use cases with structured context across industries, outcomes, and implementation patterns.",
+    canonical: buildCanonical("/use-cases"),
+  };
 
   return (
     <Layout>
       <Head>
-        <title>Use Cases | Colaberry AI</title>
-        <meta
-          name="description"
-          content="Discover enterprise AI use cases with structured context across industries, outcomes, and implementation patterns."
+        <title>{seoMeta.title}</title>
+        {seoTags(seoMeta).map(({ key, ...props }) => (
+          "rel" in props ? <link key={key} {...props} /> : <meta key={key} {...props} />
+        ))}
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{
+            __html: JSON.stringify({
+              "@context": "https://schema.org",
+              "@type": "CollectionPage",
+              "name": "Colaberry AI Use Cases",
+              "description": "Discover enterprise AI use cases with structured context across industries, outcomes, and implementation patterns.",
+              "url": canonicalUrl,
+            }),
+          }}
         />
-        <link rel="canonical" href={canonicalUrl} />
       </Head>
 
       {fetchError ? (
@@ -174,38 +205,26 @@ export default function UseCasesPage({ useCases, allowPrivate, fetchError }: Use
         </div>
       ) : null}
 
-      <div className="grid gap-6 lg:grid-cols-[1.1fr_0.9fr] lg:items-start">
-        <div className="flex flex-col gap-3">
-          <SectionHeader
-            as="h1"
-            size="xl"
-            kicker="Solutions layer"
-            title="Use Cases"
-            description="Structured deployment patterns connecting agents, MCP servers, outcomes, and operational context."
-          />
-          <div className="mt-3 flex flex-wrap gap-2 text-xs text-slate-600">
-            {["Outcome-led", "Industry-aligned", "Agent + MCP linked", "LLM-readable"].map((label) => (
-              <span
-                key={label}
-                className="chip rounded-full border border-slate-200/80 bg-white px-3 py-1 font-semibold"
-              >
-                {label}
-              </span>
-            ))}
-          </div>
-        </div>
-        <MediaPanel
-          kicker="Use case catalog"
-          title="Execution playbooks"
-          description="Each profile captures problem framing, implementation pattern, outcomes, and linked assets."
-          image={heroImage("hero-solutions-cinematic.webp")}
-          alt="Enterprise AI use case catalog"
-          aspect="wide"
-          fit="cover"
-        />
-      </div>
+      <EnterprisePageHero
+        kicker="Solutions layer"
+        title="Use Cases"
+        description="Structured deployment patterns connecting agents, MCP servers, outcomes, and operational context."
+        image={heroImage("hero-solutions-cinematic.webp")}
+        alt="Enterprise AI use case catalog"
+        imageKicker="Use cases"
+        imageTitle="Execution playbooks"
+        imageDescription="Problem framing, implementation patterns, outcomes, and linked assets."
+        chips={["Outcome-led", "Industry-aligned", "Agent + MCP linked", "LLM-readable"]}
+        primaryAction={{ label: "Browse use cases", href: "#catalog" }}
+        secondaryAction={{ label: "Book a demo", href: "/request-demo", variant: "secondary" }}
+        metrics={[
+          { label: "Total use cases", value: `${useCases.length}`, note: "Structured deployment profiles." },
+          { label: "Coverage", value: "Cross-industry", note: "Agriculture to fintech." },
+          { label: "Integration", value: "Agent-linked", note: "Connected to agents and MCP servers." },
+        ]}
+      />
 
-      <section className="surface-panel mt-6 p-5 sm:mt-8">
+      <section className="surface-panel mt-6 p-6 sm:mt-8">
         <SectionHeader
           kicker="Catalog snapshot"
           title="Coverage and deployment readiness"
@@ -252,7 +271,7 @@ export default function UseCasesPage({ useCases, allowPrivate, fetchError }: Use
         </div>
       </section>
 
-      <section className="surface-panel mt-6 border border-slate-200/80 bg-white/90 p-5">
+      <section className="surface-panel mt-6 p-6">
         <div className="grid gap-3 md:grid-cols-[1.4fr_1fr_1fr_auto]">
           <input
             type="search"
@@ -262,7 +281,7 @@ export default function UseCasesPage({ useCases, allowPrivate, fetchError }: Use
               setVisibleCount(PAGE_SIZE);
             }}
             placeholder="Search title, industry, tags, or companies..."
-            className="w-full rounded-full border border-slate-200/80 bg-white px-4 py-2.5 text-sm text-slate-900 placeholder:text-slate-400 shadow-sm focus:border-brand-blue/40 focus:outline-none focus:ring-2 focus:ring-brand-blue/25"
+            className="input-premium w-full"
             aria-label="Search use cases"
           />
           <select
@@ -271,7 +290,7 @@ export default function UseCasesPage({ useCases, allowPrivate, fetchError }: Use
               setIndustryFilter(event.target.value);
               setVisibleCount(PAGE_SIZE);
             }}
-            className="w-full rounded-full border border-slate-200/80 bg-white px-4 py-2.5 text-sm text-slate-700 shadow-sm focus:border-brand-blue/40 focus:outline-none focus:ring-2 focus:ring-brand-blue/25"
+            className="input-premium w-full"
             aria-label="Filter by industry"
           >
             <option value="all">All industries</option>
@@ -287,7 +306,7 @@ export default function UseCasesPage({ useCases, allowPrivate, fetchError }: Use
               setStatusFilter(event.target.value);
               setVisibleCount(PAGE_SIZE);
             }}
-            className="w-full rounded-full border border-slate-200/80 bg-white px-4 py-2.5 text-sm text-slate-700 shadow-sm focus:border-brand-blue/40 focus:outline-none focus:ring-2 focus:ring-brand-blue/25"
+            className="input-premium w-full"
             aria-label="Filter by status"
           >
             <option value="all">All statuses</option>
@@ -304,7 +323,7 @@ export default function UseCasesPage({ useCases, allowPrivate, fetchError }: Use
                 setVisibility(event.target.value as VisibilityFilter);
                 setVisibleCount(PAGE_SIZE);
               }}
-              className="w-full rounded-full border border-slate-200/80 bg-white px-4 py-2.5 text-sm text-slate-700 shadow-sm focus:border-brand-blue/40 focus:outline-none focus:ring-2 focus:ring-brand-blue/25 md:min-w-[10.5rem]"
+              className="input-premium w-full md:min-w-[10.5rem]"
               aria-label="Filter by visibility"
             >
               <option value="all">All visibility</option>
@@ -314,7 +333,7 @@ export default function UseCasesPage({ useCases, allowPrivate, fetchError }: Use
           ) : null}
         </div>
         <div className="mt-4 flex flex-wrap items-center gap-2">
-          <span className="text-xs font-semibold uppercase tracking-[0.18em] text-slate-500 dark:text-slate-300">
+          <span className="text-xs font-semibold uppercase tracking-wide text-slate-500 dark:text-slate-400">
             Sort
           </span>
           {(
@@ -334,8 +353,8 @@ export default function UseCasesPage({ useCases, allowPrivate, fetchError }: Use
                   setVisibleCount(PAGE_SIZE);
                 }}
                 aria-pressed={active}
-                className={`chip focus-ring rounded-full px-3 py-1 text-xs font-semibold ${
-                  active ? "chip-brand" : "chip-muted"
+                className={`chip focus-ring rounded-md px-3 py-1 text-xs font-semibold ${
+                  active ? "chip-neutral ring-1 ring-slate-300 dark:ring-slate-600" : "chip-neutral"
                 }`}
               >
                 {option.label}
@@ -357,7 +376,7 @@ export default function UseCasesPage({ useCases, allowPrivate, fetchError }: Use
           />
         </div>
       ) : (
-        <div className="mt-6 grid gap-4 sm:mt-8">
+        <div ref={gridRef} className="stagger-grid mt-6 grid gap-4 sm:mt-8 sm:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-4">
           {visibleUseCases.map((item) => {
             const statusLabel = (item.status || "live").toLowerCase();
             const visibilityLabel = (item.visibility || "public").toLowerCase();
@@ -365,31 +384,31 @@ export default function UseCasesPage({ useCases, allowPrivate, fetchError }: Use
               <Link
                 key={item.id}
                 href={`/use-cases/${item.slug}`}
-                className="surface-panel surface-hover surface-interactive border border-slate-200/80 bg-white/90 p-5"
+                className="card-feature p-5"
               >
                 <div className="flex flex-wrap items-start justify-between gap-3">
                   <div>
-                    <h2 className="text-lg font-semibold text-slate-900">{item.title}</h2>
-                    {item.summary ? <p className="mt-1 text-sm text-slate-600">{item.summary}</p> : null}
+                    <h2 className="text-lg font-semibold text-slate-900 dark:text-slate-100">{item.title}</h2>
+                    {item.summary ? <p className="mt-1 text-sm text-slate-600 dark:text-slate-400">{item.summary}</p> : null}
                   </div>
                   <div className="flex flex-wrap gap-2">
-                    <span className="chip chip-brand rounded-full px-3 py-1 text-xs font-semibold">
+                    <span className="chip chip-neutral rounded-md px-3 py-1 text-xs font-semibold">
                       {item.industry || "General"}
                     </span>
                     {item.category ? (
-                      <span className="chip chip-muted rounded-full px-3 py-1 text-xs font-semibold">
+                      <span className="chip chip-muted rounded-md px-3 py-1 text-xs font-semibold">
                         {item.category}
                       </span>
                     ) : null}
-                    <span className="chip chip-muted rounded-full px-3 py-1 text-xs font-semibold">
+                    <span className="chip chip-muted rounded-md px-3 py-1 text-xs font-semibold">
                       {statusLabel.charAt(0).toUpperCase() + statusLabel.slice(1)}
                     </span>
-                    <span className="chip chip-muted rounded-full px-3 py-1 text-xs font-semibold">
+                    <span className="chip chip-muted rounded-md px-3 py-1 text-xs font-semibold">
                       {visibilityLabel.charAt(0).toUpperCase() + visibilityLabel.slice(1)}
                     </span>
                   </div>
                 </div>
-                <div className="mt-3 flex flex-wrap items-center gap-2 text-xs text-slate-500">
+                <div className="mt-3 flex flex-wrap items-center gap-2 text-xs text-slate-500 dark:text-slate-400">
                   <span>Agents: {item.agents.length}</span>
                   <span>•</span>
                   <span>MCP servers: {item.mcpServers.length}</span>
@@ -423,6 +442,9 @@ export default function UseCasesPage({ useCases, allowPrivate, fetchError }: Use
         ) : null}
         <div ref={sentinelRef} className="h-1 w-full" aria-hidden="true" />
       </div>
+
+      <CatalogSearchBox placeholder="Search use cases or ask a question..." />
+      <BackToTop />
     </Layout>
   );
 }
@@ -512,11 +534,11 @@ function SignalRail({
   detailType: "latest" | "trending";
 }) {
   return (
-    <article className="surface-panel border border-slate-200/80 bg-white/90 p-4">
-      <h3 className="text-sm font-semibold text-slate-900 dark:text-slate-100">{title}</h3>
-      <p className="mt-1 text-xs text-slate-600 dark:text-slate-300">{description}</p>
+    <article className="card-elevated p-5">
+      <div className="text-label font-semibold uppercase tracking-[0.14em] text-slate-500 dark:text-slate-400">{title}</div>
+      <p className="mt-1 text-xs text-slate-600 dark:text-slate-400">{description}</p>
       {items.length === 0 ? (
-        <p className="mt-3 text-xs text-slate-500 dark:text-slate-300">{emptyText}</p>
+        <p className="mt-3 text-xs text-slate-500 dark:text-slate-400">{emptyText}</p>
       ) : (
         <ul className="mt-3 grid gap-2">
           {items.map((item) => {
@@ -530,10 +552,10 @@ function SignalRail({
               <li key={item.slug || item.id}>
                 <Link
                   href={`/use-cases/${item.slug}`}
-                  className="group flex items-center justify-between rounded-xl border border-slate-200/80 bg-white px-3 py-2 text-sm font-semibold text-slate-700 transition hover:border-brand-blue/30 hover:text-brand-deep"
+                  className="card-elevated group flex items-center justify-between px-3 py-2 text-sm font-semibold text-slate-700 dark:text-slate-200"
                 >
                   <span className="truncate pr-3">{item.title}</span>
-                  <span className="shrink-0 text-xs font-semibold uppercase tracking-[0.14em] text-slate-500 group-hover:text-brand-deep">
+                  <span className="shrink-0 text-xs font-semibold uppercase tracking-wide text-slate-500 group-hover:text-slate-700 dark:text-slate-400 dark:group-hover:text-slate-200">
                     {detail}
                   </span>
                 </Link>
@@ -548,10 +570,32 @@ function SignalRail({
 
 function Stat({ title, value, note }: { title: string; value: string; note: string }) {
   return (
-    <div className="rounded-2xl border border-slate-200/80 bg-white p-4 shadow-sm">
-      <div className="text-xs font-semibold uppercase tracking-wide text-slate-500">{title}</div>
-      <div className="mt-2 text-lg font-semibold text-slate-900">{value}</div>
-      <div className="mt-1 text-xs text-slate-600">{note}</div>
+    <div className="card-elevated p-4">
+      <div className="text-label font-semibold uppercase tracking-[0.14em] text-slate-500 dark:text-slate-400">{title}</div>
+      <div className="mt-2 text-lg font-semibold text-slate-900 dark:text-slate-100">{value}</div>
+      <div className="mt-1 text-xs text-slate-600 dark:text-slate-400">{note}</div>
     </div>
+  );
+}
+
+function BackToTop() {
+  const [visible, setVisible] = useState(false);
+  useEffect(() => {
+    const onScroll = () => setVisible(window.scrollY > 1200);
+    window.addEventListener("scroll", onScroll, { passive: true });
+    return () => window.removeEventListener("scroll", onScroll);
+  }, []);
+  if (!visible) return null;
+  return (
+    <button
+      type="button"
+      onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
+      className="back-to-top visible"
+      aria-label="Back to top"
+    >
+      <svg viewBox="0 0 24 24" className="h-5 w-5" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+        <path d="m18 15-6-6-6 6" />
+      </svg>
+    </button>
   );
 }

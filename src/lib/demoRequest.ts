@@ -9,6 +9,12 @@ export type DemoRequestInput = {
   website?: string;
   sourcePage?: string;
   sourcePath?: string;
+  utmSource?: string;
+  utmMedium?: string;
+  utmCampaign?: string;
+  utmTerm?: string;
+  utmContent?: string;
+  referrer?: string;
 };
 
 export type DemoRequestResponse = {
@@ -48,5 +54,5 @@ export async function submitDemoRequest(payload: DemoRequestInput): Promise<Demo
 }
 
 export function isValidWorkEmail(value: string) {
-  return /\S+@\S+\.\S+/.test(value.trim());
+  return /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/i.test(value.trim());
 }

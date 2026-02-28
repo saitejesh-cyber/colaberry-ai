@@ -1,13 +1,16 @@
+import { useState, useEffect } from "react";
 import type { GetStaticPaths, GetStaticProps } from "next";
 import Head from "next/head";
 import Image from "next/image";
 import Link from "next/link";
 import sanitizeHtml from "sanitize-html";
 import Layout from "../../../components/Layout";
+import Breadcrumb from "../../../components/Breadcrumb";
 import EnterprisePageHero from "../../../components/EnterprisePageHero";
 import StatePanel from "../../../components/StatePanel";
 import { Article, ArticleMedia, fetchArticleBySlug } from "../../../lib/cms";
 import { heroImage } from "../../../lib/media";
+import { seoTags, canonicalUrl as buildCanonical, type SeoMeta } from "../../../lib/seo";
 
 type ArticleDetailProps = {
   article: Article;
@@ -42,35 +45,45 @@ export const getStaticProps: GetStaticProps<ArticleDetailProps> = async ({ param
 };
 
 export default function ArticleDetailPage({ article }: ArticleDetailProps) {
-  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://colaberry.ai";
-  const canonicalUrl = `${siteUrl}/resources/articles/${article.slug}`;
   const publishedLabel = formatDateLabel(article.publishedAt || article.updatedAt);
   const blocks = Array.isArray(article.blocks) ? article.blocks : [];
+  const seoMeta: SeoMeta = {
+    title: `${article.title} | Articles | Colaberry AI`,
+    description: article.description || "Enterprise AI article from Colaberry AI resources.",
+    canonical: buildCanonical(`/resources/articles/${article.slug}`),
+    ogType: "article",
+    ogImage: article.coverImageUrl || null,
+    ogImageAlt: article.coverImageAlt || article.title,
+  };
 
   return (
     <Layout>
       <Head>
-        <title>{`${article.title} | Articles | Colaberry AI`}</title>
-        <meta
-          name="description"
-          content={article.description || "Enterprise AI article from Colaberry AI resources."}
-        />
-        <link rel="canonical" href={canonicalUrl} />
+        <title>{seoMeta.title}</title>
+        {seoTags(seoMeta).map(({ key, ...props }) => (
+          "rel" in props ? <link key={key} {...props} /> : <meta key={key} {...props} />
+        ))}
+        <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify({
+          "@context": "https://schema.org",
+          "@type": "Article",
+          "headline": article.title,
+          "description": article.description || "Enterprise AI article from Colaberry AI resources.",
+          "url": buildCanonical(`/resources/articles/${article.slug}`),
+          ...(article.coverImageUrl ? { "image": article.coverImageUrl } : {}),
+          ...(article.publishedAt ? { "datePublished": article.publishedAt } : {}),
+          ...(article.updatedAt ? { "dateModified": article.updatedAt } : {}),
+          ...(article.author?.name ? { "author": { "@type": "Person", "name": article.author.name } } : {}),
+          "publisher": { "@type": "Organization", "name": "Colaberry AI" },
+        }) }} />
       </Head>
 
-      <nav className="flex flex-wrap items-center gap-2 text-xs text-slate-500" aria-label="Breadcrumb">
-        <Link href="/resources" className="hover:text-slate-700">
-          Resources
-        </Link>
-        <span>/</span>
-        <Link href="/resources/articles" className="hover:text-slate-700">
-          Articles
-        </Link>
-        <span>/</span>
-        <span className="text-slate-700" aria-current="page">
-          {article.title}
-        </span>
-      </nav>
+      <ScrollProgress />
+
+      <Breadcrumb items={[
+        { label: "Home", href: "/" },
+        { label: "Articles", href: "/resources/articles" },
+        { label: article.title },
+      ]} />
 
       <div className="mt-4">
         <EnterprisePageHero
@@ -176,7 +189,7 @@ export default function ArticleDetailPage({ article }: ArticleDetailProps) {
                 const quoteTitle = typeof block.title === "string" ? block.title : "";
                 if (!quoteBody && !quoteTitle) return null;
                 return (
-                  <blockquote key={`quote-${index}`} className="section-card my-6 rounded-2xl p-5">
+                  <blockquote key={`quote-${index}`} className="section-card my-6 rounded-lg p-5">
                     {quoteTitle ? <div className="mb-2 text-sm font-semibold text-slate-900">{quoteTitle}</div> : null}
                     {quoteBody ? <p className="m-0 text-slate-700">{quoteBody}</p> : null}
                   </blockquote>
@@ -193,7 +206,7 @@ export default function ArticleDetailPage({ article }: ArticleDetailProps) {
                       alt={media.alt || article.title}
                       width={1400}
                       height={840}
-                      className="h-auto w-full rounded-2xl border border-slate-200/80 object-cover"
+                      className="h-auto w-full rounded-lg border border-slate-200/80 object-cover"
                       unoptimized
                       loading="lazy"
                     />
@@ -213,7 +226,7 @@ export default function ArticleDetailPage({ article }: ArticleDetailProps) {
                         alt={media.alt || `${article.title} media ${mediaIndex + 1}`}
                         width={1200}
                         height={720}
-                        className="h-auto w-full rounded-2xl border border-slate-200/80 object-cover"
+                        className="h-auto w-full rounded-lg border border-slate-200/80 object-cover"
                         unoptimized
                         loading="lazy"
                       />
@@ -236,7 +249,59 @@ export default function ArticleDetailPage({ article }: ArticleDetailProps) {
           Explore Resources
         </Link>
       </div>
+
+      <ShareActions title={article.title} />
     </Layout>
+  );
+}
+
+function ScrollProgress() {
+  const [progress, setProgress] = useState(0);
+  useEffect(() => {
+    const onScroll = () => {
+      const scrollTop = document.documentElement.scrollTop;
+      const scrollHeight = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+      setProgress(scrollHeight > 0 ? (scrollTop / scrollHeight) * 100 : 0);
+    };
+    window.addEventListener("scroll", onScroll, { passive: true });
+    return () => window.removeEventListener("scroll", onScroll);
+  }, []);
+  return (
+    <div
+      className="scroll-progress"
+      role="progressbar"
+      aria-valuenow={Math.round(progress)}
+      aria-valuemin={0}
+      aria-valuemax={100}
+      aria-label="Reading progress"
+      style={{ transform: `scaleX(${progress / 100})` }}
+    />
+  );
+}
+
+function ShareActions({ title: _title }: { title: string }) {
+  const [copied, setCopied] = useState(false);
+  const copy = () => {
+    navigator.clipboard.writeText(window.location.href).then(() => {
+      setCopied(true);
+      setTimeout(() => setCopied(false), 2000);
+    });
+  };
+  return (
+    <div className="fixed bottom-6 right-6 z-30 flex gap-2">
+      <button
+        type="button"
+        className="flex h-10 w-10 items-center justify-center rounded-full border border-[var(--stroke)] bg-[var(--surface-strong)] shadow-lg transition-colors hover:bg-[var(--surface-soft)]"
+        aria-label="Copy link"
+        onClick={copy}
+      >
+        {copied ? (
+          <svg viewBox="0 0 20 20" className="h-4 w-4 text-[var(--trust-green)]" fill="currentColor"><path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" /></svg>
+        ) : (
+          <svg viewBox="0 0 24 24" className="h-4 w-4 text-[var(--text-secondary)]" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71" /><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71" /></svg>
+        )}
+      </button>
+    </div>
   );
 }
 

@@ -70,8 +70,8 @@ function buildHtmlItems(items: NewsletterTemplateItem[]) {
       return `
         <tr>
           <td style="padding:16px 0;border-bottom:1px solid #e2e8f0;">
-            <div style="font-size:16px;font-weight:600;line-height:1.4;color:#0f172a;">${title}</div>
-            ${description ? `<div style="margin-top:6px;font-size:14px;line-height:1.55;color:#334155;">${description}</div>` : ""}
+            <div style="font-size:16px;font-weight:600;line-height:1.4;color:#111827;">${title}</div>
+            ${description ? `<div style="margin-top:6px;font-size:14px;line-height:1.55;color:#111827;">${description}</div>` : ""}
             <div style="margin-top:10px;">
               <a href="${href}" target="_blank" rel="noreferrer noopener" style="font-size:13px;font-weight:600;color:#0f4da8;text-decoration:none;">${label} →</a>
             </div>
@@ -120,7 +120,7 @@ export function buildNewsletterTemplate(input: NewsletterTemplateInput): Newslet
     <meta name="viewport" content="width=device-width,initial-scale=1" />
     <title>${escapeHtml(subject)}</title>
   </head>
-  <body style="margin:0;padding:0;background:#f3f6fb;font-family:Inter,Segoe UI,Roboto,Arial,sans-serif;color:#0f172a;">
+  <body style="margin:0;padding:0;background:#f3f6fb;font-family:Inter,Segoe UI,Roboto,Arial,sans-serif;color:#111827;">
     <div style="display:none;max-height:0;overflow:hidden;opacity:0;">${escapeHtml(preheader)}</div>
     <table role="presentation" cellspacing="0" cellpadding="0" border="0" width="100%" style="padding:28px 12px;background:#f3f6fb;">
       <tr>
@@ -134,7 +134,7 @@ export function buildNewsletterTemplate(input: NewsletterTemplateInput): Newslet
             </tr>
             <tr>
               <td style="padding:24px 24px 10px;">
-                <p style="margin:0;font-size:15px;line-height:1.65;color:#334155;">${escapeHtml(intro)}</p>
+                <p style="margin:0;font-size:15px;line-height:1.65;color:#111827;">${escapeHtml(intro)}</p>
               </td>
             </tr>
             <tr>

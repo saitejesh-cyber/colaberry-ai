@@ -1,9 +1,12 @@
+import type { GetStaticProps } from "next";
 import Head from "next/head";
 import Link from "next/link";
 import Layout from "../components/Layout";
-import MediaPanel from "../components/MediaPanel";
+import EnterprisePageHero from "../components/EnterprisePageHero";
 import SectionHeader from "../components/SectionHeader";
+import { fetchAgents, fetchMCPServers, fetchPodcastEpisodes } from "../lib/cms";
 import { heroImage } from "../lib/media";
+import { seoTags, canonicalUrl as buildCanonical, type SeoMeta } from "../lib/seo";
 
 const QUICK_PROMPTS = [
   {
@@ -51,51 +54,73 @@ const ENTRY_POINTS = [
   },
 ];
 
-export default function AssistantPage() {
-  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://colaberry.ai";
-  const canonicalUrl = `${siteUrl}/assistant`;
+type TrendingItem = { title: string; href: string; type: string };
+type AssistantProps = { trending: TrendingItem[] };
+
+export const getStaticProps: GetStaticProps<AssistantProps> = async () => {
+  const trending: TrendingItem[] = [];
+  try {
+    const [agentsResult, mcpResult, podResult] = await Promise.allSettled([
+      fetchAgents("public"),
+      fetchMCPServers("public"),
+      fetchPodcastEpisodes({ maxRecords: 3 }),
+    ]);
+    if (agentsResult.status === "fulfilled") {
+      agentsResult.value.slice(0, 3).forEach((a: any) => {
+        trending.push({ title: a.name || a.title || "Agent", href: `/aixcelerator/agents/${a.slug}`, type: "Agent" });
+      });
+    }
+    if (mcpResult.status === "fulfilled") {
+      mcpResult.value.slice(0, 3).forEach((m: any) => {
+        trending.push({ title: m.name || m.title || "MCP Server", href: `/aixcelerator/mcp/${m.slug}`, type: "MCP" });
+      });
+    }
+    if (podResult.status === "fulfilled") {
+      podResult.value.slice(0, 3).forEach((p: any) => {
+        trending.push({ title: p.title || "Episode", href: `/resources/podcasts/${p.slug}`, type: "Podcast" });
+      });
+    }
+  } catch {}
+  return { props: { trending }, revalidate: 600 };
+};
+
+export default function AssistantPage({ trending }: AssistantProps) {
+  const seoMeta: SeoMeta = {
+    title: "Discovery Assistant | Colaberry AI",
+    description: "Start from guided prompts to discover agents, MCP servers, use cases, and updates.",
+    canonical: buildCanonical("/assistant"),
+  };
 
   return (
     <Layout>
       <Head>
-        <title>Discovery Assistant | Colaberry AI</title>
-        <meta
-          name="description"
-          content="Start from guided prompts to discover agents, MCP servers, use cases, and updates."
-        />
-        <link rel="canonical" href={canonicalUrl} />
+        <title>{seoMeta.title}</title>
+        {seoTags(seoMeta).map(({ key, ...props }) => (
+          "rel" in props ? <link key={key} {...props} /> : <meta key={key} {...props} />
+        ))}
+        <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify({
+          "@context": "https://schema.org",
+          "@type": "WebPage",
+          "name": "Discovery Assistant",
+          "description": "Start from guided prompts to discover agents, MCP servers, use cases, and updates.",
+          "url": buildCanonical("/assistant"),
+          "publisher": { "@type": "Organization", "name": "Colaberry AI" },
+        }) }} />
       </Head>
 
-      <div className="grid gap-6 lg:grid-cols-[1.1fr_0.9fr] lg:items-start">
-        <div className="flex flex-col gap-3">
-          <SectionHeader
-            as="h1"
-            size="xl"
-            kicker="Discovery assistant"
-            title="Start with guided discovery"
-            description="A single entry point for people and LLM workflows to find agents, MCP servers, use cases, and updates."
-          />
-          <div className="mt-3 flex flex-wrap gap-2 text-xs text-slate-600">
-            {["Prompt-first", "Catalog-linked", "LLM-readable", "Enterprise ready"].map((label) => (
-              <span
-                key={label}
-                className="chip rounded-full border border-slate-200/80 bg-white px-3 py-1 font-semibold"
-              >
-                {label}
-              </span>
-            ))}
-          </div>
-        </div>
-        <MediaPanel
-          kicker="Assistant flow"
-          title="Prompt to destination"
-          description="Use curated prompts to route into the right catalog surface quickly."
-          image={heroImage("hero-platform-cinematic.webp")}
-          alt="Discovery assistant entry flow"
-          aspect="wide"
-          fit="cover"
-        />
-      </div>
+      <EnterprisePageHero
+        kicker="Discovery assistant"
+        title="Start with guided discovery"
+        description="A single entry point for people and LLM workflows to find agents, MCP servers, use cases, and updates."
+        image={heroImage("hero-platform-cinematic.webp")}
+        alt="Discovery assistant entry flow"
+        imageKicker="Assistant flow"
+        imageTitle="Prompt to destination"
+        imageDescription="Use curated prompts to route into the right catalog surface quickly."
+        chips={["Prompt-first", "Catalog-linked", "LLM-readable", "Enterprise ready"]}
+        primaryAction={{ label: "Search catalog", href: "/search" }}
+        secondaryAction={{ label: "Book a demo", href: "/request-demo", variant: "secondary" }}
+      />
 
       <section className="surface-panel mt-6 border border-slate-200/80 bg-white/90 p-6">
         <SectionHeader
@@ -114,7 +139,8 @@ export default function AssistantPage() {
             name="q"
             type="search"
             placeholder="Ask for agents, MCPs, use cases, or updates..."
-            className="w-full rounded-full border border-slate-200/80 bg-white px-4 py-2.5 text-sm text-slate-900 placeholder:text-slate-400 shadow-sm focus:border-brand-blue/40 focus:outline-none focus:ring-2 focus:ring-brand-blue/25"
+            aria-label="Search query"
+            className="input-premium"
           />
           <button type="submit" className="btn btn-primary">
             Search
@@ -125,7 +151,7 @@ export default function AssistantPage() {
             <Link
               key={item.label}
               href={item.href}
-              className="surface-panel surface-hover surface-interactive border border-slate-200/80 bg-white/85 p-4"
+              className="card-feature p-4"
             >
               <div className="text-sm font-semibold text-slate-900">{item.label}</div>
               <p className="mt-1 text-xs text-slate-600">{item.description}</p>
@@ -147,7 +173,7 @@ export default function AssistantPage() {
             <Link
               key={entry.href}
               href={entry.href}
-              className="surface-panel surface-hover surface-interactive border border-slate-200/80 bg-white p-4"
+              className="card-feature p-4"
             >
               <div className="text-base font-semibold text-slate-900">{entry.title}</div>
               <p className="mt-1 text-sm text-slate-600">{entry.description}</p>
@@ -156,7 +182,7 @@ export default function AssistantPage() {
         </div>
         <div className="mt-6 flex flex-col gap-3 sm:flex-row">
           <Link href="/request-demo" className="btn btn-primary">
-            Request a demo
+            Book a demo
           </Link>
           <Link href="/updates" className="btn btn-secondary">
             View latest updates

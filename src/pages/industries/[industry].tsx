@@ -97,7 +97,7 @@ export default function Industry() {
             ))}
           </div>
         ) : (
-          <div className="mt-6 rounded-xl border border-slate-200 bg-slate-50 p-5 text-sm text-slate-700">
+          <div className="mt-6 rounded-xl border border-slate-200 bg-slate-50 p-5 text-sm text-slate-700 dark:border-[var(--stroke)] dark:bg-[var(--surface-strong)] dark:text-slate-300">
             We’re finalizing more {industryName} case studies for this workspace.
           </div>
         )}
@@ -117,8 +117,8 @@ function CaseStudyCard({
   };
 }) {
   return (
-    <div className="surface-panel border border-slate-200/80 bg-white/90 p-5">
-      <div className="text-base font-semibold text-slate-900">{item.title}</div>
+    <div className="surface-panel border border-slate-200/80 bg-white/90 p-5 dark:border-[var(--stroke)] dark:bg-[var(--surface-strong)]/90">
+      <div className="text-base font-semibold text-slate-900 dark:text-slate-100">{item.title}</div>
 
       <div className="mt-4 grid gap-4">
         <Section title="Challenge" items={item.challenge} />
@@ -133,8 +133,8 @@ function Section({ title, items }: { title: string; items: string[] }) {
   if (!items.length) return null;
   return (
     <div>
-      <div className="text-xs font-semibold uppercase tracking-wide text-slate-500">{title}</div>
-      <ul className="mt-2 space-y-1 text-sm text-slate-700">
+      <div className="text-xs font-semibold uppercase tracking-wide text-slate-500 dark:text-slate-400">{title}</div>
+      <ul className="mt-2 space-y-1 text-sm text-slate-700 dark:text-slate-300">
         {items.map((line, idx) => (
           <li key={`${title}-${idx}`} className="flex gap-2">
             <span className="mt-2 h-1.5 w-1.5 shrink-0 rounded-full bg-brand-aqua" />
@@ -148,18 +148,18 @@ function Section({ title, items }: { title: string; items: string[] }) {
 
 function InfoCard({ title, body }: { title: string; body: string }) {
   return (
-    <div className="surface-panel border border-slate-200/80 bg-white/90 p-5">
-      <div className="text-base font-semibold text-slate-900">{title}</div>
-      <div className="mt-1 text-sm leading-relaxed text-slate-600">{body}</div>
+    <div className="surface-panel border border-slate-200/80 bg-white/90 p-5 dark:border-[var(--stroke)] dark:bg-[var(--surface-strong)]/90">
+      <div className="text-base font-semibold text-slate-900 dark:text-slate-100">{title}</div>
+      <div className="mt-1 text-sm leading-relaxed text-slate-600 dark:text-slate-300">{body}</div>
     </div>
   );
 }
 
 function Metric({ label, value }: { label: string; value: string }) {
   return (
-    <div className="rounded-xl border border-slate-200/80 bg-white p-3 shadow-sm">
-      <div className="text-xs font-medium text-slate-600">{label}</div>
-      <div className="mt-1 text-sm font-semibold text-slate-900">{value}</div>
+    <div className="rounded-xl border border-slate-200/80 bg-white p-3 shadow-sm dark:border-[var(--stroke)] dark:bg-[var(--surface-strong)]">
+      <div className="text-xs font-medium text-slate-600 dark:text-slate-400">{label}</div>
+      <div className="mt-1 text-sm font-semibold text-slate-900 dark:text-slate-100">{value}</div>
     </div>
   );
 }

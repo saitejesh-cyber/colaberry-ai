@@ -1,6 +1,7 @@
 import Link from "next/link";
 import Image from "next/image";
 import Head from "next/head";
+import dynamic from "next/dynamic";
 import {
   CSSProperties,
   MouseEvent as ReactMouseEvent,
@@ -12,9 +13,17 @@ import {
 } from "react";
 import { useRouter } from "next/router";
 import { fetchGlobalNavigation, GlobalNavigation } from "../lib/cms";
+import { captureUtmContextFromLocation } from "../lib/tracking";
 import NewsletterSignup from "./NewsletterSignup";
-import CookieConsentBanner from "./CookieConsentBanner";
-import DemoRequestWizardModal from "./DemoRequestWizardModal";
+import AnimatedSignalBanner from "./AnimatedSignalBanner";
+
+const CookieConsentBanner = dynamic(() => import("./CookieConsentBanner"), {
+  ssr: false,
+});
+const DemoRequestWizardModal = dynamic(
+  () => import("./DemoRequestWizardModal"),
+  { ssr: false },
+);
 
 const fallbackNavigation: GlobalNavigation = {
   headerLinks: [
@@ -24,12 +33,10 @@ const fallbackNavigation: GlobalNavigation = {
       order: 1,
       group: "header",
       children: [
-        { label: "Overview", href: "/aixcelerator", order: 1 },
-        { label: "Agents", href: "/aixcelerator/agents", order: 2 },
-        { label: "MCP servers", href: "/aixcelerator/mcp", order: 3 },
-        { label: "Skills", href: "/aixcelerator/skills", order: 4 },
-        { label: "Use cases", href: "/use-cases", order: 5 },
-        { label: "Discovery assistant", href: "/assistant", order: 6 },
+        { label: "Agents", href: "/aixcelerator/agents", order: 1 },
+        { label: "MCP Servers", href: "/aixcelerator/mcp", order: 2 },
+        { label: "Skills", href: "/aixcelerator/skills", order: 3 },
+        { label: "Use Cases", href: "/use-cases", order: 4 },
       ],
     },
     {
@@ -37,35 +44,29 @@ const fallbackNavigation: GlobalNavigation = {
       href: "/industries",
       order: 2,
       group: "header",
-      children: [{ label: "All industries", href: "/industries", order: 1 }],
-    },
-    {
-      label: "Solutions",
-      href: "/solutions",
-      order: 3,
-      group: "header",
-      children: [{ label: "Solutions overview", href: "/solutions", order: 1 }],
+      children: [
+        { label: "All Industries", href: "/industries", order: 1 },
+        { label: "Solutions & Playbooks", href: "/solutions", order: 2 },
+      ],
     },
     {
       label: "Resources",
       href: "/resources",
-      order: 4,
+      order: 3,
       group: "header",
       children: [
-        { label: "Resources hub", href: "/resources", order: 1 },
-        { label: "Podcasts", href: "/resources/podcasts", order: 2 },
-        { label: "White papers", href: "/resources/white-papers", order: 3 },
-        { label: "Articles", href: "/resources/articles", order: 4 },
-        { label: "Books", href: "/resources/books", order: 5 },
-        { label: "Case studies", href: "/resources/case-studies", order: 6 },
+        { label: "Podcasts", href: "/resources/podcasts", order: 1 },
+        { label: "Articles", href: "/resources/articles", order: 2 },
+        { label: "Books & White Papers", href: "/resources/books", order: 3 },
+        { label: "Case Studies", href: "/resources/case-studies", order: 4 },
       ],
     },
     {
       label: "Updates",
       href: "/updates",
-      order: 5,
+      order: 4,
       group: "header",
-      children: [{ label: "News & product", href: "/updates", order: 1 }],
+      children: [{ label: "News & Product", href: "/updates", order: 1 }],
     },
   ],
   footerColumns: [
@@ -93,7 +94,7 @@ const fallbackNavigation: GlobalNavigation = {
       ],
     },
   ],
-  cta: { label: "Request a demo", href: "/request-demo", group: "header" },
+  cta: { label: "Book a demo", href: "/request-demo", group: "header" },
   socialLinks: [
     {
       label: "LinkedIn",
@@ -358,7 +359,6 @@ function normalizeHeaderNavigation(headerLinks: GlobalNavigation["headerLinks"])
 }
 
 function getRequestDemoLabel(label: string) {
-  if (/book a demo/i.test(label)) return "Request a demo";
   return label;
 }
 
@@ -470,6 +470,62 @@ function isCatalogWorkspacePath(path: string) {
   );
 }
 
+function getSignalBannerConfig(path: string) {
+  if (path.startsWith("/resources") || path.startsWith("/updates")) {
+    return {
+      variant: "resources" as const,
+      kicker: "Knowledge Signals",
+      title: "Ship content assets with enterprise narrative quality",
+      description:
+        "Turn podcasts, articles, books, and case studies into governed discovery surfaces for teams and LLM indexing.",
+      primaryHref: "/resources",
+      primaryLabel: "Explore resources",
+      secondaryHref: "/resources/podcasts",
+      secondaryLabel: "Open podcasts",
+    };
+  }
+
+  if (path.startsWith("/solutions") || path.startsWith("/industries") || path.startsWith("/use-cases")) {
+    return {
+      variant: "solutions" as const,
+      kicker: "Execution Layer",
+      title: "Connect use cases to measurable enterprise outcomes",
+      description:
+        "Organize solution blueprints by industry, surface implementation detail, and route teams toward deployment readiness.",
+      primaryHref: "/solutions",
+      primaryLabel: "View solutions",
+      secondaryHref: "/use-cases",
+      secondaryLabel: "Browse use cases",
+    };
+  }
+
+  if (path.startsWith("/aixcelerator") || path.startsWith("/assistant") || path.startsWith("/search")) {
+    return {
+      variant: "catalog" as const,
+      kicker: "Catalog Workspace",
+      title: "Discover agents, MCP servers, and skills in one governed surface",
+      description:
+        "Use structured catalog views to compare readiness, ownership, integrations, and deployment posture before rollout.",
+      primaryHref: "/aixcelerator",
+      primaryLabel: "Open catalog",
+      secondaryHref: "/search",
+      secondaryLabel: "Search assets",
+    };
+  }
+
+  return {
+    variant: "platform" as const,
+    kicker: "Enterprise Platform",
+    title: "Build, govern, and scale AI programs from one operating layer",
+    description:
+      "Colaberry aligns strategy, catalog discovery, and production workflows across agents, MCP, skills, and evidence-backed resources.",
+    primaryHref: "/request-demo",
+    primaryLabel: "Request demo",
+    secondaryHref: "/aixcelerator",
+    secondaryLabel: "Explore platform",
+  };
+}
+
 export default function Layout({ children }: { children: ReactNode }) {
   const router = useRouter();
   const [theme, setTheme] = useState<"light" | "dark">("light");
@@ -483,6 +539,8 @@ export default function Layout({ children }: { children: ReactNode }) {
   const [openMenu, setOpenMenu] = useState<string | null>(null);
   const [allowBackdropClose, setAllowBackdropClose] = useState(true);
   const [demoWizardOpen, setDemoWizardOpen] = useState(false);
+  const [headerCompact, setHeaderCompact] = useState(false);
+  const lastScrollY = useRef(0);
   const searchInputRef = useRef<HTMLInputElement>(null);
   const searchDialogRef = useRef<HTMLDivElement>(null);
   const previousFocusRef = useRef<HTMLElement | null>(null);
@@ -507,15 +565,50 @@ export default function Layout({ children }: { children: ReactNode }) {
       } as CSSProperties),
     [workspaceRailCollapsed]
   );
+  const signalBannerConfig = useMemo(() => getSignalBannerConfig(currentPath), [currentPath]);
+  const showSignalBanner = !currentPath.startsWith("/internal");
 
   useEffect(() => {
     const rafId = window.requestAnimationFrame(() => {
       const storedTheme = window.localStorage.getItem("theme");
       const resolvedTheme = storedTheme === "dark" ? "dark" : "light";
       setTheme(resolvedTheme);
+      captureUtmContextFromLocation();
       setHasMounted(true);
     });
     return () => window.cancelAnimationFrame(rafId);
+  }, []);
+
+  useEffect(() => {
+    function handleKeyboard(e: KeyboardEvent) {
+      if ((e.metaKey || e.ctrlKey) && e.key === "b") {
+        e.preventDefault();
+        setWorkspaceRailCollapsed((prev) => !prev);
+      }
+    }
+    window.addEventListener("keydown", handleKeyboard);
+    return () => window.removeEventListener("keydown", handleKeyboard);
+  }, []);
+
+  /* Scroll-collapse header: compact after 100px scroll down, expand on scroll up */
+  useEffect(() => {
+    let ticking = false;
+    const onScroll = () => {
+      if (ticking) return;
+      ticking = true;
+      requestAnimationFrame(() => {
+        const y = window.scrollY;
+        if (y > 100 && y > lastScrollY.current) {
+          setHeaderCompact(true);
+        } else if (y < lastScrollY.current) {
+          setHeaderCompact(false);
+        }
+        lastScrollY.current = y;
+        ticking = false;
+      });
+    };
+    window.addEventListener("scroll", onScroll, { passive: true });
+    return () => window.removeEventListener("scroll", onScroll);
   }, []);
 
   useEffect(() => {
@@ -622,6 +715,25 @@ export default function Layout({ children }: { children: ReactNode }) {
       if (event.key === "Escape") {
         setMobileMenuOpen(false);
       }
+      if (event.key === "Tab") {
+        const aside = document.querySelector<HTMLElement>("[data-mobile-menu]");
+        if (!aside) return;
+        const focusable = Array.from(
+          aside.querySelectorAll<HTMLElement>(
+            'a[href], button:not([disabled]), textarea, input, select, [tabindex]:not([tabindex="-1"])'
+          )
+        );
+        if (!focusable.length) return;
+        const first = focusable[0];
+        const last = focusable[focusable.length - 1];
+        if (event.shiftKey && document.activeElement === first) {
+          event.preventDefault();
+          last.focus();
+        } else if (!event.shiftKey && document.activeElement === last) {
+          event.preventDefault();
+          first.focus();
+        }
+      }
     };
     window.addEventListener("keydown", handleKeyDown);
     return () => {
@@ -668,6 +780,25 @@ export default function Layout({ children }: { children: ReactNode }) {
       router.events.off("routeChangeStart", handleRouteChangeStart);
     };
   }, [router.events]);
+
+  /* Scroll-triggered reveal: observe `.reveal` elements and add `.revealed` */
+  useEffect(() => {
+    if (typeof IntersectionObserver === "undefined") return;
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            entry.target.classList.add("revealed");
+            observer.unobserve(entry.target);
+          }
+        });
+      },
+      { threshold: 0.12, rootMargin: "0px 0px -40px 0px" },
+    );
+    const targets = document.querySelectorAll(".reveal:not(.revealed)");
+    targets.forEach((el) => observer.observe(el));
+    return () => observer.disconnect();
+  });
 
   const toggleTheme = () => {
     setTheme((previous) => (previous === "dark" ? "light" : "dark"));
@@ -743,8 +874,6 @@ export default function Layout({ children }: { children: ReactNode }) {
     const childNavPaths = (link.children || [])
       .map((child) => normalizePath(child.href))
       .filter((href) => !isExternalHref(href));
-    const dropdownSurfaceClass =
-      "border-slate-200/80 bg-white/95 text-slate-900 dark:border-slate-700 dark:bg-slate-950/95 dark:text-slate-100";
     const menuKey = `${link.label}-${link.href}`;
     const isOpen = openMenu === menuKey;
     return (
@@ -773,33 +902,32 @@ export default function Layout({ children }: { children: ReactNode }) {
             <svg
               viewBox="0 0 20 20"
               aria-hidden="true"
-              className="h-4 w-4 text-slate-400 transition-transform group-hover:translate-y-[1px] group-hover:text-brand-ink"
-              fill="currentColor"
+              className={`h-3.5 w-3.5 text-slate-400 transition-transform duration-200 ${isOpen ? "rotate-180 text-[#DC2626]" : "group-hover:translate-y-[1px]"}`}
+              fill="none"
             >
               <path
                 d="M5.5 7.5 10 12l4.5-4.5"
                 stroke="currentColor"
-                strokeWidth="1.6"
+                strokeWidth="1.8"
                 strokeLinecap="round"
                 strokeLinejoin="round"
-                fill="none"
               />
             </svg>
           ) : null}
         </Link>
         {hasChildren ? (
           <div
-            className={`absolute left-0 top-full z-50 pt-3 transition duration-150 ${isOpen ? "pointer-events-auto opacity-100" : "pointer-events-none opacity-0"}`}
+            className={`absolute left-0 top-full z-50 pt-2.5 transition-all duration-200 ${isOpen ? "pointer-events-auto opacity-100" : "pointer-events-none opacity-0"}`}
           >
             <div
-              className={`nav-dropdown-panel min-w-[14rem] rounded-2xl border p-2.5 shadow-xl transition duration-150 ${isOpen ? "translate-y-0" : "translate-y-1"} ${dropdownSurfaceClass}`}
+              className={`mega-menu-panel min-w-[15rem] rounded-xl p-2 transition-all duration-200 ${isOpen ? "translate-y-0" : "translate-y-1.5"}`}
               role="menu"
               aria-label={`${link.label} menu`}
             >
-              <div className="px-2 pb-2 text-xs font-semibold uppercase tracking-[0.18em] text-slate-600 dark:text-slate-400">
-                Explore {link.label}
+              <div className="px-2.5 pb-2 pt-1 text-label font-semibold uppercase tracking-[0.16em] text-slate-500 dark:text-slate-400">
+                {link.label}
               </div>
-              <div className="grid gap-1">
+              <div className="grid gap-0.5">
                 {link.children?.map((child) => {
                   const isChildActive = isActiveNavPath(currentPath, child.href, childNavPaths);
                   return (
@@ -808,11 +936,13 @@ export default function Layout({ children }: { children: ReactNode }) {
                       href={child.href}
                       target={child.target ?? undefined}
                       rel={getLinkRel(child.target)}
-                      className={`nav-dropdown-link focus-ring flex items-center justify-between rounded-xl px-3 py-2 text-sm font-medium ${isChildActive ? "nav-dropdown-link-active" : ""}`}
+                      className={`nav-dropdown-link focus-ring flex items-center justify-between gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition-colors ${isChildActive ? "nav-dropdown-link-active" : ""}`}
                       role="menuitem"
                     >
                       <span>{child.label}</span>
-                      <span className="text-slate-400">→</span>
+                      <svg aria-hidden="true" viewBox="0 0 16 16" className="h-3.5 w-3.5 shrink-0 text-slate-400 transition-transform group-hover:translate-x-0.5">
+                        <path d="M6.5 3.5 11 8l-4.5 4.5" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" fill="none" />
+                      </svg>
                     </Link>
                   );
                 })}
@@ -830,11 +960,9 @@ export default function Layout({ children }: { children: ReactNode }) {
         <link rel="preconnect" href="https://www.buzzsprout.com" />
         <link rel="dns-prefetch" href="https://www.buzzsprout.com" />
       </Head>
-      <a href="#main-content" className="skip-link focus-ring">
-        Skip to content
-      </a>
-      <header className="sticky top-0 z-40 border-b border-slate-200/70 bg-white/90 shadow-[0_14px_34px_rgba(15,23,42,0.08)] backdrop-blur supports-[backdrop-filter]:bg-white/82 dark:border-slate-800/70 dark:bg-slate-950/80">
-        <div className="flex w-full items-center justify-between gap-3 px-3 py-2.5 sm:px-5 lg:px-6 xl:px-8">
+      <a href="#main-content" className="sr-only focus:not-sr-only focus:absolute focus:top-2 focus:left-2 focus:z-[100] focus:rounded-md focus:bg-white focus:px-4 focus:py-2 focus:text-sm focus:font-semibold focus:text-brand-deep focus:shadow-lg focus:ring-2 focus:ring-[#DC2626]/40">Skip to content</a>
+      <header role="banner" className={`site-header sticky top-0 z-40 border-b border-[var(--stroke)] bg-white dark:bg-[#111827] ${headerCompact ? "site-header--compact bg-white/85 dark:bg-[#111827]/90" : "shadow-sm"}`}>
+        <div className={`flex w-full items-center justify-between gap-3 px-4 transition-[padding] duration-200 sm:px-6 lg:px-8 ${headerCompact ? "py-1.5" : "py-3"}`}>
           <div className="flex items-center gap-3">
             <Link href="/" className="flex min-w-0 items-center gap-2">
               <span className="inline-flex items-center justify-center px-1">
@@ -855,20 +983,17 @@ export default function Layout({ children }: { children: ReactNode }) {
                   className="brand-logo-dark h-8 w-auto sm:h-9 lg:h-10"
                 />
               </span>
-              <div className={`hidden leading-tight ${isCatalogWorkspace ? "min-[1820px]:block" : "md:block"}`}>
-                <div className="text-sm font-semibold text-brand-ink">AI Platform</div>
-                <div className="text-xs text-slate-700">Consulting • AIXcelerator • Labs</div>
-              </div>
             </Link>
           </div>
 
-          <nav className="hidden min-w-0 items-center gap-1.5 text-sm min-[1240px]:flex">
+          <nav role="navigation" aria-label="Main navigation" className="hidden min-w-0 items-center gap-1.5 text-sm min-[1240px]:flex">
             {isCatalogWorkspace ? (
               <>
                 <button
                   type="button"
                   onClick={() => setWorkspaceRailCollapsed((current) => !current)}
                   className="btn btn-secondary btn-sm"
+                  aria-expanded={!workspaceRailCollapsed}
                   aria-label={workspaceRailCollapsed ? "Expand catalog menu" : "Collapse catalog menu"}
                 >
                   <svg aria-hidden="true" viewBox="0 0 20 20" className="h-4 w-4" fill="none">
@@ -883,7 +1008,7 @@ export default function Layout({ children }: { children: ReactNode }) {
                     {workspaceRailCollapsed ? "Expand menu" : "Collapse menu"}
                   </span>
                 </button>
-                <span className="hidden rounded-full border border-slate-200/80 bg-white/80 px-2.5 py-1 text-xs font-semibold uppercase tracking-[0.14em] text-slate-500 min-[1560px]:inline-flex dark:border-slate-700/80 dark:bg-slate-900/70 dark:text-slate-300">
+                <span className="hidden rounded-md border border-slate-200/80 bg-white/80 px-2.5 py-1 text-xs font-semibold uppercase tracking-[0.14em] text-slate-500 min-[1560px]:inline-flex dark:border-slate-700/80 dark:bg-slate-900/70 dark:text-slate-300">
                   Catalog workspace
                 </span>
                 <div className="hidden h-6 w-px bg-slate-200/80 min-[1560px]:block dark:bg-slate-700/80" />
@@ -898,6 +1023,7 @@ export default function Layout({ children }: { children: ReactNode }) {
                 type="button"
                 onClick={openSearch}
                 className="btn btn-ghost btn-icon"
+                aria-expanded={searchOpen}
                 aria-label="Open global search"
               >
                 <svg aria-hidden="true" viewBox="0 0 24 24" className="h-5 w-5" fill="none">
@@ -930,7 +1056,7 @@ export default function Layout({ children }: { children: ReactNode }) {
                 href={globalNav.cta.href}
                 target={globalNav.cta.target ?? undefined}
                 rel={getLinkRel(globalNav.cta.target)}
-                className="btn btn-primary ml-1 h-10 shrink-0 whitespace-nowrap px-4 text-sm max-[1500px]:h-9 max-[1500px]:px-3 max-[1500px]:text-xs"
+                className="btn btn-cta ml-1 h-10 shrink-0 whitespace-nowrap px-4 text-sm max-[1500px]:h-9 max-[1500px]:px-3 max-[1500px]:text-xs"
                 onClick={(event) => handleDemoCtaClick(event, globalNav.cta?.href)}
               >
                 <span>{getRequestDemoLabel(globalNav.cta.label)}</span>
@@ -946,7 +1072,8 @@ export default function Layout({ children }: { children: ReactNode }) {
                   setMobileMenuOpen(false);
                   setWorkspaceMobileRailOpen(true);
                 }}
-                className="focus-ring inline-flex h-10 items-center gap-2 rounded-full border border-slate-200/70 bg-white/85 px-3 text-sm font-semibold text-slate-700 hover:border-brand-blue/35 hover:text-brand-deep dark:border-slate-700 dark:bg-slate-900/70 dark:text-slate-100"
+                className="focus-ring inline-flex h-10 items-center gap-2 rounded-lg border border-slate-200/70 bg-white/85 px-3 text-sm font-semibold text-slate-700 hover:border-[#DC2626]/35 hover:text-[#111827] dark:border-slate-700 dark:bg-slate-900/70 dark:text-slate-100"
+                aria-expanded={workspaceMobileRailOpen}
                 aria-label="Open catalog sidebar"
               >
                 <svg aria-hidden="true" viewBox="0 0 24 24" className="h-4.5 w-4.5" fill="none">
@@ -959,6 +1086,7 @@ export default function Layout({ children }: { children: ReactNode }) {
               type="button"
               onClick={openSearch}
               className="btn btn-ghost btn-icon"
+              aria-expanded={searchOpen}
               aria-label="Open global search"
             >
               <svg aria-hidden="true" viewBox="0 0 24 24" className="h-5 w-5" fill="none">
@@ -984,30 +1112,43 @@ export default function Layout({ children }: { children: ReactNode }) {
               <span className="sr-only">{themeToggleLabel}</span>
               <ThemeIcon isDark={isDarkMode} />
             </button>
-            {!isCatalogWorkspace ? (
-              <button
-                type="button"
-                onClick={openMobileMenu}
-                className="focus-ring inline-flex h-10 items-center gap-2 rounded-full border border-slate-200/70 bg-white/85 px-3 text-sm font-semibold text-slate-700 hover:border-brand-blue/35 hover:text-brand-deep dark:border-slate-700 dark:bg-slate-900/70 dark:text-slate-100"
-                aria-label="Open navigation menu"
-              >
-                <svg aria-hidden="true" viewBox="0 0 24 24" className="h-4.5 w-4.5" fill="none">
-                  <path d="M4 7h16M4 12h16M4 17h16" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" />
-                </svg>
-                <span>Menu</span>
-              </button>
-            ) : null}
+            <button
+              type="button"
+              onClick={openMobileMenu}
+              className="focus-ring inline-flex h-10 items-center gap-2 rounded-lg border border-slate-200/70 bg-white/85 px-3 text-sm font-semibold text-slate-700 hover:border-[#DC2626]/35 hover:text-[#111827] dark:border-slate-700 dark:bg-slate-900/70 dark:text-slate-100"
+              aria-expanded={mobileMenuOpen}
+              aria-label="Open navigation menu"
+            >
+              <svg aria-hidden="true" viewBox="0 0 24 24" className="h-4.5 w-4.5" fill="none">
+                <path d="M4 7h16M4 12h16M4 17h16" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" />
+              </svg>
+              <span>Menu</span>
+            </button>
           </div>
         </div>
       </header>
       {mobileMenuOpen ? (
         <div
-          className="fixed inset-0 z-[55] bg-slate-950/45 backdrop-blur-sm min-[1240px]:hidden"
+          className="fixed inset-0 z-[55] bg-slate-950/45 backdrop-blur-sm min-[1240px]:hidden animate-fade-in"
           onClick={closeMobileMenu}
         >
           <aside
-            className="absolute right-0 top-0 flex h-full w-[min(92vw,380px)] flex-col border-l border-slate-200/70 bg-white/95 p-4 shadow-2xl dark:border-slate-700 dark:bg-slate-950/95"
+            data-mobile-menu
+            className="absolute right-0 top-0 flex h-full w-[min(92vw,380px)] flex-col border-l border-slate-200/70 bg-white/95 p-4 shadow-2xl dark:border-[#374151] dark:bg-[#111827]/95 animate-slide-in-right"
             onClick={(event) => event.stopPropagation()}
+            onTouchStart={(e) => {
+              const startX = e.touches[0].clientX;
+              const aside = e.currentTarget;
+              const onMove = (ev: TouchEvent) => {
+                const dx = ev.touches[0].clientX - startX;
+                if (dx > 80) {
+                  closeMobileMenu();
+                  aside.removeEventListener("touchmove", onMove);
+                }
+              };
+              aside.addEventListener("touchmove", onMove, { passive: true });
+              aside.addEventListener("touchend", () => aside.removeEventListener("touchmove", onMove), { once: true });
+            }}
           >
             <div className="flex items-center justify-between">
               <div>
@@ -1042,7 +1183,7 @@ export default function Layout({ children }: { children: ReactNode }) {
                   return (
                     <div
                       key={`${link.label}-${link.href}`}
-                      className="rounded-2xl border border-slate-200/80 bg-white/90 p-1 dark:border-slate-700/80 dark:bg-slate-900/70"
+                      className="rounded-lg border border-slate-200/80 bg-white/90 p-1 dark:border-slate-700/80 dark:bg-slate-900/70"
                     >
                       <MobileLink
                         href={link.href}
@@ -1076,7 +1217,7 @@ export default function Layout({ children }: { children: ReactNode }) {
               </div>
             </div>
 
-            <div className="mt-3 rounded-2xl border border-slate-200/80 bg-white/90 p-3 dark:border-slate-700/80 dark:bg-slate-900/70">
+            <div className="mt-3 rounded-lg border border-slate-200/80 bg-white/90 p-3 dark:border-slate-700/80 dark:bg-slate-900/70">
               <div className="text-xs font-semibold uppercase tracking-[0.18em] text-slate-600 dark:text-slate-400">
                 Preferences
               </div>
@@ -1101,7 +1242,7 @@ export default function Layout({ children }: { children: ReactNode }) {
                   href={globalNav.cta.href}
                   target={globalNav.cta.target ?? undefined}
                   rel={getLinkRel(globalNav.cta.target)}
-                  className="btn btn-primary mt-2 h-10 w-full justify-center text-sm"
+                  className="btn btn-cta mt-2 h-10 w-full justify-center text-sm"
                   onClick={(event) => {
                     closeMobileMenu();
                     handleDemoCtaClick(event, globalNav.cta?.href);
@@ -1121,7 +1262,7 @@ export default function Layout({ children }: { children: ReactNode }) {
           onClick={() => setWorkspaceMobileRailOpen(false)}
         >
           <aside
-            className="absolute left-0 top-0 flex h-full w-[min(88vw,340px)] flex-col border-r border-slate-200/70 bg-white/95 p-4 shadow-2xl dark:border-slate-700 dark:bg-slate-950/95"
+            className="absolute left-0 top-0 flex h-full w-[min(88vw,340px)] flex-col border-r border-slate-200/70 bg-white/95 p-4 shadow-2xl dark:border-[#374151] dark:bg-[#111827]/95"
             onClick={(event) => event.stopPropagation()}
           >
             <div className="flex items-center justify-between">
@@ -1148,7 +1289,7 @@ export default function Layout({ children }: { children: ReactNode }) {
             <div className="mt-4 flex-1 overflow-y-auto">
               {workspaceSections.map((section) => (
                 <div key={section.title} className="mb-4">
-                  <div className="px-1 text-[11px] font-semibold uppercase tracking-[0.18em] text-slate-500 dark:text-slate-300">
+                  <div className="px-1 text-label font-semibold uppercase tracking-[0.18em] text-slate-500 dark:text-slate-300">
                     {section.title}
                   </div>
                   <div className="mt-2 grid gap-1">
@@ -1184,12 +1325,12 @@ export default function Layout({ children }: { children: ReactNode }) {
 
       {isCatalogWorkspace ? (
         <div className="w-full flex-1 min-[1240px]:grid min-[1240px]:grid-cols-[var(--workspace-rail-width)_minmax(0,1fr)] min-[1240px]:gap-6 min-[1240px]:px-8" style={workspaceGridStyle}>
-          <aside className="hidden min-[1240px]:block">
-            <div className="main-offset sticky top-0 h-screen pb-6">
-              <div className="surface-panel h-full overflow-y-auto p-3">
+          <aside className="hidden min-[1240px]:block" aria-label="Catalog navigation">
+            <div className="sticky pb-6" style={{ top: "var(--site-header-height)", height: "calc(100dvh - var(--site-header-height))" }}>
+              <div className="surface-panel h-full overflow-y-auto p-3" style={{ maskImage: "linear-gradient(to bottom, black 85%, transparent 100%)", WebkitMaskImage: "linear-gradient(to bottom, black 85%, transparent 100%)" }}>
                 {workspaceSections.map((section) => (
                   <div key={section.title} className="mb-4">
-                    <div className={`px-2 text-[11px] font-semibold uppercase tracking-[0.18em] text-slate-500 dark:text-slate-300 ${workspaceRailCollapsed ? "text-center" : ""}`}>
+                    <div className={`px-2 text-label font-semibold uppercase tracking-[0.18em] text-slate-500 dark:text-slate-300 ${workspaceRailCollapsed ? "text-center" : ""}`}>
                       {workspaceRailCollapsed ? section.title.charAt(0) : section.title}
                     </div>
                     <div className="mt-2 grid gap-1">
@@ -1204,11 +1345,11 @@ export default function Layout({ children }: { children: ReactNode }) {
                             title={workspaceRailCollapsed ? link.label : undefined}
                             className={`focus-ring flex items-center gap-2 rounded-xl border px-2.5 py-2 text-sm font-semibold transition ${
                               isActive
-                                ? "border-brand-blue/40 bg-brand-blue/10 text-brand-deep dark:border-sky-300/55 dark:bg-sky-900/35 dark:text-sky-100"
-                                : "border-slate-200/70 bg-white/80 text-slate-700 hover:border-brand-blue/35 hover:text-brand-deep dark:border-slate-700 dark:bg-slate-900/75 dark:text-slate-200 dark:hover:border-sky-300/45 dark:hover:text-sky-100"
+                                ? "border-[#DC2626]/40 bg-[#DC2626]/10 text-[#111827] dark:border-[#F87171]/55 dark:bg-[#F87171]/25 dark:text-[#F9FAFB]"
+                                : "border-slate-200/70 bg-white/80 text-slate-700 hover:border-[#DC2626]/35 hover:text-[#111827] dark:border-slate-700 dark:bg-slate-900/75 dark:text-slate-200 dark:hover:border-[#F87171]/45 dark:hover:text-[#F9FAFB]"
                             } ${workspaceRailCollapsed ? "justify-center" : ""}`}
                           >
-                            <span className={`inline-flex h-7 w-7 shrink-0 items-center justify-center rounded-full border text-[11px] font-semibold ${isActive ? "border-brand-blue/45 bg-white/90 text-brand-deep dark:border-sky-200/60 dark:bg-slate-900/85 dark:text-sky-100" : "border-slate-200/80 bg-white/90 text-slate-500 dark:border-slate-700 dark:bg-slate-900/80 dark:text-slate-300"}`}>
+                            <span className={`inline-flex h-7 w-7 shrink-0 items-center justify-center rounded-md border text-label font-semibold ${isActive ? "border-[#DC2626]/45 bg-white/90 text-[#111827] dark:border-[#F87171]/60 dark:bg-[#374151]/85 dark:text-[#F9FAFB]" : "border-slate-200/80 bg-white/90 text-slate-500 dark:border-slate-700 dark:bg-slate-900/80 dark:text-slate-300"}`}>
                               {link.label
                                 .split(" ")
                                 .map((token) => token[0])
@@ -1236,74 +1377,71 @@ export default function Layout({ children }: { children: ReactNode }) {
         </main>
       )}
 
-      <footer className="footer-surface mt-10 border-t border-slate-200/70 dark:border-slate-800/70">
-        <div className="px-4 pt-8 sm:px-6 lg:px-8">
-          <section className="footer-callout-panel grid gap-5 rounded-[1.75rem] border border-slate-200/70 p-6 shadow-[0_24px_56px_rgba(15,23,42,0.14)] dark:border-slate-700/70 lg:grid-cols-[1.5fr_1fr] lg:items-end lg:p-7">
+      {showSignalBanner ? (
+        <div className="px-4 sm:px-6 lg:px-8">
+          <AnimatedSignalBanner {...signalBannerConfig} />
+        </div>
+      ) : null}
+
+      <footer role="contentinfo" className="footer-surface mt-10 border-t border-slate-200/60 dark:border-slate-700/40">
+        <div className="px-4 pt-10 sm:px-6 lg:px-8">
+          <section className="cta-band-enterprise grid gap-6 rounded-2xl border border-slate-200/70 p-7 shadow-[0_24px_56px_rgba(15,23,42,0.14)] dark:border-slate-700/70 sm:p-8 lg:grid-cols-[1.5fr_1fr] lg:items-end lg:p-10">
             <div>
-              <div className="inline-flex items-center gap-2 rounded-full border border-cyan-300/35 bg-slate-950/30 px-3 py-1 text-xs font-semibold uppercase tracking-[0.18em] text-cyan-100">
+              <div className="inline-flex items-center gap-2 rounded-md border border-brand-teal-300/35 bg-slate-950/30 px-3 py-1 text-label font-semibold uppercase tracking-[0.18em] text-brand-teal-100">
+                <span aria-hidden="true" className="h-1.5 w-1.5 rounded-full bg-[#059669]" />
                 Enterprise AI delivery
               </div>
-              <h2 className="mt-3 text-2xl font-semibold leading-tight text-white sm:text-3xl">
+              <h2 className="font-display mt-4 text-display-xs font-bold leading-tight text-white sm:text-display-sm">
                 Build once. Govern centrally. Scale AI across every domain.
               </h2>
-              <p className="mt-3 max-w-2xl text-sm leading-relaxed text-slate-200 sm:text-base">
+              <p className="mt-3 max-w-2xl text-caption leading-relaxed text-slate-300 sm:text-base">
                 Colaberry brings agents, MCP servers, skills, podcasts, and use cases into one operating surface designed for teams and LLM workflows.
               </p>
             </div>
             <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-1">
-              <Link href="/request-demo" className="btn btn-primary h-10 justify-center text-sm">
-                Request a demo
+              <Link href="/request-demo" className="btn btn-cta h-11 justify-center text-sm font-semibold">
+                Book a demo
               </Link>
-              <Link href="/aixcelerator" className="btn border border-white/35 bg-white/90 text-slate-900 hover:bg-white h-10 justify-center text-sm">
+              <Link href="/aixcelerator" className="btn border border-white/25 bg-white/90 text-slate-900 hover:bg-white h-11 justify-center text-sm font-semibold">
                 Explore platform
               </Link>
-              <div className="rounded-2xl border border-white/20 bg-white/10 px-4 py-3 text-sm text-slate-100 sm:col-span-2 lg:col-span-1">
-                <div className="text-xs font-semibold uppercase tracking-[0.16em] text-slate-300">Built for</div>
-                <div className="mt-1">AI consulting • Enterprise delivery • Production rollout</div>
+              <div className="rounded-lg border border-white/15 bg-white/8 px-4 py-3 text-sm text-slate-200 sm:col-span-2 lg:col-span-1">
+                <div className="text-label font-semibold uppercase tracking-[0.16em] text-slate-400">Built for</div>
+                <div className="mt-1.5 text-sm">AI consulting · Enterprise delivery · Production rollout</div>
               </div>
             </div>
           </section>
         </div>
-        <div className="grid w-full grid-cols-1 gap-8 px-4 py-10 text-sm text-slate-800 dark:text-slate-200 sm:px-6 lg:grid-cols-[1.35fr_1fr_1fr_auto] lg:px-8">
-          <div className="space-y-3">
-            <div className="inline-flex items-center gap-2 rounded-full border border-brand-blue/25 bg-white px-3 py-1 text-xs font-semibold uppercase tracking-[0.16em] text-brand-deep dark:border-brand-teal/30 dark:bg-slate-900/70">
-              Enterprise AI destination
+        <div className="border-b border-[#E5E7EB] px-4 py-6 sm:px-6 lg:px-8 dark:border-[#374151]">
+          <div className="mx-auto flex max-w-7xl flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+            <div>
+              <div className="text-sm font-semibold text-[#111827] dark:text-[#F8FAFC]">Stay in the loop</div>
+              <p className="mt-1 text-sm text-[#6B7280] dark:text-[#94A3B8]">Get product updates and enterprise AI insights.</p>
             </div>
-            <div className="flex items-center gap-2">
-              <span className="inline-flex items-center justify-center px-1">
-                <Image
-                  src="/brand/colaberry-ai-logo.svg"
-                  alt="Colaberry.AI"
-                  width={260}
-                  height={60}
-                  className="brand-logo-light h-9 w-auto"
-                />
-                <Image
-                  src="/brand/colaberry-ai-logo-dark.svg"
-                  alt="Colaberry.AI"
-                  width={260}
-                  height={60}
-                  className="brand-logo-dark h-9 w-auto"
-                />
-              </span>
+            <NewsletterSignup compact sourcePath={router.asPath} sourcePage="layout-footer" title="" description="" ctaLabel="Subscribe" />
+          </div>
+        </div>
+        <div className="grid w-full grid-cols-2 gap-8 px-4 py-16 text-sm sm:grid-cols-3 sm:px-6 lg:grid-cols-5 lg:px-8 lg:py-20">
+          <div>
+            <div className="text-xs font-semibold uppercase tracking-[0.18em] text-[#111827] dark:text-[#F8FAFC]">
+              Company
             </div>
-            <p className="max-w-md text-sm leading-relaxed text-slate-700 dark:text-slate-300">
-              AI consulting and delivery platform for discoverable agents, MCP servers, and trusted knowledge assets.
-            </p>
-            <div className="flex flex-wrap items-center gap-3">
-              <Link href="/request-demo" className="btn btn-primary btn-compact">
-                Request a demo
-              </Link>
-              <Link href="/aixcelerator" className="btn btn-secondary btn-compact">
-                Explore platform
-              </Link>
+            <div className="mt-3 grid gap-2.5">
+              <div>
+                <FooterLink href="/">About</FooterLink>
+              </div>
+              <div>
+                <FooterLink href="https://colaberry.com/careers" target="_blank">Careers</FooterLink>
+              </div>
+              <div>
+                <FooterLink href="/request-demo">Contact</FooterLink>
+              </div>
             </div>
-            <div className="pt-1 text-xs text-slate-700 dark:text-slate-300">© {new Date().getFullYear()} Colaberry AI</div>
           </div>
 
           {globalNav.footerColumns.map((column, index) => (
             <div key={`${column.title}-${index}`}>
-              <div className="text-xs font-semibold uppercase tracking-[0.18em] text-slate-900 dark:text-slate-100">
+              <div className="text-xs font-semibold uppercase tracking-[0.18em] text-[#111827] dark:text-[#F8FAFC]">
                 {column.title}
               </div>
               <div className="mt-3 grid gap-2.5">
@@ -1313,7 +1451,7 @@ export default function Layout({ children }: { children: ReactNode }) {
                       {link.label}
                     </FooterLink>
                     {link.children?.length ? (
-                      <div className="ml-3 mt-1.5 grid gap-1.5 border-l border-slate-200/80 pl-3 dark:border-slate-700/80">
+                      <div className="ml-3 mt-1.5 grid gap-1.5 border-l border-[#E5E7EB] pl-3 dark:border-[#374151]">
                         {link.children.map((child) => (
                           <FooterLink
                             key={`${child.label}-${child.href}`}
@@ -1332,24 +1470,60 @@ export default function Layout({ children }: { children: ReactNode }) {
             </div>
           ))}
 
-          <div className="sm:justify-self-end">
-            <div className="max-w-sm">
-              <NewsletterSignup
-                compact
-                sourcePath={router.asPath}
-                sourcePage="layout-footer"
-                title="Newsletter"
-                description="Get product updates and enterprise AI signals."
-                ctaLabel="Subscribe"
-              />
+          <div>
+            <div className="text-xs font-semibold uppercase tracking-[0.18em] text-[#111827] dark:text-[#F8FAFC]">
+              Connect
             </div>
-            <div className="mt-4 text-xs font-semibold uppercase tracking-[0.18em] text-slate-900 dark:text-slate-100 sm:text-right">
-              Stay connected
+            <div className="mt-3 grid gap-2.5">
+              <div><FooterLink href="/updates">Updates</FooterLink></div>
+              <div><FooterLink href="/resources/podcasts">Podcast</FooterLink></div>
+              <div><FooterLink href="/search">Search</FooterLink></div>
             </div>
-            <p className="mt-2 text-xs text-slate-600 dark:text-slate-300 sm:text-right">
-              Follow platform updates and enterprise AI signals.
-            </p>
-            <div className="mt-3 flex items-center gap-3 sm:justify-end">
+            <div className="mt-6">
+              <div className="text-[0.625rem] font-semibold uppercase tracking-[0.18em] text-[#6B7280] dark:text-[#94A3B8]">
+                Enterprise AI. Governed. Delivered.
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* Trust + compliance badges */}
+        <div className="border-t border-[#E5E7EB] px-4 py-4 dark:border-[#374151] sm:px-6 lg:px-8">
+          <div className="flex flex-wrap items-center justify-center gap-4 text-xs text-[#6B7280] dark:text-[#94A3B8]">
+            <span className="flex items-center gap-1.5">
+              <svg viewBox="0 0 16 16" className="h-3.5 w-3.5" fill="none" stroke="currentColor" strokeWidth="1.5"><path d="M8 14s5.33-2.67 5.33-6.67V3.33L8 1.33 2.67 3.33v4C2.67 11.33 8 14 8 14z" /></svg>
+              HSTS Preload
+            </span>
+            <span className="flex items-center gap-1.5">
+              <svg viewBox="0 0 16 16" className="h-3.5 w-3.5" fill="none" stroke="currentColor" strokeWidth="1.5"><rect x="2" y="7.33" width="12" height="7.33" rx="1.33" /><path d="M4.67 7.33V4.67a3.33 3.33 0 0 1 6.66 0v2.66" /></svg>
+              CSP Headers
+            </span>
+            <span className="flex items-center gap-1.5">
+              <svg viewBox="0 0 16 16" className="h-3.5 w-3.5" fill="none" stroke="currentColor" strokeWidth="1.5"><circle cx="8" cy="8" r="6.5" /><path d="m6 8 1.33 1.33L10 6.67" /></svg>
+              WCAG AA
+            </span>
+            <span className="flex items-center gap-1.5">
+              <svg viewBox="0 0 16 16" className="h-3.5 w-3.5" fill="none" stroke="currentColor" strokeWidth="1.5"><circle cx="8" cy="8" r="6.5" /><path d="M2 8h12M8 2a10.2 10.2 0 0 1 2.67 6A10.2 10.2 0 0 1 8 14a10.2 10.2 0 0 1-2.67-6A10.2 10.2 0 0 1 8 2z" /></svg>
+              GDPR Ready
+            </span>
+          </div>
+        </div>
+        <div className="border-t border-[#E5E7EB] px-4 py-4 text-xs dark:border-[#374151] sm:px-6 lg:px-8">
+          <div className="flex flex-wrap items-center justify-between gap-4">
+            <div className="flex flex-wrap items-center gap-4">
+              <span className="text-[#6B7280] dark:text-[#94A3B8]">&copy; {new Date().getFullYear()} Colaberry, Inc. All rights reserved.</span>
+              {globalNav.legalLinks.map((link) => (
+                <FooterLink
+                  key={`${link.label}-${link.href}`}
+                  href={link.href}
+                  target={link.target}
+                  className="text-xs font-medium"
+                >
+                  {link.label}
+                </FooterLink>
+              ))}
+            </div>
+            <div className="flex items-center gap-3">
               {globalNav.socialLinks.map((link) => (
                 <SocialIcon
                   key={`${link.label}-${link.href}`}
@@ -1362,22 +1536,6 @@ export default function Layout({ children }: { children: ReactNode }) {
             </div>
           </div>
         </div>
-        {globalNav.legalLinks.length > 0 ? (
-          <div className="border-t border-slate-200/70 px-4 py-4 text-xs text-slate-600 dark:border-slate-800/70 dark:text-slate-300 sm:px-6 lg:px-8">
-            <div className="flex flex-wrap items-center gap-4">
-              {globalNav.legalLinks.map((link) => (
-                <FooterLink
-                  key={`${link.label}-${link.href}`}
-                  href={link.href}
-                  target={link.target}
-                  className="text-xs font-medium"
-                >
-                  {link.label}
-                </FooterLink>
-              ))}
-            </div>
-          </div>
-        ) : null}
       </footer>
       {searchOpen ? (
         <div
@@ -1394,12 +1552,12 @@ export default function Layout({ children }: { children: ReactNode }) {
             aria-modal="true"
             aria-labelledby="global-search-title"
             ref={searchDialogRef}
-            className="w-full max-w-2xl rounded-3xl border border-slate-200/70 bg-white p-6 shadow-2xl dark:border-slate-700 dark:bg-slate-950"
+            className="w-full max-w-2xl rounded-xl border border-slate-200/70 bg-white p-6 shadow-2xl dark:border-[#374151] dark:bg-[#111827]"
             onClick={(event) => event.stopPropagation()}
           >
             <div className="flex items-start justify-between gap-4">
               <div>
-                <div className="text-xs font-semibold uppercase tracking-[0.2em] text-slate-400">
+                <div className="text-xs font-semibold uppercase tracking-[0.2em] text-slate-400 dark:text-[#9CA3AF]">
                   Global search
                 </div>
                 <h2 id="global-search-title" className="mt-1 text-2xl font-semibold text-slate-900 dark:text-white">
@@ -1434,9 +1592,9 @@ export default function Layout({ children }: { children: ReactNode }) {
                     name="q"
                     type="search"
                     placeholder="Search agents, MCP servers, skills, resources, updates..."
-                    className="w-full rounded-full border border-slate-200 bg-white px-4 py-3 pr-12 text-sm text-slate-900 placeholder:text-slate-500 shadow-sm focus:border-brand-blue/40 focus:outline-none focus:ring-2 focus:ring-brand-blue/25 dark:border-slate-700 dark:bg-slate-900/70 dark:text-slate-100 dark:placeholder:text-slate-500"
+                    className="w-full rounded-lg border border-slate-200 bg-white px-4 py-3 pr-12 text-sm text-slate-900 placeholder:text-slate-500 shadow-sm focus:border-[#DC2626]/40 focus:outline-none focus:ring-2 focus:ring-[#DC2626]/25 dark:border-slate-700 dark:bg-slate-900/70 dark:text-slate-100 dark:placeholder:text-slate-500"
                   />
-                  <span className="absolute right-4 top-1/2 -translate-y-1/2 text-slate-400">
+                  <span className="absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 dark:text-[#9CA3AF]">
                     <svg aria-hidden="true" viewBox="0 0 24 24" className="h-5 w-5" fill="none">
                       <path
                         d="M10.5 18a7.5 7.5 0 1 1 0-15 7.5 7.5 0 0 1 0 15Z"
@@ -1474,7 +1632,7 @@ export default function Layout({ children }: { children: ReactNode }) {
                 <Link
                   key={item.href}
                   href={item.href}
-                  className="focus-ring rounded-2xl border border-slate-200/80 bg-white px-4 py-3 text-sm font-semibold text-slate-800 hover:border-brand-blue/30 hover:text-brand-blue dark:border-slate-700 dark:bg-slate-900/70 dark:text-slate-100"
+                  className="focus-ring rounded-lg border border-slate-200/80 bg-white px-4 py-3 text-sm font-semibold text-slate-800 hover:border-[#DC2626]/30 hover:text-[#DC2626] dark:border-[#374151] dark:bg-[#1F2937]/70 dark:text-slate-100"
                 >
                   {item.label}
                 </Link>
@@ -1485,10 +1643,10 @@ export default function Layout({ children }: { children: ReactNode }) {
       ) : null}
       {isCatalogWorkspace && discoveryOpen ? (
         <div className="fixed bottom-4 left-4 right-4 z-40 sm:left-auto sm:right-6">
-          <div className="surface-panel border border-slate-200/70 bg-white/95 p-4 shadow-xl dark:border-slate-700 dark:bg-slate-950/90">
+          <div className="surface-panel border border-slate-200/70 bg-white/95 p-4 shadow-xl dark:border-[#374151] dark:bg-[#111827]/90">
             <div className="flex items-start justify-between gap-4">
               <div>
-                <div className="text-xs font-semibold uppercase tracking-[0.2em] text-slate-400">
+                <div className="text-xs font-semibold uppercase tracking-[0.2em] text-slate-400 dark:text-[#9CA3AF]">
                   Quick start
                 </div>
                 <div className="mt-1 text-lg font-semibold text-slate-900 dark:text-white">
@@ -1526,7 +1684,7 @@ export default function Layout({ children }: { children: ReactNode }) {
                 <Link
                   key={item.href}
                   href={item.href}
-                  className="focus-ring rounded-xl border border-slate-200/70 bg-white px-3 py-2 text-sm font-semibold text-slate-700 hover:border-brand-blue/30 hover:text-brand-blue dark:border-slate-700 dark:bg-slate-900/70 dark:text-slate-100"
+                  className="focus-ring rounded-xl border border-slate-200/70 bg-white px-3 py-2 text-sm font-semibold text-slate-700 hover:border-[#DC2626]/30 hover:text-[#DC2626] dark:border-slate-700 dark:bg-slate-900/70 dark:text-slate-100"
                 >
                   {item.label}
                 </Link>
@@ -1540,7 +1698,7 @@ export default function Layout({ children }: { children: ReactNode }) {
           <form
             action="/search"
             method="get"
-            className="pointer-events-auto flex w-full max-w-2xl items-center gap-2 rounded-2xl border border-slate-200/80 bg-white/95 p-2 shadow-xl dark:border-slate-700 dark:bg-slate-950/95 lg:w-[36rem]"
+            className="pointer-events-auto flex w-full max-w-2xl items-center gap-2 rounded-lg border border-slate-200/80 bg-white/95 p-2 shadow-xl dark:border-[#374151] dark:bg-[#111827]/95 lg:w-[36rem]"
           >
             <label htmlFor="workspace-ask" className="sr-only">
               Ask about this page
@@ -1550,7 +1708,7 @@ export default function Layout({ children }: { children: ReactNode }) {
               name="q"
               type="search"
               placeholder="Ask this page: agents, MCP servers, skills, use cases..."
-              className="w-full rounded-xl border border-transparent bg-transparent px-3 py-2 text-sm text-slate-900 placeholder:text-slate-400 focus:border-brand-blue/35 focus:outline-none dark:text-slate-100 dark:placeholder:text-slate-500"
+              className="w-full rounded-xl border border-transparent bg-transparent px-3 py-2 text-sm text-slate-900 placeholder:text-slate-400 focus:border-[#DC2626]/35 focus:outline-none dark:text-slate-100 dark:placeholder:text-slate-500"
             />
             <button type="submit" className="btn btn-primary btn-sm whitespace-nowrap">
               Ask
@@ -1565,6 +1723,17 @@ export default function Layout({ children }: { children: ReactNode }) {
         sourcePage="header-cta-wizard"
         sourcePath={router.asPath}
       />
+      {/* Back-to-top floating button */}
+      <button
+        type="button"
+        aria-label="Back to top"
+        className={`back-to-top btn-icon${headerCompact ? " visible" : ""}`}
+        onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
+      >
+        <svg width="20" height="20" viewBox="0 0 20 20" fill="none" aria-hidden="true">
+          <path d="M10 15V5M10 5l-4 4M10 5l4 4" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+        </svg>
+      </button>
     </div>
   );
 }
@@ -1595,7 +1764,7 @@ function MobileLink({
     "hover:bg-slate-50",
     "dark:text-slate-200",
     "dark:hover:bg-slate-800/70",
-    active ? "bg-brand-blue/10 text-brand-deep dark:bg-brand-blue/15 dark:text-sky-200" : "",
+    active ? "bg-[#DC2626]/10 text-[#111827] dark:bg-[#F87171]/15 dark:text-[#F9FAFB]" : "",
     className,
   ]
     .filter(Boolean)
@@ -1630,6 +1799,10 @@ function FooterLink({
     "inline-flex",
     "items-center",
     "gap-1",
+    "text-[#111827]",
+    "dark:text-[#E5E7EB]",
+    "hover:text-slate-600",
+    "dark:hover:text-slate-200",
     "hover:underline",
     "underline-offset-4",
     className ?? "font-semibold",
@@ -1688,7 +1861,7 @@ function SocialIcon({
       href={href}
       target={linkTarget}
       rel={getLinkRel(linkTarget)}
-      className="social-button focus-ring inline-flex h-11 w-11 items-center justify-center rounded-full border border-slate-200/70 bg-white/80 text-slate-500 transition hover:border-brand-blue/40 hover:text-brand-blue hover:shadow-sm dark:border-slate-700 dark:bg-slate-900/70 dark:text-slate-300 dark:hover:border-brand-teal/50 dark:hover:text-white"
+      className="social-button focus-ring inline-flex h-11 w-11 items-center justify-center rounded-lg border border-slate-200/70 bg-white/80 text-slate-500 transition hover:border-slate-300 hover:text-slate-700 hover:shadow-sm dark:border-slate-700 dark:bg-slate-900/70 dark:text-slate-300 dark:hover:border-slate-600 dark:hover:text-white"
       aria-label={label}
     >
       <svg viewBox="0 0 24 24" className="h-5 w-5" aria-hidden="true">

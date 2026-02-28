@@ -1,23 +1,37 @@
 import Head from "next/head";
 import Layout from "../components/Layout";
+import { seoTags, canonicalUrl as buildCanonical, type SeoMeta } from "../lib/seo";
 
 export default function CookiePolicyPage() {
+  const seoMeta: SeoMeta = {
+    title: "Cookie Policy | Colaberry AI",
+    description: "Colaberry AI cookie policy with cookie categories and user preference controls.",
+    canonical: buildCanonical("/cookie-policy"),
+  };
+
   return (
     <Layout>
       <Head>
-        <title>Cookie Policy | Colaberry AI</title>
-        <meta
-          name="description"
-          content="Colaberry AI cookie policy with cookie categories and user preference controls."
-        />
+        <title>{seoMeta.title}</title>
+        {seoTags(seoMeta).map(({ key, ...props }) => (
+          "rel" in props ? <link key={key} {...props} /> : <meta key={key} {...props} />
+        ))}
+        <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify({
+          "@context": "https://schema.org",
+          "@type": "WebPage",
+          "name": "Cookie Policy",
+          "description": "Colaberry AI cookie policy with cookie categories and user preference controls.",
+          "url": buildCanonical("/cookie-policy"),
+          "publisher": { "@type": "Organization", "name": "Colaberry AI" },
+        }) }} />
       </Head>
 
       <section className="mx-auto w-full max-w-4xl">
-        <div className="surface-panel border border-slate-200/80 bg-white/95 px-6 py-8 shadow-sm dark:border-slate-700 dark:bg-slate-950/85 sm:px-8">
-          <div className="inline-flex rounded-full border border-brand-blue/25 bg-brand-blue/5 px-3 py-1 text-xs font-semibold uppercase tracking-[0.16em] text-brand-deep">
+        <div className="surface-panel border border-slate-200/80 bg-white/95 px-6 py-8 shadow-sm dark:border-[#374151] dark:bg-[#111827]/85 sm:px-8">
+          <div className="inline-flex items-center gap-2 rounded-md border border-slate-200 bg-slate-100 px-3 py-1 text-label font-semibold uppercase tracking-[0.14em] text-[#111827] dark:border-slate-700 dark:bg-slate-800 dark:text-[#F9FAFB]">
             Legal
           </div>
-          <h1 className="mt-4 text-3xl font-semibold tracking-tight text-slate-900 dark:text-slate-100">
+          <h1 className="mt-4 font-display text-display-sm sm:text-display-md font-bold text-slate-900 dark:text-slate-100">
             Cookie Policy
           </h1>
           <p className="mt-3 text-sm text-slate-600 dark:text-slate-300">
