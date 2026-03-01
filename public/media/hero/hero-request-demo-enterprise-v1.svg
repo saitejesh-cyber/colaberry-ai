@@ -1,0 +1,63 @@
+
+<svg width="2400" height="1350" viewBox="0 0 2400 1350" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Colaberry enterprise hero background">
+  <defs>
+    <linearGradient id="bg-solution-path" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#07121D"/>
+      <stop offset="0.54" stop-color="#123047"/>
+      <stop offset="1" stop-color="#1E3A5F"/>
+    </linearGradient>
+    <radialGradient id="orb-a-solution-path" cx="52%" cy="42%" r="56%">
+      <stop offset="0" stop-color="#0EA5E9" stop-opacity="0.48"/>
+      <stop offset="1" stop-color="#0EA5E9" stop-opacity="0"/>
+    </radialGradient>
+    <radialGradient id="orb-b-solution-path" cx="56%" cy="54%" r="56%">
+      <stop offset="0" stop-color="#14B8A6" stop-opacity="0.44"/>
+      <stop offset="1" stop-color="#14B8A6" stop-opacity="0"/>
+    </radialGradient>
+    <linearGradient id="flow-solution-path" x1="1380" y1="1180" x2="2310" y2="420" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#BAE6FD" stop-opacity="0.88"/>
+      <stop offset="0.56" stop-color="#99F6E4" stop-opacity="0.84"/>
+      <stop offset="1" stop-color="#BAE6FD" stop-opacity="0.62"/>
+    </linearGradient>
+    <linearGradient id="left-scrim-solution-path" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0" stop-color="#030712" stop-opacity="0.94"/>
+      <stop offset="0.58" stop-color="#030712" stop-opacity="0.84"/>
+      <stop offset="1" stop-color="#030712" stop-opacity="0"/>
+    </linearGradient>
+    <pattern id="grid-solution-path" width="92" height="92" patternUnits="userSpaceOnUse">
+      <path d="M92 0H0V92" stroke="#A9B7D0" stroke-opacity="0.085" stroke-width="1"/>
+    </pattern>
+    <filter id="soft-blur-solution-path" x="-35%" y="-35%" width="170%" height="170%">
+      <feGaussianBlur stdDeviation="72"/>
+    </filter>
+  </defs>
+
+  <rect width="100%" height="100%" fill="url(#bg-solution-path)"/>
+  <rect width="100%" height="100%" fill="url(#grid-solution-path)"/>
+  <ellipse cx="1880" cy="360" rx="740" ry="450" fill="url(#orb-a-solution-path)" filter="url(#soft-blur-solution-path)"/>
+  <ellipse cx="1800" cy="980" rx="980" ry="560" fill="url(#orb-b-solution-path)" filter="url(#soft-blur-solution-path)"/>
+
+  
+        <g opacity="0.95">
+          <rect x="1380" y="280" width="820" height="210" rx="18" fill="rgba(13,25,49,0.74)" stroke="#BAE6FD" stroke-opacity="0.36"/>
+          <rect x="1460" y="560" width="760" height="210" rx="18" fill="rgba(11,28,47,0.72)" stroke="#99F6E4" stroke-opacity="0.32"/>
+          <rect x="1550" y="840" width="670" height="210" rx="18" fill="rgba(8,24,44,0.72)" stroke="#BAE6FD" stroke-opacity="0.30"/>
+        </g>
+        <g fill="none" stroke="#99F6E4" stroke-width="5" stroke-linecap="round" opacity="0.8">
+          <path d="M1418 385C1530 385 1624 385 1730 385"/>
+          <path d="M1512 665C1620 665 1718 665 1826 665"/>
+          <path d="M1600 945C1700 945 1790 945 1888 945"/>
+        </g>
+      
+
+  <g fill="none" stroke="url(#flow-solution-path)" stroke-linecap="round">
+    <path d="M1380 1100C1540 980 1680 1020 1830 900C1960 796 2090 840 2260 730" stroke-width="8"/>
+    <path d="M1380 1168C1540 1064 1690 1088 1840 990C1970 904 2100 948 2260 860" stroke-width="3.2" opacity="0.8"/>
+  </g>
+  <g fill="#EAF7FF" opacity="0.94">
+    <circle cx="1380" cy="1100" r="6"/>
+    <circle cx="1830" cy="900" r="6"/>
+    <circle cx="2260" cy="730" r="6"/>
+  </g>
+  <rect width="1300" height="1350" fill="url(#left-scrim-solution-path)"/>
+</svg>

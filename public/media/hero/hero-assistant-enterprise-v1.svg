@@ -1,0 +1,74 @@
+
+<svg width="2400" height="1350" viewBox="0 0 2400 1350" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Colaberry enterprise hero background">
+  <defs>
+    <linearGradient id="bg-agent-network" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#08111E"/>
+      <stop offset="0.54" stop-color="#172A45"/>
+      <stop offset="1" stop-color="#22466C"/>
+    </linearGradient>
+    <radialGradient id="orb-a-agent-network" cx="52%" cy="42%" r="56%">
+      <stop offset="0" stop-color="#38BDF8" stop-opacity="0.48"/>
+      <stop offset="1" stop-color="#38BDF8" stop-opacity="0"/>
+    </radialGradient>
+    <radialGradient id="orb-b-agent-network" cx="56%" cy="54%" r="56%">
+      <stop offset="0" stop-color="#14B8A6" stop-opacity="0.44"/>
+      <stop offset="1" stop-color="#14B8A6" stop-opacity="0"/>
+    </radialGradient>
+    <linearGradient id="flow-agent-network" x1="1380" y1="1180" x2="2310" y2="420" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#BFDBFE" stop-opacity="0.88"/>
+      <stop offset="0.56" stop-color="#A7F3D0" stop-opacity="0.84"/>
+      <stop offset="1" stop-color="#BFDBFE" stop-opacity="0.62"/>
+    </linearGradient>
+    <linearGradient id="left-scrim-agent-network" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0" stop-color="#030712" stop-opacity="0.94"/>
+      <stop offset="0.58" stop-color="#030712" stop-opacity="0.84"/>
+      <stop offset="1" stop-color="#030712" stop-opacity="0"/>
+    </linearGradient>
+    <pattern id="grid-agent-network" width="92" height="92" patternUnits="userSpaceOnUse">
+      <path d="M92 0H0V92" stroke="#A9B7D0" stroke-opacity="0.085" stroke-width="1"/>
+    </pattern>
+    <filter id="soft-blur-agent-network" x="-35%" y="-35%" width="170%" height="170%">
+      <feGaussianBlur stdDeviation="72"/>
+    </filter>
+  </defs>
+
+  <rect width="100%" height="100%" fill="url(#bg-agent-network)"/>
+  <rect width="100%" height="100%" fill="url(#grid-agent-network)"/>
+  <ellipse cx="1880" cy="360" rx="740" ry="450" fill="url(#orb-a-agent-network)" filter="url(#soft-blur-agent-network)"/>
+  <ellipse cx="1800" cy="980" rx="980" ry="560" fill="url(#orb-b-agent-network)" filter="url(#soft-blur-agent-network)"/>
+
+  
+        <g fill="none" stroke="#A7F3D0" stroke-opacity="0.58" stroke-width="2.2">
+          <path d="M1370 920C1470 820 1600 760 1730 760C1880 760 1990 820 2110 940"/>
+          <path d="M1370 980C1520 860 1640 840 1740 840C1870 840 2030 900 2150 1030"/>
+          <path d="M1460 720C1600 640 1740 620 1880 650C2010 680 2130 760 2240 890"/>
+        </g>
+        <g fill="rgba(8,16,36,0.85)" stroke="#BFDBFE" stroke-opacity="0.54">
+          <circle cx="1370" cy="920" r="46"/>
+          <circle cx="1510" cy="790" r="36"/>
+          <circle cx="1730" cy="760" r="42"/>
+          <circle cx="1930" cy="810" r="36"/>
+          <circle cx="2110" cy="940" r="44"/>
+          <circle cx="2240" cy="890" r="38"/>
+        </g>
+        <g fill="#A7F3D0">
+          <circle cx="1370" cy="920" r="6"/>
+          <circle cx="1510" cy="790" r="6"/>
+          <circle cx="1730" cy="760" r="6"/>
+          <circle cx="1930" cy="810" r="6"/>
+          <circle cx="2110" cy="940" r="6"/>
+          <circle cx="2240" cy="890" r="6"/>
+        </g>
+      
+
+  <g fill="none" stroke="url(#flow-agent-network)" stroke-linecap="round">
+    <path d="M1380 1100C1540 980 1680 1020 1830 900C1960 796 2090 840 2260 730" stroke-width="8"/>
+    <path d="M1380 1168C1540 1064 1690 1088 1840 990C1970 904 2100 948 2260 860" stroke-width="3.2" opacity="0.8"/>
+  </g>
+  <g fill="#EAF7FF" opacity="0.94">
+    <circle cx="1380" cy="1100" r="6"/>
+    <circle cx="1830" cy="900" r="6"/>
+    <circle cx="2260" cy="730" r="6"/>
+  </g>
+  <rect width="1300" height="1350" fill="url(#left-scrim-agent-network)"/>
+</svg>

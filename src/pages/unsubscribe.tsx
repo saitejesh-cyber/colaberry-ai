@@ -93,7 +93,7 @@ export default function UnsubscribePage() {
         kicker="Newsletter"
         title="Manage your subscription"
         description="Use this secure endpoint to unsubscribe from Colaberry AI update emails."
-        image={heroImage("hero-updates-cinematic.webp")}
+        image={heroImage("hero-unsubscribe-cinematic.webp")}
         alt="Newsletter preference management"
         imageKicker="Preference control"
         imageTitle="Unsubscribe status"

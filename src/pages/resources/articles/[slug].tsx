@@ -96,7 +96,7 @@ export default function ArticleDetailPage({ article }: ArticleDetailProps) {
             article.description ||
             "Structured CMS article for discoverability, indexing, and enterprise AI delivery."
           }
-          image={heroImage("hero-updates-cinematic.webp")}
+          image={heroImage("hero-articles-cinematic.webp")}
           alt="Editorial analysis surface"
           imageKicker="Editorial"
           imageTitle="Article narrative"

@@ -11,6 +11,10 @@
     "lint": "eslint",
     "qa:smoke": "bash scripts/qa-runtime-smoke.sh",
     "assets:heroes": "node scripts/generate-enterprise-hero-assets.mjs",
+    "assets:heroes:realistic": "node scripts/generate-realistic-page-banners.mjs",
+    "assets:icons": "node scripts/generate-enterprise-icons.mjs",
+    "assets:videos": "node scripts/generate-hero-motion-videos.mjs",
+    "assets:premium": "npm run assets:heroes:realistic && npm run assets:icons && npm run assets:videos",
     "import:podcasts:csv": "node scripts/import-podcasts-csv.mjs",
     "audit:data": "node scripts/audit-data-readiness.mjs"
   },

@@ -225,7 +225,7 @@ export default function Home({
       <section className="relative overflow-hidden rounded-2xl" style={{ background: "var(--gradient-hero)" }}>
         {/* Ambient background grid */}
         <div className="animated-signal-grid pointer-events-none absolute inset-0 opacity-30" aria-hidden="true" />
-        <div className="relative z-10 grid gap-10 px-8 py-20 sm:px-14 sm:py-28 lg:grid-cols-[1.1fr_0.9fr] lg:items-center lg:px-20 lg:py-32">
+        <div className="relative z-10 grid gap-8 px-6 py-14 sm:px-10 sm:py-16 lg:grid-cols-[1.1fr_0.9fr] lg:items-center lg:px-14 lg:py-20">
           <div className="max-w-2xl">
             <div className="rise-in rise-delay-1 kicker-chip rounded-full px-4 py-1.5 tracking-[0.2em]">
               <span className="kicker-chip-dot" />

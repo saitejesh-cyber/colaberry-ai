@@ -146,7 +146,7 @@ export default function RequestDemo() {
             kicker="Demo preview"
             title="Walkthrough highlights"
             description="See how agents, MCP, and modular layers connect end to end."
-            image={heroImage("hero-platform-cinematic.webp")}
+            image={heroImage("hero-request-demo-cinematic.webp")}
             alt="Enterprise platform walkthrough preview"
             aspect="wide"
             fit="cover"

@@ -35,7 +35,7 @@ export default function CookiePolicyPage() {
         kicker="Legal"
         title="Cookie Policy"
         description="How Colaberry AI uses essential and optional cookies, and how you can control preferences at any time."
-        image={heroImage("hero-resources-cinematic.webp")}
+        image={heroImage("hero-cookie-cinematic.webp")}
         alt="Cookie policy and consent management overview"
         imageKicker="Consent controls"
         imageTitle="Transparent tracking choices"

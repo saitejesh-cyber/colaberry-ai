@@ -132,7 +132,7 @@ export default function AssistantPage({ trending }: AssistantProps) {
         kicker="Discovery assistant"
         title="Find the right AI solution in seconds"
         description="One starting point to discover agents, integrations, and use cases -- whether you are evaluating or ready to deploy."
-        image={heroImage("hero-platform-cinematic.webp")}
+        image={heroImage("hero-assistant-cinematic.webp")}
         alt="Discovery assistant entry flow"
         imageKicker="How it works"
         imageTitle="Ask, discover, deploy"

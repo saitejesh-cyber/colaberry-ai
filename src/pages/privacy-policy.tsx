@@ -35,7 +35,7 @@ export default function PrivacyPolicyPage() {
         kicker="Legal"
         title="Privacy Policy"
         description="How Colaberry AI collects, uses, and protects data across product experiences, subscriptions, and support interactions."
-        image={heroImage("hero-platform-cinematic.webp")}
+        image={heroImage("hero-privacy-cinematic.webp")}
         alt="Privacy and data governance overview"
         imageKicker="Data governance"
         imageTitle="Clarity and control"

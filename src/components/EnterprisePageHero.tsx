@@ -63,22 +63,22 @@ export default function EnterprisePageHero({
 }: EnterprisePageHeroProps) {
   return (
     <section className="relative overflow-hidden rounded-2xl bg-gradient-to-b from-white via-[var(--pivot-surface)] to-[var(--neutral-fill)] dark:from-[var(--bg)] dark:via-[#1E1B4B] dark:to-[var(--surface-strong)]">
-      <div className="relative z-10 grid gap-8 px-6 py-16 sm:px-8 sm:py-20 lg:grid-cols-[1.08fr_0.92fr] lg:items-start lg:px-10 lg:py-24">
-        <div className="flex flex-col gap-4">
+      <div className="relative z-10 grid gap-6 px-5 py-10 sm:px-6 sm:py-12 lg:grid-cols-[1.08fr_0.92fr] lg:items-start lg:px-8 lg:py-14">
+        <div className="flex flex-col gap-3">
           <div className="rise-in rise-delay-1 inline-flex w-fit items-center gap-2.5 rounded-full border border-slate-200 bg-slate-100 px-3.5 py-1.5 text-xs font-semibold uppercase tracking-[0.18em] text-slate-700 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-300">
             <span className="relative flex h-1.5 w-1.5 shrink-0">
               <span className="relative inline-flex h-1.5 w-1.5 rounded-full bg-[var(--trusted-fill)]" />
             </span>
             {kicker}
           </div>
-          <h1 className="rise-in rise-delay-2 mt-2 font-display text-display-sm font-bold text-[var(--text-heading)] dark:text-[var(--text-primary)] sm:text-display-md lg:text-display-lg">
+          <h1 className="rise-in rise-delay-2 mt-1 font-display text-display-sm font-bold text-[var(--text-heading)] dark:text-[var(--text-primary)] sm:text-display-md lg:text-display-lg">
             {title}
           </h1>
           <p className="rise-in rise-delay-3 max-w-2xl text-caption leading-relaxed text-[var(--text-heading)] dark:text-[var(--text-primary)] sm:text-lg">
             {description}
           </p>
           {chips.length > 0 ? (
-            <div className="rise-in mt-1 flex flex-wrap gap-2" style={{ animationDelay: "0.24s" }}>
+            <div className="rise-in mt-0.5 flex flex-wrap gap-2" style={{ animationDelay: "0.24s" }}>
               {chips.map((chip) => (
                 <span
                   key={chip}
@@ -90,14 +90,14 @@ export default function EnterprisePageHero({
             </div>
           ) : null}
           {(primaryAction || secondaryAction) ? (
-            <div className="rise-in mt-2 flex flex-col gap-3 sm:flex-row" style={{ animationDelay: "0.32s" }}>
+            <div className="rise-in mt-1.5 flex flex-col gap-2.5 sm:flex-row" style={{ animationDelay: "0.32s" }}>
               {primaryAction ? <ActionButton action={primaryAction} /> : null}
               {secondaryAction ? <ActionButton action={secondaryAction} /> : null}
             </div>
           ) : null}
         </div>
 
-        <div className="rise-in group relative overflow-hidden rounded-xl border border-[var(--neutral-stroke)] bg-white p-5 shadow-sm dark:border-[var(--stroke)] dark:bg-[var(--surface-strong)] sm:p-6" style={{ animationDelay: "0.2s" }}>
+        <div className="rise-in group relative overflow-hidden rounded-xl border border-[var(--neutral-stroke)] bg-white p-4 shadow-sm dark:border-[var(--stroke)] dark:bg-[var(--surface-strong)] sm:p-5" style={{ animationDelay: "0.2s" }}>
           <div className="flex items-start justify-between gap-3">
             <div>
               <div className="inline-flex items-center gap-2 rounded-md border border-slate-200 bg-slate-100 px-2.5 py-1 text-xs font-semibold uppercase tracking-[0.16em] text-slate-600 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-300">
@@ -108,7 +108,7 @@ export default function EnterprisePageHero({
               <div className="mt-1.5 text-sm leading-relaxed text-[var(--text-heading)] dark:text-[var(--text-primary)]">{imageDescription}</div>
             </div>
           </div>
-          <div className="relative mt-4 overflow-hidden rounded-lg border border-[var(--neutral-stroke)] shadow-sm dark:border-[var(--stroke)]">
+          <div className="relative mt-3 overflow-hidden rounded-lg border border-[var(--neutral-stroke)] shadow-sm dark:border-[var(--stroke)]">
             <div className="relative aspect-[16/9]">
               <Image
                 src={image}
@@ -124,11 +124,11 @@ export default function EnterprisePageHero({
       </div>
 
       {metrics.length > 0 ? (
-        <div className="relative z-10 grid gap-3 px-6 pb-10 sm:grid-cols-3 sm:px-8 lg:px-10">
+        <div className="relative z-10 grid gap-3 px-5 pb-6 sm:grid-cols-3 sm:px-6 lg:px-8">
           {metrics.map((metric) => (
             <article
               key={metric.label}
-              className="rounded-lg border border-[var(--neutral-stroke)] bg-white p-5 dark:border-[var(--stroke)] dark:bg-[var(--surface-strong)]"
+              className="rounded-lg border border-[var(--neutral-stroke)] bg-white p-4 dark:border-[var(--stroke)] dark:bg-[var(--surface-strong)]"
             >
               <div className="text-xs font-semibold uppercase tracking-[0.16em] text-[var(--text-muted)]">{metric.label}</div>
               <div className="mt-2 text-lg font-bold text-[var(--text-heading)] dark:text-[var(--text-primary)]">{metric.value}</div>

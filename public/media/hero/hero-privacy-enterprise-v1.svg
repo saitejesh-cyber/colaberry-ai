@@ -1,0 +1,60 @@
+
+<svg width="2400" height="1350" viewBox="0 0 2400 1350" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Colaberry enterprise hero background">
+  <defs>
+    <linearGradient id="bg-document-grid" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#0A1118"/>
+      <stop offset="0.54" stop-color="#1A2A33"/>
+      <stop offset="1" stop-color="#24414A"/>
+    </linearGradient>
+    <radialGradient id="orb-a-document-grid" cx="52%" cy="42%" r="56%">
+      <stop offset="0" stop-color="#22D3EE" stop-opacity="0.48"/>
+      <stop offset="1" stop-color="#22D3EE" stop-opacity="0"/>
+    </radialGradient>
+    <radialGradient id="orb-b-document-grid" cx="56%" cy="54%" r="56%">
+      <stop offset="0" stop-color="#34D399" stop-opacity="0.44"/>
+      <stop offset="1" stop-color="#34D399" stop-opacity="0"/>
+    </radialGradient>
+    <linearGradient id="flow-document-grid" x1="1380" y1="1180" x2="2310" y2="420" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#CFFAFE" stop-opacity="0.88"/>
+      <stop offset="0.56" stop-color="#A7F3D0" stop-opacity="0.84"/>
+      <stop offset="1" stop-color="#CFFAFE" stop-opacity="0.62"/>
+    </linearGradient>
+    <linearGradient id="left-scrim-document-grid" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0" stop-color="#030712" stop-opacity="0.94"/>
+      <stop offset="0.58" stop-color="#030712" stop-opacity="0.84"/>
+      <stop offset="1" stop-color="#030712" stop-opacity="0"/>
+    </linearGradient>
+    <pattern id="grid-document-grid" width="92" height="92" patternUnits="userSpaceOnUse">
+      <path d="M92 0H0V92" stroke="#A9B7D0" stroke-opacity="0.085" stroke-width="1"/>
+    </pattern>
+    <filter id="soft-blur-document-grid" x="-35%" y="-35%" width="170%" height="170%">
+      <feGaussianBlur stdDeviation="72"/>
+    </filter>
+  </defs>
+
+  <rect width="100%" height="100%" fill="url(#bg-document-grid)"/>
+  <rect width="100%" height="100%" fill="url(#grid-document-grid)"/>
+  <ellipse cx="1880" cy="360" rx="740" ry="450" fill="url(#orb-a-document-grid)" filter="url(#soft-blur-document-grid)"/>
+  <ellipse cx="1800" cy="980" rx="980" ry="560" fill="url(#orb-b-document-grid)" filter="url(#soft-blur-document-grid)"/>
+
+  
+        <g opacity="0.96">
+          <rect x="1400" y="320" width="280" height="360" rx="18" fill="rgba(10,24,44,0.72)" stroke="#CFFAFE" stroke-opacity="0.34"/>
+          <rect x="1710" y="280" width="300" height="400" rx="18" fill="rgba(12,30,50,0.72)" stroke="#A7F3D0" stroke-opacity="0.34"/>
+          <rect x="2040" y="350" width="280" height="330" rx="18" fill="rgba(8,21,40,0.72)" stroke="#CFFAFE" stroke-opacity="0.34"/>
+          <rect x="1530" y="730" width="300" height="320" rx="18" fill="rgba(12,30,50,0.72)" stroke="#A7F3D0" stroke-opacity="0.34"/>
+          <rect x="1860" y="760" width="320" height="290" rx="18" fill="rgba(10,24,44,0.72)" stroke="#CFFAFE" stroke-opacity="0.34"/>
+        </g>
+      
+
+  <g fill="none" stroke="url(#flow-document-grid)" stroke-linecap="round">
+    <path d="M1380 1100C1540 980 1680 1020 1830 900C1960 796 2090 840 2260 730" stroke-width="8"/>
+    <path d="M1380 1168C1540 1064 1690 1088 1840 990C1970 904 2100 948 2260 860" stroke-width="3.2" opacity="0.8"/>
+  </g>
+  <g fill="#EAF7FF" opacity="0.94">
+    <circle cx="1380" cy="1100" r="6"/>
+    <circle cx="1830" cy="900" r="6"/>
+    <circle cx="2260" cy="730" r="6"/>
+  </g>
+  <rect width="1300" height="1350" fill="url(#left-scrim-document-grid)"/>
+</svg>

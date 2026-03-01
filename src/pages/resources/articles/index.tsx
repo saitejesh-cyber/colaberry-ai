@@ -89,7 +89,7 @@ export default function ArticlesPage({ articles, fetchError }: ArticlesPageProps
         kicker="Resources"
         title="Articles"
         description="Practical guidance for teams deploying AI agents in production -- from architecture decisions to measurable outcomes."
-        image={heroImage("hero-updates-cinematic.webp")}
+        image={heroImage("hero-articles-cinematic.webp")}
         alt="Enterprise AI articles and analysis"
         imageKicker="Expert analysis"
         imageTitle="AI deployment insights"
