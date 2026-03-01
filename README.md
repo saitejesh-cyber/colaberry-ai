@@ -18,15 +18,23 @@ Open [http://localhost:3000](http://localhost:3000) with your browser to see the
 
 ### Local stability note (Next.js 16)
 
-If you see `.next/dev/*` ENOENT errors (for example `_buildManifest.js.tmp` or
-`routes-manifest.json`) while running dev, use this recovery sequence:
+If you see `.next/dev/*` or `.next-dev/dev/*` ENOENT errors (for example
+`_buildManifest.js.tmp` or `routes-manifest.json`) while running dev, use this
+recovery sequence:
 
 ```bash
 npm run clean:next
 npm run dev
 ```
 
-`npm run dev` uses webpack mode for stability. Turbopack is still available:
+`npm run dev` uses webpack mode with the default `.next` dist directory for
+stability. If you explicitly need an isolated dev dist, use:
+
+```bash
+npm run dev:dist
+```
+
+Turbopack is still available:
 
 ```bash
 npm run dev:turbo

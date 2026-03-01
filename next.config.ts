@@ -1,7 +1,13 @@
 import type { NextConfig } from "next";
 
 const cmsUrl = process.env.NEXT_PUBLIC_CMS_URL;
-const distDir = process.env.NEXT_DIST_DIR?.trim();
+const requestedDistDir = process.env.NEXT_DIST_DIR?.trim();
+const distDir =
+  process.env.NODE_ENV === "development"
+    ? ".next"
+    : requestedDistDir && requestedDistDir.length > 0
+      ? requestedDistDir
+      : ".next";
 const cmsRemotePattern = (() => {
   if (!cmsUrl) return null;
   try {
@@ -18,7 +24,7 @@ const cmsRemotePattern = (() => {
 })();
 
 const nextConfig: NextConfig = {
-  distDir: distDir && distDir.length > 0 ? distDir : ".next",
+  distDir,
   images: {
     qualities: [75, 90],
     remotePatterns: cmsRemotePattern ? [cmsRemotePattern] : [],

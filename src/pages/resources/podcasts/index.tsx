@@ -218,20 +218,20 @@ export default function Podcasts({
       ) : null}
 
       {/* ── Premium header with sort + source filters + search ── */}
-      <section className="hero-surface section-shell px-4 py-6 sm:px-6">
-        <div className="grid gap-5 lg:grid-cols-[minmax(0,1fr)_minmax(0,260px)] lg:items-start">
+      <section className="hero-surface section-shell px-4 py-5 sm:px-6">
+        <div className="grid gap-4 lg:grid-cols-[minmax(0,1fr)_minmax(0,260px)] lg:items-start">
           <div className="min-w-0">
             <div className="chip chip-neutral inline-flex w-fit rounded-md px-3 py-1 text-label font-semibold uppercase tracking-[0.14em]">
               <span className="h-1.5 w-1.5 rounded-full bg-[var(--trusted-fill)]" />
               Podcast intelligence
             </div>
-            <h1 className="mt-4 font-display text-display-sm font-bold text-slate-900 dark:text-slate-100 sm:text-display-md">
+            <h1 className="mt-3 font-display text-display-sm font-bold text-slate-900 dark:text-slate-100 sm:text-display-md">
               Podcasts
             </h1>
             <p className="mt-2 max-w-3xl text-sm leading-relaxed text-slate-600 dark:text-slate-300 sm:text-base">
               Explore strategy and engineering conversations with inline playback, structured transcripts, and episode-level metadata designed for enterprise discovery.
             </p>
-            <p className="mt-3 text-xs font-semibold uppercase tracking-[0.12em] text-slate-500 dark:text-slate-400">
+            <p className="mt-2.5 text-xs font-semibold uppercase tracking-[0.12em] text-slate-500 dark:text-slate-400">
               {searchQuery ? `Filtered by: "${searchQuery}"` : "Editorially curated feed"}
               {" · "}
               {activeSort === "trending" ? "Top ranked" : "Latest episodes"}
@@ -244,7 +244,7 @@ export default function Podcasts({
           </div>
         </div>
 
-        <div className="mt-5 flex flex-wrap items-center gap-3">
+        <div className="mt-4 flex flex-wrap items-center gap-3">
           <div className="flex items-center gap-1 rounded-lg border border-slate-200/80 p-1 dark:border-slate-700">
             <Link
               href={latestSortHref}
@@ -296,7 +296,7 @@ export default function Podcasts({
         </div>
 
         {searchOpen ? (
-          <form action="/resources/podcasts" method="get" className="mt-3">
+          <form action="/resources/podcasts" method="get" className="mt-2.5">
             <input
               type="search"
               name="q"
@@ -311,7 +311,7 @@ export default function Podcasts({
           </form>
         ) : null}
         {topTags.length > 0 ? (
-          <div className="mt-4 border-t border-slate-200/70 pt-4 dark:border-slate-700/60">
+          <div className="mt-3 border-t border-slate-200/70 pt-3 dark:border-slate-700/60">
             <div className="text-xs font-semibold uppercase tracking-[0.12em] text-slate-500 dark:text-slate-400">
               Trending topics
             </div>
@@ -330,7 +330,7 @@ export default function Podcasts({
         ) : null}
       </section>
 
-      <section className="surface-panel section-shell mt-4 px-4 py-5 sm:px-6">
+      <section className="surface-panel section-shell mt-3 px-4 py-4 sm:px-6">
         <div className="text-xs font-semibold uppercase tracking-[0.14em] text-slate-500 dark:text-slate-400">
           Editorial queues
         </div>
@@ -350,11 +350,11 @@ export default function Podcasts({
       </section>
 
       {/* ── Content area: hero + list | sidebar ── */}
-      <section className="section-shell px-4 pt-2 pb-8 sm:px-6 lg:grid lg:grid-cols-[minmax(0,1fr)_300px] lg:gap-8 lg:items-start">
+      <section className="section-shell px-4 pt-1 pb-6 sm:px-6 lg:grid lg:grid-cols-[minmax(0,1fr)_300px] lg:gap-7 lg:items-start">
         {/* Left column */}
         <div>
           {episodes.length === 0 ? (
-            <div className="mt-4">
+            <div className="mt-3">
               <StatePanel
                 variant="empty"
                 title="No podcast episodes match this filter"
@@ -378,7 +378,7 @@ export default function Podcasts({
                 const heroFullUrl = `${siteUrl}${heroUrl}`;
 
                 return (
-                  <div className="flex flex-col gap-5 border-b border-slate-200/60 pb-6 dark:border-slate-700/50 sm:flex-row sm:items-start sm:gap-6">
+                  <div className="flex flex-col gap-4 border-b border-slate-200/60 pb-5 dark:border-slate-700/50 sm:flex-row sm:items-start sm:gap-5">
                     {/* Artwork */}
                     <div className="relative w-full shrink-0 overflow-hidden rounded-xl sm:w-64 lg:w-72">
                       <Link href={heroUrl} tabIndex={-1} aria-hidden="true">
@@ -424,21 +424,21 @@ export default function Podcasts({
                       </Link>
 
                       {heroSubtitle ? (
-                        <p className="mt-2 line-clamp-3 text-sm leading-relaxed text-slate-600 dark:text-slate-300">
+                        <p className="mt-1.5 line-clamp-3 text-sm leading-relaxed text-slate-600 dark:text-slate-300">
                           <span className="font-medium text-slate-700 dark:text-slate-300">Listen now</span>
                           <span className="mx-1 text-slate-300 dark:text-slate-600">|</span>
                           {heroSubtitle}
                         </p>
                       ) : null}
 
-                      <p className="mt-3 text-xs font-medium uppercase tracking-wide text-slate-400 dark:text-slate-500">
+                      <p className="mt-2.5 text-xs font-medium uppercase tracking-wide text-slate-400 dark:text-slate-500">
                         {formatShortDate(hero.publishedDate) || "Date pending"}
                         {" · "}
                         <span>{heroIsExternal ? "External" : "Colaberry AI Podcast"}</span>
                       </p>
 
                       {/* Hero share row */}
-                      <div className="mt-3 flex items-center gap-1">
+                      <div className="mt-2.5 flex items-center gap-1">
                         <button
                           type="button"
                           aria-label="Copy link"
@@ -501,7 +501,7 @@ export default function Podcasts({
                   const fullUrl = `${siteUrl}${episodeUrl}`;
 
                   return (
-                    <div key={episode.id} className="flex gap-5 py-6">
+                    <div key={episode.id} className="flex gap-4 py-5">
                       {/* Left: Content */}
                       <div className="min-w-0 flex-1">
                         <Link
@@ -529,7 +529,7 @@ export default function Podcasts({
                         </p>
 
                         {/* Mobile-first quick playback controls */}
-                        <div className="mt-3 flex items-center justify-between gap-3 sm:hidden">
+                        <div className="mt-2.5 flex items-center justify-between gap-3 sm:hidden">
                           <div className="flex items-center gap-2">
                             {canPlay ? (
                               <button
@@ -568,7 +568,7 @@ export default function Podcasts({
                         </div>
 
                         {/* Share / action row */}
-                        <div className="mt-3 flex items-center gap-1">
+                        <div className="mt-2.5 flex items-center gap-1">
                           <button
                             type="button"
                             aria-label="Copy link"
@@ -649,11 +649,11 @@ export default function Podcasts({
               </div>
 
               {hasMore ? (
-                <div ref={sentinelRef} className="mt-6 flex justify-center">
+                <div ref={sentinelRef} className="mt-5 flex justify-center">
                   <span className="text-sm text-slate-500">Loading more episodes...</span>
                 </div>
               ) : episodes.length > 0 ? (
-                <div className="mt-6 text-center text-sm text-slate-500">
+                <div className="mt-5 text-center text-sm text-slate-500">
                   Showing all {episodes.length} episodes
                 </div>
               ) : null}
@@ -663,7 +663,7 @@ export default function Podcasts({
 
         {/* ── Right sidebar ── */}
         <aside className="hidden lg:block">
-          <div className="surface-panel p-5 lg:sticky lg:top-24">
+          <div className="surface-panel p-4 lg:sticky lg:top-24">
             {/* Podcast identity */}
             <div className="flex items-center gap-3">
               <Image
@@ -680,12 +680,12 @@ export default function Podcasts({
               </div>
             </div>
 
-            <p className="mt-4 text-sm leading-relaxed text-slate-600 dark:text-slate-300">
+            <p className="mt-3 text-sm leading-relaxed text-slate-600 dark:text-slate-300">
               Hear from AI leaders and practitioners on what works in production. Each episode covers strategy, architecture, and real deployment outcomes.
             </p>
 
             {/* Newsletter subscribe */}
-            <div className="mt-5 border-t border-slate-200/60 pt-5 dark:border-slate-700/60">
+            <div className="mt-4 border-t border-slate-200/60 pt-4 dark:border-slate-700/60">
               <NewsletterSignup
                 compact
                 sourcePage="podcast-listing"
@@ -696,7 +696,7 @@ export default function Podcasts({
             </div>
 
             {/* CTA */}
-            <div className="mt-5 border-t border-slate-200/60 pt-5 dark:border-slate-700/60">
+            <div className="mt-4 border-t border-slate-200/60 pt-4 dark:border-slate-700/60">
               <Link href="/request-demo" className="btn btn-cta w-full text-center text-sm">
                 Let&apos;s Talk
               </Link>
@@ -704,7 +704,7 @@ export default function Podcasts({
 
             {/* Company tags */}
             {companies.length > 0 ? (
-              <div className="mt-5 border-t border-slate-200/60 pt-5 dark:border-slate-700/60">
+              <div className="mt-4 border-t border-slate-200/60 pt-4 dark:border-slate-700/60">
                 <div className="flex items-center gap-3">
                   <h4 className="text-xs font-semibold uppercase tracking-wide text-slate-500 dark:text-slate-400">Browse by company</h4>
                 </div>

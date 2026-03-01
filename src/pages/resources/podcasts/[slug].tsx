@@ -292,8 +292,8 @@ export default function PodcastDetail({ episode, relatedEpisodes }: PodcastDetai
         { label: episode.title },
       ]} />
 
-      <header className="hero-surface section-shell px-4 py-6 sm:px-6 lg:px-8">
-        <div className="grid gap-6 lg:grid-cols-[minmax(0,1fr)_280px] lg:items-start">
+      <header className="hero-surface section-shell px-4 py-5 sm:px-6 lg:px-8">
+        <div className="grid gap-5 lg:grid-cols-[minmax(0,1fr)_280px] lg:items-start">
           <div className="min-w-0">
             <p className="text-label font-semibold uppercase tracking-[0.14em] text-slate-500 dark:text-slate-400">
               Colaberry AI Podcast
@@ -323,12 +323,12 @@ export default function PodcastDetail({ episode, relatedEpisodes }: PodcastDetai
               ) : null}
             </p>
             {episodeSummary ? (
-              <p className="mt-4 max-w-3xl text-sm leading-relaxed text-slate-600 dark:text-slate-300 sm:text-base">
+              <p className="mt-3 max-w-3xl text-sm leading-relaxed text-slate-600 dark:text-slate-300 sm:text-base">
                 {episodeSummary}
               </p>
             ) : null}
 
-            <div className="mt-5 flex flex-wrap gap-2">
+            <div className="mt-4 flex flex-wrap gap-2">
               <button
                 type="button"
                 onClick={() => playerRef.current?.scrollIntoView({ behavior: "smooth", block: "start" })}
@@ -353,7 +353,7 @@ export default function PodcastDetail({ episode, relatedEpisodes }: PodcastDetai
               </Link>
             </div>
 
-            <div className="mt-4 flex flex-wrap gap-2">
+            <div className="mt-3 flex flex-wrap gap-2">
               {(episode.tags || []).slice(0, 5).map((tag) => (
                 <Link key={tag.slug} href={`/resources/podcasts/tag/${tag.slug}`} className="chip chip-muted rounded-md px-2.5 py-1 text-xs font-semibold">
                   #{tag.name}
@@ -405,13 +405,13 @@ export default function PodcastDetail({ episode, relatedEpisodes }: PodcastDetai
         </div>
       </header>
 
-      <div className="section-shell px-4 pt-4 pb-8 sm:px-6 grid gap-6 lg:grid-cols-[minmax(0,1fr)_320px]">
-        <div className="flex flex-col gap-6">
+      <div className="section-shell grid gap-5 px-4 pt-3 pb-6 sm:px-6 lg:grid-cols-[minmax(0,1fr)_320px]">
+        <div className="flex flex-col gap-5">
           <div id="player" ref={playerRef} className="detail-section">
             <div className="text-label font-semibold uppercase tracking-[0.14em] text-slate-600 dark:text-slate-300">
               Listen to the podcast
             </div>
-            <div className="mt-3">
+            <div className="mt-2.5">
               <PodcastPlayer
                 embedCode={shouldForceNative ? null : embedCode}
                 audioUrl={audioUrl}
@@ -425,7 +425,7 @@ export default function PodcastDetail({ episode, relatedEpisodes }: PodcastDetai
               ) : null}
             </div>
 
-            <div className="mt-4 flex flex-wrap items-center gap-3">
+            <div className="mt-3 flex flex-wrap items-center gap-3">
               <span className="text-label font-semibold uppercase tracking-[0.14em] text-slate-500 dark:text-slate-400">
                 Share
               </span>
@@ -501,7 +501,7 @@ export default function PodcastDetail({ episode, relatedEpisodes }: PodcastDetai
               ) : null}
             </div>
 
-            <div className="mt-4 flex flex-wrap gap-2">
+            <div className="mt-3 flex flex-wrap gap-2">
               {episode.tags.map((tag) => (
                 <Link
                   key={tag.slug}
@@ -523,7 +523,7 @@ export default function PodcastDetail({ episode, relatedEpisodes }: PodcastDetai
             </div>
 
             {episodeMoments.length > 0 ? (
-              <div className="mt-5 rounded-xl border border-slate-200/70 bg-white/90 p-4 dark:border-slate-700/60 dark:bg-slate-900/60">
+              <div className="mt-4 rounded-xl border border-slate-200/70 bg-white/90 p-4 dark:border-slate-700/60 dark:bg-slate-900/60">
                 <div className="flex flex-wrap items-center justify-between gap-2">
                   <div className="text-xs font-semibold uppercase tracking-[0.12em] text-slate-500 dark:text-slate-400">
                     Key moments
@@ -532,7 +532,7 @@ export default function PodcastDetail({ episode, relatedEpisodes }: PodcastDetai
                     {usesNativePlayer ? "Tap to jump in audio" : "Use transcript for full context"}
                   </span>
                 </div>
-                <ul className="mt-3 grid gap-2">
+                <ul className="mt-2.5 grid gap-2">
                   {episodeMoments.map((moment) => (
                     <li key={`${moment.title}-${moment.startTime ?? "na"}`}>
                       <button
@@ -589,7 +589,7 @@ export default function PodcastDetail({ episode, relatedEpisodes }: PodcastDetai
             </div>
 
             {contentTab === "description" ? (
-              <div className="prose mt-4 max-w-none">
+              <div className="prose mt-3 max-w-none">
                 {episode.description ? (
                   <RichText blocks={episode.description} />
                 ) : (
@@ -597,7 +597,7 @@ export default function PodcastDetail({ episode, relatedEpisodes }: PodcastDetai
                 )}
               </div>
             ) : hasTimedTranscript ? (
-              <div className="mt-4 max-h-[60vh] overflow-y-auto rounded-lg border border-slate-200/60 p-4 dark:border-slate-700/50">
+              <div className="mt-3 max-h-[60vh] overflow-y-auto rounded-lg border border-slate-200/60 p-4 dark:border-slate-700/50">
                 {episode.transcriptGeneratedAt ? (
                   <p className="mb-3 text-xs text-slate-500 dark:text-slate-400">
                     Updated{" "}
@@ -612,7 +612,7 @@ export default function PodcastDetail({ episode, relatedEpisodes }: PodcastDetai
                 <TranscriptTimeline segments={transcriptSegments} audioRef={audioRef} />
               </div>
             ) : hasTranscriptText ? (
-              <div className="prose mt-4 max-h-[60vh] max-w-none overflow-y-auto rounded-lg border border-slate-200/60 p-4 text-sm dark:border-slate-700/50">
+              <div className="prose mt-3 max-h-[60vh] max-w-none overflow-y-auto rounded-lg border border-slate-200/60 p-4 text-sm dark:border-slate-700/50">
                 {transcriptIsHtml ? (
                   <div dangerouslySetInnerHTML={{ __html: episode.transcript as string }} />
                 ) : (
@@ -623,12 +623,12 @@ export default function PodcastDetail({ episode, relatedEpisodes }: PodcastDetai
           </div>
         </div>
 
-        <aside className="flex flex-col gap-4">
+        <aside className="flex flex-col gap-3">
           <div className="detail-section">
             <div className="text-label font-semibold uppercase tracking-[0.14em] text-slate-500 dark:text-slate-400">
               Episode at a glance
             </div>
-            <div className="mt-3 grid gap-2">
+            <div className="mt-2.5 grid gap-2">
               <DetailLine label="Published" value={publishedLabel || "Pending"} />
               <DetailLine label="Duration" value={episode.duration || "TBD"} />
               <DetailLine label="Episode" value={episode.episodeNumber ? `#${episode.episodeNumber}` : "N/A"} />
@@ -639,7 +639,7 @@ export default function PodcastDetail({ episode, relatedEpisodes }: PodcastDetai
               <DetailLine label="Transcript" value={hasTranscriptContent ? "Available" : "Pending"} />
             </div>
             {episodeHighlights.length > 0 ? (
-              <div className="mt-4 border-t border-slate-200/60 pt-4 dark:border-slate-700/60">
+              <div className="mt-3 border-t border-slate-200/60 pt-3 dark:border-slate-700/60">
                 <div className="text-xs font-semibold uppercase tracking-[0.12em] text-slate-500 dark:text-slate-400">
                   Episode highlights
                 </div>
@@ -660,7 +660,7 @@ export default function PodcastDetail({ episode, relatedEpisodes }: PodcastDetai
               Listen on
             </div>
             {subscribeLinks.length > 0 ? (
-              <div className="mt-4 grid gap-2">
+              <div className="mt-3 grid gap-2">
                 {subscribeLinks.map((link, index) => {
                   const platform = String(link.platform || "platform");
                   const platformKey = platform.toLowerCase();
@@ -695,7 +695,7 @@ export default function PodcastDetail({ episode, relatedEpisodes }: PodcastDetai
               <div className="text-label font-semibold uppercase tracking-[0.14em] text-slate-500 dark:text-slate-400">
                 Company tags
               </div>
-              <div className="mt-3 flex flex-wrap gap-2">
+              <div className="mt-2.5 flex flex-wrap gap-2">
                 {episode.companies.map((company) => (
                   <Link
                     key={company.slug}
@@ -725,7 +725,7 @@ export default function PodcastDetail({ episode, relatedEpisodes }: PodcastDetai
               Full podcast catalog
             </Link>
           </div>
-          <ul className="mt-4 grid gap-3 sm:grid-cols-2">
+          <ul className="mt-3 grid gap-3 sm:grid-cols-2">
             {relatedEpisodes.map((item) => (
               <li key={item.slug}>
                 <Link

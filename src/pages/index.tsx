@@ -225,25 +225,25 @@ export default function Home({
       <section className="relative overflow-hidden rounded-2xl" style={{ background: "var(--gradient-hero)" }}>
         {/* Ambient background grid */}
         <div className="animated-signal-grid pointer-events-none absolute inset-0 opacity-30" aria-hidden="true" />
-        <div className="relative z-10 grid gap-8 px-6 py-14 sm:px-10 sm:py-16 lg:grid-cols-[1.1fr_0.9fr] lg:items-center lg:px-14 lg:py-20">
+        <div className="relative z-10 grid gap-7 px-5 py-11 sm:px-8 sm:py-13 lg:grid-cols-[1.1fr_0.9fr] lg:items-center lg:px-12 lg:py-16">
           <div className="max-w-2xl">
             <div className="rise-in rise-delay-1 kicker-chip rounded-full px-4 py-1.5 tracking-[0.2em]">
               <span className="kicker-chip-dot" />
               Enterprise AI Platform
             </div>
 
-            <h1 className="rise-in rise-delay-2 mt-8 font-display text-display-md font-bold text-[var(--text-heading)] sm:text-display-lg lg:text-display-xl">
+            <h1 className="rise-in rise-delay-2 mt-5 font-display text-display-md font-bold text-[var(--text-heading)] sm:text-display-lg lg:text-display-xl">
               Ship AI programs{" "}
               <span className="text-gradient">
                 with confidence
               </span>
             </h1>
 
-            <p className="rise-in rise-delay-3 mt-6 max-w-2xl text-body-lg leading-relaxed text-[var(--text-body-light)]">
+            <p className="rise-in rise-delay-3 mt-4 max-w-2xl text-body-lg leading-relaxed text-[var(--text-body-light)]">
               One governed catalog for agents, MCP servers, skills, and research — so teams can evaluate, deploy, and scale AI without guesswork.
             </p>
 
-            <div className="rise-in mt-8 flex flex-wrap gap-4" style={{ animationDelay: "0.32s" }}>
+            <div className="rise-in mt-5 flex flex-wrap gap-4" style={{ animationDelay: "0.32s" }}>
               <Link href="/request-demo" className="btn btn-cta">
                 Book a demo
                 <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M13 7l5 5m0 0l-5 5m5-5H6" /></svg>
@@ -281,7 +281,7 @@ export default function Home({
         </div>
       </section>
 
-      <section className="reveal section-spacing surface-panel p-6 sm:p-8">
+      <section className="reveal section-spacing surface-panel p-5 sm:p-6">
         <div className="flex flex-col gap-2 sm:flex-row sm:items-end sm:justify-between">
           <SectionHeader
             kicker="Executive proof"
@@ -341,7 +341,7 @@ export default function Home({
         </div>
       </section>
 
-      <section className="reveal section-spacing surface-panel p-6 sm:p-8">
+      <section className="reveal section-spacing surface-panel p-5 sm:p-6">
         <div className="flex flex-col gap-2 sm:flex-row sm:items-end sm:justify-between">
           <SectionHeader
             kicker="Connect your stack"
@@ -374,7 +374,7 @@ export default function Home({
         </div>
       </section>
 
-      <section className="reveal section-spacing surface-panel p-6 sm:p-8">
+      <section className="reveal section-spacing surface-panel p-5 sm:p-6">
         <div className="flex flex-col gap-2 sm:flex-row sm:items-end sm:justify-between">
           <div>
             <SectionHeader

@@ -29,7 +29,7 @@ export default function SectionHeader({
         ? "text-display-sm sm:text-display-md lg:text-display-lg"
         : "text-lg sm:text-xl font-semibold";
   const alignClass = align === "center" ? "items-center text-center" : "items-start text-left";
-  const spacingClass = size === "xl" ? "gap-5" : "gap-3";
+  const spacingClass = size === "xl" ? "gap-4" : "gap-2.5";
   const kickerAlign = align === "center" ? "justify-center" : "justify-start";
   const descriptionClass =
     size === "xl"
@@ -54,7 +54,7 @@ export default function SectionHeader({
       {description ? (
         <p className={descriptionClass}>{description}</p>
       ) : null}
-      {children ? <div className="pt-1">{children}</div> : null}
+      {children ? <div className="pt-0.5">{children}</div> : null}
     </div>
   );
 }
