@@ -23,13 +23,13 @@ export default function EnterpriseCtaBand({
 }: EnterpriseCtaBandProps) {
   return (
     <section
-      className={`cta-band-enterprise mt-10 grid gap-6 rounded-2xl border border-[#E5E7EB] p-7 shadow-lg dark:border-[#374151] sm:p-8 lg:grid-cols-[1.4fr_1fr] lg:items-end lg:p-10 ${
+      className={`cta-band-enterprise mt-10 grid gap-6 rounded-2xl border border-[var(--stroke)] p-7 shadow-lg dark:border-[var(--stroke)] sm:p-8 lg:grid-cols-[1.4fr_1fr] lg:items-end lg:p-10 ${
         className ?? ""
       }`}
     >
       <div>
         <div className="inline-flex items-center gap-2 rounded-md border border-white/20 bg-white/10 px-3 py-1 text-label font-semibold uppercase tracking-[0.18em] text-white/90">
-          <span aria-hidden="true" className="h-1.5 w-1.5 rounded-full bg-[#059669]" />
+          <span aria-hidden="true" className="h-1.5 w-1.5 rounded-full bg-[var(--trusted-fill)]" />
           {kicker}
         </div>
         <h2 className="font-display mt-4 text-display-xs font-bold leading-tight text-white sm:text-display-sm">{title}</h2>
@@ -41,7 +41,7 @@ export default function EnterpriseCtaBand({
         </Link>
         <Link
           href={secondaryHref}
-          className="btn h-11 justify-center border border-white/25 bg-white/90 text-sm font-semibold text-[#111827] hover:bg-white"
+          className="btn h-11 justify-center border border-white/25 bg-white/90 text-sm font-semibold text-[var(--text-primary)] hover:bg-white"
         >
           {secondaryLabel}
         </Link>

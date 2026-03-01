@@ -1,4 +1,4 @@
-export const HERO_ASSET_VERSION = "20260227-enterprise-v3";
+export const HERO_ASSET_VERSION = "20260228-obsidian-v1";
 
 const HERO_ALIASES: Record<string, string> = {
   "hero-platform-cinematic.webp": "hero-platform-enterprise-v3.svg",

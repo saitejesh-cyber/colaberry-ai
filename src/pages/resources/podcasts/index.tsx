@@ -22,7 +22,22 @@ const PODCAST_FALLBACK_IMAGE = heroImage("hero-podcasts-cinematic.webp");
 
 type PodcastTypeFilter = "all" | "internal" | "external";
 
+function buildPodcastsPath({ sort, type, q }: { sort?: string; type?: string; q?: string }) {
+  const params = new URLSearchParams();
+  if (sort && sort !== "latest") params.set("sort", sort);
+  if (type && type !== "all") params.set("type", type);
+  if (q) params.set("q", q);
+  const qs = params.toString();
+  return qs ? `/resources/podcasts?${qs}` : "/resources/podcasts";
+}
+
 type PodcastCompanyFacet = {
+  slug: string;
+  name: string;
+  count: number;
+};
+
+type PodcastTagFacet = {
   slug: string;
   name: string;
   count: number;
@@ -37,6 +52,19 @@ type PodcastsPageProps = {
   searchQuery: string;
   canonicalPath: string;
 };
+
+function MetaStat({ label, value }: { label: string; value: string }) {
+  return (
+    <div className="rounded-lg border border-slate-200/80 bg-white/90 px-3 py-2 dark:border-slate-700 dark:bg-slate-900/70">
+      <div className="text-[10px] font-semibold uppercase tracking-[0.12em] text-slate-500 dark:text-slate-400">
+        {label}
+      </div>
+      <div className="mt-0.5 text-sm font-semibold text-slate-800 dark:text-slate-100">
+        {value}
+      </div>
+    </div>
+  );
+}
 
 export default function Podcasts({
   episodes,
@@ -80,6 +108,16 @@ export default function Podcasts({
     logPodcastEvent("play", source, { slug: episode.slug, title: episode.title });
   };
 
+  const copyShareUrl = async (value: string, source: string, slug: string) => {
+    if (typeof navigator === "undefined" || !navigator.clipboard) return;
+    try {
+      await navigator.clipboard.writeText(value);
+      logPodcastEvent("share", source, { slug });
+    } catch {
+      // Swallow clipboard failures in insecure/local contexts.
+    }
+  };
+
   const displayedEpisodes = episodes.slice(0, visibleCount);
   const hasMore = visibleCount < episodes.length;
 
@@ -101,15 +139,53 @@ export default function Podcasts({
 
   const siteUrl = (process.env.NEXT_PUBLIC_SITE_URL || "https://colaberry.ai").replace(/\/$/, "");
   const canonicalUrl = `${siteUrl}${canonicalPath}`;
+  const latestSortHref = buildPodcastsPath({
+    sort: "latest",
+    type: activeType,
+    q: searchQuery,
+  });
+  const trendingSortHref = buildPodcastsPath({
+    sort: "trending",
+    type: activeType,
+    q: searchQuery,
+  });
+  const typeFilterLinks: Array<{ label: string; value: PodcastTypeFilter; href: string }> = [
+    { label: "All", value: "all", href: buildPodcastsPath({ sort: activeSort, type: "all", q: searchQuery }) },
+    { label: "Colaberry", value: "internal", href: buildPodcastsPath({ sort: activeSort, type: "internal", q: searchQuery }) },
+    { label: "External", value: "external", href: buildPodcastsPath({ sort: activeSort, type: "external", q: searchQuery }) },
+  ];
+  const editorialQueues = [
+    {
+      title: "Executive brief",
+      description: "High-signal episodes on enterprise ROI, governance, and adoption risk.",
+      href: buildPodcastsPath({ sort: "trending", type: activeType, q: searchQuery }),
+      cta: "Open top episodes",
+    },
+    {
+      title: "Product + engineering watch",
+      description: "Implementation tactics for teams shipping agents and workflow automation.",
+      href: buildPodcastsPath({ sort: "latest", type: "internal", q: searchQuery }),
+      cta: "Browse Colaberry episodes",
+    },
+    {
+      title: "Market signals",
+      description: "External ecosystem updates that impact roadmap and platform decisions.",
+      href: buildPodcastsPath({ sort: "latest", type: "external", q: searchQuery }),
+      cta: "Browse external episodes",
+    },
+  ];
+  const topTags = buildTagFacets(episodes).slice(0, 12);
+  const internalCount = episodes.filter((episode) => (episode.podcastType || "internal").toLowerCase() !== "external").length;
+  const externalCount = episodes.length - internalCount;
   const seoMeta: SeoMeta = {
     title: "Podcasts | Colaberry AI",
-    description: "Explore the Colaberry AI podcast library with chronological episodes, trending signals, inline playback, and detailed episode pages.",
+    description: "Listen to expert conversations on AI strategy, deployment, and industry trends. Full transcripts and inline playback included.",
     canonical: canonicalUrl,
   };
   const itemListSchema = {
     "@context": "https://schema.org",
     "@type": "ItemList",
-    name: "Colaberry AI podcast catalog",
+    name: "Colaberry AI Podcast",
     itemListOrder: activeSort === "trending" ? "https://schema.org/ItemListOrderDescending" : "https://schema.org/ItemListOrderAscending",
     numberOfItems: episodes.length,
     itemListElement: episodes.map((episode, index) => ({
@@ -141,17 +217,37 @@ export default function Podcasts({
         </div>
       ) : null}
 
-      {/* ── Clean header with pill tabs + search ── */}
-      <section className="section-shell px-4 pt-8 pb-4 sm:px-6">
-        <h1 className="font-display text-display-sm font-bold text-slate-900 dark:text-slate-100 sm:text-display-md">
-          Podcasts
-        </h1>
+      {/* ── Premium header with sort + source filters + search ── */}
+      <section className="hero-surface section-shell px-4 py-6 sm:px-6">
+        <div className="grid gap-5 lg:grid-cols-[minmax(0,1fr)_minmax(0,260px)] lg:items-start">
+          <div className="min-w-0">
+            <div className="chip chip-neutral inline-flex w-fit rounded-md px-3 py-1 text-label font-semibold uppercase tracking-[0.14em]">
+              <span className="h-1.5 w-1.5 rounded-full bg-[var(--trusted-fill)]" />
+              Podcast intelligence
+            </div>
+            <h1 className="mt-4 font-display text-display-sm font-bold text-slate-900 dark:text-slate-100 sm:text-display-md">
+              Podcasts
+            </h1>
+            <p className="mt-2 max-w-3xl text-sm leading-relaxed text-slate-600 dark:text-slate-300 sm:text-base">
+              Explore strategy and engineering conversations with inline playback, structured transcripts, and episode-level metadata designed for enterprise discovery.
+            </p>
+            <p className="mt-3 text-xs font-semibold uppercase tracking-[0.12em] text-slate-500 dark:text-slate-400">
+              {searchQuery ? `Filtered by: "${searchQuery}"` : "Editorially curated feed"}
+              {" · "}
+              {activeSort === "trending" ? "Top ranked" : "Latest episodes"}
+            </p>
+          </div>
+          <div className="grid grid-cols-3 gap-2 lg:grid-cols-1">
+            <MetaStat label="Episodes" value={`${episodes.length}`} />
+            <MetaStat label="Colaberry" value={`${internalCount}`} />
+            <MetaStat label="External" value={`${externalCount}`} />
+          </div>
+        </div>
 
-        <div className="mt-4 flex items-center justify-between">
-          {/* Sort pill tabs */}
+        <div className="mt-5 flex flex-wrap items-center gap-3">
           <div className="flex items-center gap-1 rounded-lg border border-slate-200/80 p-1 dark:border-slate-700">
             <Link
-              href="/resources/podcasts"
+              href={latestSortHref}
               className={`flex min-h-[36px] items-center rounded-md px-4 py-1.5 text-xs font-semibold transition ${
                 activeSort === "latest"
                   ? "bg-slate-900 text-white shadow-sm dark:bg-slate-100 dark:text-slate-900"
@@ -161,7 +257,7 @@ export default function Podcasts({
               Latest
             </Link>
             <Link
-              href="/resources/podcasts?sort=trending"
+              href={trendingSortHref}
               className={`flex min-h-[36px] items-center rounded-md px-4 py-1.5 text-xs font-semibold transition ${
                 activeSort === "trending"
                   ? "bg-slate-900 text-white shadow-sm dark:bg-slate-100 dark:text-slate-900"
@@ -172,12 +268,25 @@ export default function Podcasts({
             </Link>
           </div>
 
-          {/* Search icon toggle */}
+          <div className="flex flex-wrap gap-2">
+            {typeFilterLinks.map((filter) => (
+              <Link
+                key={filter.value}
+                href={filter.href}
+                className={`chip rounded-md px-3 py-1.5 text-xs font-semibold ${
+                  activeType === filter.value ? "chip-brand" : "chip-muted"
+                }`}
+              >
+                {filter.label}
+              </Link>
+            ))}
+          </div>
+
           <button
             type="button"
             onClick={() => setSearchOpen((prev) => !prev)}
             aria-label="Toggle search"
-            className="flex h-9 w-9 items-center justify-center rounded-full text-slate-500 transition-colors hover:bg-slate-100 hover:text-slate-700 dark:text-slate-400 dark:hover:bg-slate-800 dark:hover:text-slate-200"
+            className="ml-auto flex h-9 w-9 items-center justify-center rounded-full text-slate-500 transition-colors hover:bg-slate-100 hover:text-slate-700 dark:text-slate-400 dark:hover:bg-slate-800 dark:hover:text-slate-200"
           >
             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
               <circle cx="11" cy="11" r="8" />
@@ -186,21 +295,58 @@ export default function Podcasts({
           </button>
         </div>
 
-        {/* Expandable search bar */}
         {searchOpen ? (
           <form action="/resources/podcasts" method="get" className="mt-3">
             <input
               type="search"
               name="q"
               defaultValue={searchQuery}
-              placeholder="Search episodes..."
+              placeholder="Search episodes, tags, companies..."
               autoFocus
               aria-label="Search episodes"
               className="h-10 w-full rounded-lg border border-slate-200/80 bg-white px-4 text-sm text-slate-900 placeholder:text-slate-400 shadow-sm focus:border-brand-blue/40 focus:outline-none focus:ring-2 focus:ring-brand-blue/25 dark:border-slate-700 dark:bg-slate-900/70 dark:text-slate-100 dark:placeholder:text-slate-500"
             />
             {activeSort !== "latest" ? <input type="hidden" name="sort" value={activeSort} /> : null}
+            {activeType !== "all" ? <input type="hidden" name="type" value={activeType} /> : null}
           </form>
         ) : null}
+        {topTags.length > 0 ? (
+          <div className="mt-4 border-t border-slate-200/70 pt-4 dark:border-slate-700/60">
+            <div className="text-xs font-semibold uppercase tracking-[0.12em] text-slate-500 dark:text-slate-400">
+              Trending topics
+            </div>
+            <div className="mt-2 flex flex-wrap gap-2">
+              {topTags.map((tag) => (
+                <Link
+                  key={`${tag.slug}-${tag.count}`}
+                  href={`/resources/podcasts/tag/${tag.slug}`}
+                  className="chip chip-neutral rounded-md px-3 py-1 text-xs font-semibold"
+                >
+                  #{tag.name} ({tag.count})
+                </Link>
+              ))}
+            </div>
+          </div>
+        ) : null}
+      </section>
+
+      <section className="surface-panel section-shell mt-4 px-4 py-5 sm:px-6">
+        <div className="text-xs font-semibold uppercase tracking-[0.14em] text-slate-500 dark:text-slate-400">
+          Editorial queues
+        </div>
+        <div className="mt-3 grid gap-3 lg:grid-cols-3">
+          {editorialQueues.map((queue) => (
+            <article key={queue.title} className="card-feature p-4">
+              <h2 className="text-sm font-semibold text-slate-900 dark:text-slate-100">{queue.title}</h2>
+              <p className="mt-1 text-xs leading-relaxed text-slate-600 dark:text-slate-300">
+                {queue.description}
+              </p>
+              <Link href={queue.href} className="btn btn-ghost mt-3 text-xs">
+                {queue.cta}
+              </Link>
+            </article>
+          ))}
+        </div>
       </section>
 
       {/* ── Content area: hero + list | sidebar ── */}
@@ -212,7 +358,7 @@ export default function Podcasts({
               <StatePanel
                 variant="empty"
                 title="No podcast episodes match this filter"
-                description="Try broader search terms or reset filters to see the full podcast archive."
+                description="Try broader search terms or reset filters to browse all episodes."
               />
             </div>
           ) : (
@@ -297,8 +443,7 @@ export default function Podcasts({
                           type="button"
                           aria-label="Copy link"
                           onClick={() => {
-                            navigator.clipboard.writeText(heroFullUrl);
-                            logPodcastEvent("share", "hero-copy", { slug: hero.slug });
+                            void copyShareUrl(heroFullUrl, "hero-copy", hero.slug);
                           }}
                           className="flex h-8 w-8 items-center justify-center rounded-full text-slate-400 transition-colors hover:bg-slate-100 hover:text-slate-600 dark:text-slate-500 dark:hover:bg-slate-800 dark:hover:text-slate-300"
                           title="Copy link"
@@ -383,14 +528,52 @@ export default function Podcasts({
                           <span>{isExternal ? "External" : "Colaberry AI Podcast"}</span>
                         </p>
 
+                        {/* Mobile-first quick playback controls */}
+                        <div className="mt-3 flex items-center justify-between gap-3 sm:hidden">
+                          <div className="flex items-center gap-2">
+                            {canPlay ? (
+                              <button
+                                type="button"
+                                aria-label={isPlaying ? `Pause ${episode.title}` : `Play ${episode.title}`}
+                                onClick={() => handlePlay(episode, "list-inline-mobile")}
+                                className="btn btn-secondary btn-compact h-9 px-3 tracking-normal normal-case"
+                              >
+                                {isPlaying ? (
+                                  <>
+                                    <PauseIcon />
+                                    Pause
+                                  </>
+                                ) : (
+                                  <>
+                                    <PlayIcon />
+                                    Play
+                                  </>
+                                )}
+                              </button>
+                            ) : null}
+                            {episode.duration ? (
+                              <span className="text-xs font-semibold text-slate-500 dark:text-slate-400">
+                                {episode.duration}
+                              </span>
+                            ) : null}
+                          </div>
+                          <Link
+                            href={episodeUrl}
+                            className="focus-ring inline-flex items-center gap-1 text-xs font-semibold text-slate-700 dark:text-slate-200"
+                            onClick={() => logPodcastEvent("click", "list-detail-mobile", { slug: episode.slug, title: episode.title })}
+                          >
+                            Open
+                            <span aria-hidden="true">→</span>
+                          </Link>
+                        </div>
+
                         {/* Share / action row */}
                         <div className="mt-3 flex items-center gap-1">
                           <button
                             type="button"
                             aria-label="Copy link"
                             onClick={() => {
-                              navigator.clipboard.writeText(fullUrl);
-                              logPodcastEvent("share", "list-copy", { slug: episode.slug });
+                              void copyShareUrl(fullUrl, "list-copy", episode.slug);
                             }}
                             className="flex h-8 w-8 items-center justify-center rounded-full text-slate-400 transition-colors hover:bg-slate-100 hover:text-slate-600 dark:text-slate-500 dark:hover:bg-slate-800 dark:hover:text-slate-300"
                             title="Copy link"
@@ -498,7 +681,7 @@ export default function Podcasts({
             </div>
 
             <p className="mt-4 text-sm leading-relaxed text-slate-600 dark:text-slate-300">
-              Colaberry AI Podcast explores the latest in AI, Data Science, and Emerging Tech. From cutting-edge research to real-world impact, we break down how AI is shaping industries, careers, and the future of work.
+              Hear from AI leaders and practitioners on what works in production. Each episode covers strategy, architecture, and real deployment outcomes.
             </p>
 
             {/* Newsletter subscribe */}
@@ -607,15 +790,25 @@ function formatShortDate(value?: string | null) {
   });
 }
 
+type RichTextChild = {
+  text?: string | null;
+};
+
+type RichTextBlock = {
+  type?: string | null;
+  children?: RichTextChild[] | null;
+};
+
 /** Extract plain text from Strapi rich-text (block array or string). */
-function extractPlainText(description: any, maxLen = 140): string {
+function extractPlainText(description: unknown, maxLen = 140): string {
   if (!description) return "";
   if (typeof description === "string") return description.slice(0, maxLen);
   if (Array.isArray(description)) {
     const text = description
-      .filter((block: any) => block?.type === "paragraph")
-      .flatMap((block: any) =>
-        (block.children || []).map((child: any) => child?.text || "")
+      .filter((block): block is RichTextBlock => typeof block === "object" && block !== null)
+      .filter((block) => block.type === "paragraph")
+      .flatMap((block) =>
+        (block.children || []).map((child) => child?.text || "")
       )
       .join(" ")
       .trim();
@@ -645,6 +838,29 @@ function matchesEpisodeSearch(episode: PodcastEpisode, query: string) {
   if ((episode.tags || []).some((tag) => `${tag.name} ${tag.slug}`.toLowerCase().includes(text))) return true;
   if ((episode.companies || []).some((company) => `${company.name} ${company.slug}`.toLowerCase().includes(text))) return true;
   return false;
+}
+
+function buildTagFacets(episodes: PodcastEpisode[]): PodcastTagFacet[] {
+  const tagMap = new Map<string, PodcastTagFacet>();
+  for (const episode of episodes) {
+    for (const tag of episode.tags || []) {
+      if (!tag?.slug) continue;
+      const existing = tagMap.get(tag.slug);
+      if (existing) {
+        existing.count += 1;
+      } else {
+        tagMap.set(tag.slug, {
+          slug: tag.slug,
+          name: tag.name || tag.slug,
+          count: 1,
+        });
+      }
+    }
+  }
+  return Array.from(tagMap.values()).sort((left, right) => {
+    if (right.count !== left.count) return right.count - left.count;
+    return left.name.localeCompare(right.name);
+  });
 }
 
 

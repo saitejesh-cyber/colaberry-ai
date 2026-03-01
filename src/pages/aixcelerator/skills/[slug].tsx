@@ -368,7 +368,7 @@ export default function SkillDetailPage({ skill }: SkillDetailProps) {
         </aside>
       </section>
 
-      <ShareActions title={skill.name} />
+      <ShareActions />
     </Layout>
   );
 }
@@ -397,7 +397,7 @@ function ScrollProgress() {
   );
 }
 
-function ShareActions({ title: _title }: { title: string }) {
+function ShareActions() {
   const [copied, setCopied] = useState(false);
   const copy = () => {
     navigator.clipboard.writeText(window.location.href).then(() => {
@@ -510,7 +510,7 @@ function ListBlock({
         <ul className="mt-3 space-y-2 text-sm text-slate-700 dark:text-slate-300">
           {items.map((item) => (
             <li key={item} className="flex gap-2">
-              <span className="mt-2 h-1.5 w-1.5 shrink-0 rounded-full bg-[#059669]" />
+              <span className="mt-2 h-1.5 w-1.5 shrink-0 rounded-full bg-[var(--trusted-fill)]" />
               <span>{item}</span>
             </li>
           ))}

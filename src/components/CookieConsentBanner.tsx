@@ -67,7 +67,7 @@ export default function CookieConsentBanner() {
       {showBanner ? (
         <section
           aria-label="Cookie consent"
-          className="fixed inset-x-0 bottom-0 z-[80] border-t border-slate-200/80 bg-white/98 shadow-[0_-18px_42px_rgba(15,23,42,0.15)] backdrop-blur dark:border-[#374151] dark:bg-[#111827]/96"
+          className="fixed inset-x-0 bottom-0 z-[80] border-t border-slate-200/80 bg-white/98 shadow-[0_-18px_42px_rgba(15,23,42,0.15)] backdrop-blur dark:border-[var(--stroke)] dark:bg-[var(--bg)]/96"
         >
           <div className="mx-auto w-full max-w-[1600px] px-4 py-4 sm:px-6 lg:px-8">
             <div className="grid gap-4 lg:grid-cols-[1fr_auto] lg:items-center">
@@ -98,14 +98,14 @@ export default function CookieConsentBanner() {
                 <button
                   type="button"
                   onClick={() => savePreferences({ analytics: false, marketing: false })}
-                  className="focus-ring inline-flex h-10 items-center rounded-lg border border-brand-purple-600/40 bg-white px-4 text-sm font-semibold text-brand-deep transition hover:border-brand-purple-600/60 hover:bg-brand-purple-600/5 dark:border-[#F87171]/40 dark:bg-slate-900 dark:text-[#F9FAFB] dark:hover:border-[#F87171]/60 dark:hover:bg-[#F87171]/10"
+                  className="focus-ring inline-flex h-10 items-center rounded-lg border border-brand-purple-600/40 bg-white px-4 text-sm font-semibold text-brand-deep transition hover:border-brand-purple-600/60 hover:bg-brand-purple-600/5 dark:border-[var(--pivot-fill)]/40 dark:bg-slate-900 dark:text-[var(--text-primary)] dark:hover:border-[var(--pivot-fill)]/60 dark:hover:bg-[var(--pivot-fill)]/10"
                 >
                   Essential only
                 </button>
                 <button
                   type="button"
                   onClick={() => savePreferences({ analytics: true, marketing: true })}
-                  className="focus-ring inline-flex h-10 items-center rounded-lg border border-brand-purple-600 bg-brand-purple-600 px-4 text-sm font-semibold text-white transition hover:bg-brand-purple-700 hover:border-brand-purple-700 dark:border-[#F87171] dark:bg-[#F87171] dark:hover:bg-[#EF4444] dark:hover:border-[#EF4444]"
+                  className="focus-ring inline-flex h-10 items-center rounded-lg border border-brand-purple-600 bg-brand-purple-600 px-4 text-sm font-semibold text-white transition hover:bg-brand-purple-700 hover:border-brand-purple-700 dark:border-[var(--pivot-fill)] dark:bg-[var(--pivot-fill)] dark:hover:bg-[var(--pivot-fill)] dark:hover:border-[var(--pivot-fill)]"
                 >
                   Accept cookies
                 </button>
@@ -190,7 +190,7 @@ export default function CookieConsentBanner() {
           type="button"
           onClick={() => setPreferencesOpen(true)}
           title={summary}
-          className="focus-ring fixed bottom-5 right-5 z-[70] inline-flex h-10 items-center rounded-lg border border-slate-300 bg-white/95 px-4 text-xs font-semibold uppercase tracking-[0.14em] text-slate-700 shadow-md backdrop-blur transition hover:border-brand-purple-600/50 hover:text-brand-deep dark:border-[#374151] dark:bg-[#111827]/95 dark:text-slate-200"
+          className="focus-ring fixed bottom-5 right-5 z-[70] inline-flex h-10 items-center rounded-lg border border-slate-300 bg-white/95 px-4 text-xs font-semibold uppercase tracking-[0.14em] text-slate-700 shadow-md backdrop-blur transition hover:border-brand-purple-600/50 hover:text-brand-deep dark:border-[var(--stroke)] dark:bg-[var(--bg)]/95 dark:text-slate-200"
           aria-label="Open cookie preferences"
         >
           Cookie preferences

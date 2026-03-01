@@ -36,11 +36,11 @@ export default function AnimatedSignalBanner({
 
       <div className="relative z-10 grid gap-5 px-6 py-8 sm:px-8 sm:py-10 lg:grid-cols-[1.18fr_0.82fr] lg:items-end lg:gap-8">
         <div>
-          <div className="inline-flex items-center gap-2 rounded-full border border-white/15 bg-white/10 px-3 py-1 text-[0.65rem] font-semibold uppercase tracking-[0.18em] text-cyan-100">
+          <div className="inline-flex items-center gap-2 rounded-full border border-white/15 bg-white/10 px-3 py-1 text-label font-semibold uppercase tracking-[0.18em] text-indigo-100">
             <span className="animated-signal-dot" />
             {kicker}
           </div>
-          <h2 className="mt-3 font-display text-2xl font-semibold leading-tight text-white sm:text-3xl">
+          <h2 className="mt-3 font-display text-display-xs font-semibold leading-tight text-white sm:text-display-sm">
             {title}
           </h2>
           <p className="mt-2 max-w-2xl text-sm leading-relaxed text-slate-200 sm:text-base">

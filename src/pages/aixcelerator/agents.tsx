@@ -1,4 +1,4 @@
-import AgentCard from "../../components/AgentCard";
+import CatalogCard from "../../components/CatalogCard";
 import CatalogSearchBox from "../../components/CatalogSearchBox";
 import Layout from "../../components/Layout";
 import SectionHeader from "../../components/SectionHeader";
@@ -95,9 +95,9 @@ export default function Agents({ agents, allowPrivate, fetchError }: AgentsPageP
     return acc;
   }, {});
   const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://colaberry.ai";
-  const metaTitle = "AI Agents Catalog | Colaberry AI";
+  const metaTitle = "AI Agents Catalog | Colaberry AI - Find the Right Agent";
   const metaDescription =
-    "Explore a governed marketplace of AI agents with ownership, lifecycle status, and LLM-ready metadata for enterprise discovery.";
+    "Browse production-ready AI agents by industry, status, and owner. Compare capabilities and deploy with built-in governance.";
   const seoMeta: SeoMeta = {
     title: metaTitle,
     description: metaDescription,
@@ -213,27 +213,27 @@ export default function Agents({ agents, allowPrivate, fetchError }: AgentsPageP
       <EnterprisePageHero
         kicker="Agents catalog"
         title="AI Agents"
-        description="A governed marketplace of enterprise agents aligned to teams, workflows, and industry context — with public and private listings."
+        description="Find the right agent for your team. Filter by industry, readiness, and owner -- then deploy with governance already in place."
         image={heroImage("hero-agents-cinematic.webp")}
         alt="AI Agents catalog"
         imageKicker="Catalog"
-        imageTitle="Agent directory"
-        imageDescription="Compare agent ownership, readiness, and deployment context."
+        imageTitle="Compare and deploy"
+        imageDescription="Evaluate ownership, readiness, and deployment fit side by side."
         chips={agentSignals}
-        primaryAction={{ label: "Browse agents", href: "#catalog" }}
-        secondaryAction={{ label: "Book a demo", href: "/request-demo", variant: "secondary" }}
+        primaryAction={{ label: "Start browsing agents", href: "#catalog" }}
+        secondaryAction={{ label: "Schedule a demo", href: "/request-demo", variant: "secondary" }}
         metrics={[
           { label: "Total agents", value: `${agents.length}`, note: "Public and governed listings." },
-          { label: "Governance", value: "Ownership-tracked", note: "Lifecycle and approval state." },
-          { label: "Coverage", value: "Cross-industry", note: "Agriculture to fintech." },
+          { label: "Governance", value: "Owner-tracked", note: "Lifecycle, approval, and audit trail." },
+          { label: "Coverage", value: "Cross-industry", note: "Agriculture to fintech and beyond." },
         ]}
       />
 
       <section className="surface-panel mt-6 p-6">
         <SectionHeader
-          kicker="Catalog snapshot"
-          title="Coverage and readiness"
-          description="See how many agents are active across industries and stages."
+          kicker="At a glance"
+          title="Catalog coverage"
+          description="A quick view of active agents across industries and deployment stages."
           size="md"
         />
         <div className="mt-5 grid gap-4 sm:grid-cols-3 sm:items-center sm:gap-6">
@@ -253,22 +253,22 @@ export default function Agents({ agents, allowPrivate, fetchError }: AgentsPageP
 
       <section className="surface-panel mt-6 p-6">
         <SectionHeader
-          kicker="Discovery signals"
-          title="Latest and trending agents"
-          description="Track newest agent profiles and high-interest assistants before exploring the full catalog."
+          kicker="Highlights"
+          title="Recently added and most popular"
+          description="Spot new arrivals and high-demand agents before diving into the full catalog."
           size="md"
         />
         <div className="mt-5 grid gap-4 lg:grid-cols-2">
           <SignalRail
-            title="Latest updates"
-            description="Most recently updated agent profiles."
+            title="Recently updated"
+            description="Newest agent profiles added or refreshed."
             items={latestAgents}
             emptyText="No recently updated agent entries available."
             detailType="latest"
           />
           <SignalRail
-            title="Trending now"
-            description="Agents with stronger usage, quality, and freshness signals."
+            title="Most popular"
+            description="Agents with the highest usage, ratings, and recent activity."
             items={trendingAgents}
             emptyText="Trending signals will appear after more agent activity is recorded."
             detailType="trending"
@@ -278,9 +278,9 @@ export default function Agents({ agents, allowPrivate, fetchError }: AgentsPageP
 
       <section className="surface-panel mt-6 p-6">
         <SectionHeader
-          kicker="Filters"
-          title="Search and filter"
-          description="Find agents by industry, status, tags, and visibility."
+          kicker="Refine"
+          title="Find the right agent"
+          description="Narrow by industry, deployment status, source, or tag."
           size="md"
         />
         <div className="mt-4 grid gap-3 lg:grid-cols-12">
@@ -468,7 +468,7 @@ export default function Agents({ agents, allowPrivate, fetchError }: AgentsPageP
 
       <div ref={gridRef} className="stagger-grid mt-6 grid gap-5 sm:mt-8 sm:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-4">
         {visibleAgents.map((a) => (
-          <AgentCard key={a.slug || String(a.id)} agent={a} />
+          <CatalogCard key={a.slug || String(a.id)} item={a} variant="agent" />
         ))}
       </div>
 

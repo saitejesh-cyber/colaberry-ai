@@ -2,22 +2,22 @@
 <svg width="2400" height="1350" viewBox="0 0 2400 1350" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Colaberry enterprise hero background">
   <defs>
     <linearGradient id="bg-agent-network" x1="0" y1="0" x2="1" y2="1">
-      <stop offset="0" stop-color="#060B17"/>
-      <stop offset="0.54" stop-color="#121F3A"/>
-      <stop offset="1" stop-color="#1C2E57"/>
+      <stop offset="0" stop-color="#060917"/>
+      <stop offset="0.54" stop-color="#111836"/>
+      <stop offset="1" stop-color="#1E1B4B"/>
     </linearGradient>
     <radialGradient id="orb-a-agent-network" cx="52%" cy="42%" r="56%">
-      <stop offset="0" stop-color="#6E53D9" stop-opacity="0.48"/>
-      <stop offset="1" stop-color="#6E53D9" stop-opacity="0"/>
+      <stop offset="0" stop-color="#4F46E5" stop-opacity="0.48"/>
+      <stop offset="1" stop-color="#4F46E5" stop-opacity="0"/>
     </radialGradient>
     <radialGradient id="orb-b-agent-network" cx="56%" cy="54%" r="56%">
-      <stop offset="0" stop-color="#34D0E2" stop-opacity="0.44"/>
-      <stop offset="1" stop-color="#34D0E2" stop-opacity="0"/>
+      <stop offset="0" stop-color="#14B8A6" stop-opacity="0.44"/>
+      <stop offset="1" stop-color="#14B8A6" stop-opacity="0"/>
     </radialGradient>
     <linearGradient id="flow-agent-network" x1="1380" y1="1180" x2="2310" y2="420" gradientUnits="userSpaceOnUse">
-      <stop stop-color="#BEAEFF" stop-opacity="0.88"/>
-      <stop offset="0.56" stop-color="#9EECFF" stop-opacity="0.84"/>
-      <stop offset="1" stop-color="#BEAEFF" stop-opacity="0.62"/>
+      <stop stop-color="#A5B4FC" stop-opacity="0.88"/>
+      <stop offset="0.56" stop-color="#5EEAD4" stop-opacity="0.84"/>
+      <stop offset="1" stop-color="#A5B4FC" stop-opacity="0.62"/>
     </linearGradient>
     <linearGradient id="left-scrim-agent-network" x1="0" y1="0" x2="1" y2="0">
       <stop offset="0" stop-color="#030712" stop-opacity="0.94"/>
@@ -38,12 +38,12 @@
   <ellipse cx="1800" cy="980" rx="980" ry="560" fill="url(#orb-b-agent-network)" filter="url(#soft-blur-agent-network)"/>
 
   
-        <g fill="none" stroke="#9EECFF" stroke-opacity="0.58" stroke-width="2.2">
+        <g fill="none" stroke="#5EEAD4" stroke-opacity="0.58" stroke-width="2.2">
           <path d="M1370 920C1470 820 1600 760 1730 760C1880 760 1990 820 2110 940"/>
           <path d="M1370 980C1520 860 1640 840 1740 840C1870 840 2030 900 2150 1030"/>
           <path d="M1460 720C1600 640 1740 620 1880 650C2010 680 2130 760 2240 890"/>
         </g>
-        <g fill="rgba(8,16,36,0.85)" stroke="#BEAEFF" stroke-opacity="0.54">
+        <g fill="rgba(8,16,36,0.85)" stroke="#A5B4FC" stroke-opacity="0.54">
           <circle cx="1370" cy="920" r="46"/>
           <circle cx="1510" cy="790" r="36"/>
           <circle cx="1730" cy="760" r="42"/>
@@ -51,7 +51,7 @@
           <circle cx="2110" cy="940" r="44"/>
           <circle cx="2240" cy="890" r="38"/>
         </g>
-        <g fill="#9EECFF">
+        <g fill="#5EEAD4">
           <circle cx="1370" cy="920" r="6"/>
           <circle cx="1510" cy="790" r="6"/>
           <circle cx="1730" cy="760" r="6"/>

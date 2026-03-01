@@ -2,22 +2,22 @@
 <svg width="2400" height="1350" viewBox="0 0 2400 1350" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Colaberry enterprise hero background">
   <defs>
     <linearGradient id="bg-book-arc" x1="0" y1="0" x2="1" y2="1">
-      <stop offset="0" stop-color="#060B16"/>
-      <stop offset="0.54" stop-color="#14233F"/>
-      <stop offset="1" stop-color="#194163"/>
+      <stop offset="0" stop-color="#060A16"/>
+      <stop offset="0.54" stop-color="#121B3A"/>
+      <stop offset="1" stop-color="#312E81"/>
     </linearGradient>
     <radialGradient id="orb-a-book-arc" cx="52%" cy="42%" r="56%">
-      <stop offset="0" stop-color="#6E60E5" stop-opacity="0.48"/>
-      <stop offset="1" stop-color="#6E60E5" stop-opacity="0"/>
+      <stop offset="0" stop-color="#6366F1" stop-opacity="0.48"/>
+      <stop offset="1" stop-color="#6366F1" stop-opacity="0"/>
     </radialGradient>
     <radialGradient id="orb-b-book-arc" cx="56%" cy="54%" r="56%">
-      <stop offset="0" stop-color="#31CBE0" stop-opacity="0.44"/>
-      <stop offset="1" stop-color="#31CBE0" stop-opacity="0"/>
+      <stop offset="0" stop-color="#14B8A6" stop-opacity="0.44"/>
+      <stop offset="1" stop-color="#14B8A6" stop-opacity="0"/>
     </radialGradient>
     <linearGradient id="flow-book-arc" x1="1380" y1="1180" x2="2310" y2="420" gradientUnits="userSpaceOnUse">
-      <stop stop-color="#CAC1FF" stop-opacity="0.88"/>
-      <stop offset="0.56" stop-color="#9BEFFF" stop-opacity="0.84"/>
-      <stop offset="1" stop-color="#CAC1FF" stop-opacity="0.62"/>
+      <stop stop-color="#C7D2FE" stop-opacity="0.88"/>
+      <stop offset="0.56" stop-color="#99F6E4" stop-opacity="0.84"/>
+      <stop offset="1" stop-color="#C7D2FE" stop-opacity="0.62"/>
     </linearGradient>
     <linearGradient id="left-scrim-book-arc" x1="0" y1="0" x2="1" y2="0">
       <stop offset="0" stop-color="#030712" stop-opacity="0.94"/>
@@ -39,9 +39,9 @@
 
   
         <g opacity="0.95">
-          <path d="M1410 980V500C1410 452 1440 420 1488 420H1840C1888 420 1918 452 1918 500V980C1866 940 1810 922 1746 922H1582C1518 922 1462 940 1410 980Z" fill="rgba(12,25,48,0.76)" stroke="#CAC1FF" stroke-opacity="0.36"/>
-          <path d="M1918 980V500C1918 452 1948 420 1996 420H2348C2396 420 2426 452 2426 500V980C2374 940 2318 922 2254 922H2090C2026 922 1970 940 1918 980Z" fill="rgba(10,22,44,0.74)" stroke="#9BEFFF" stroke-opacity="0.36"/>
-          <path d="M1918 500V996" stroke="#CAC1FF" stroke-opacity="0.46" stroke-width="2"/>
+          <path d="M1410 980V500C1410 452 1440 420 1488 420H1840C1888 420 1918 452 1918 500V980C1866 940 1810 922 1746 922H1582C1518 922 1462 940 1410 980Z" fill="rgba(12,25,48,0.76)" stroke="#C7D2FE" stroke-opacity="0.36"/>
+          <path d="M1918 980V500C1918 452 1948 420 1996 420H2348C2396 420 2426 452 2426 500V980C2374 940 2318 922 2254 922H2090C2026 922 1970 940 1918 980Z" fill="rgba(10,22,44,0.74)" stroke="#99F6E4" stroke-opacity="0.36"/>
+          <path d="M1918 500V996" stroke="#C7D2FE" stroke-opacity="0.46" stroke-width="2"/>
         </g>
       
 

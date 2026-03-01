@@ -4,6 +4,7 @@ import Head from "next/head";
 import PremiumMediaCard from "../../components/PremiumMediaCard";
 import EnterpriseCtaBand from "../../components/EnterpriseCtaBand";
 import EnterprisePageHero from "../../components/EnterprisePageHero";
+import SectionHeader from "../../components/SectionHeader";
 import { heroImage } from "../../lib/media";
 import { seoTags, canonicalUrl as buildCanonical, type SeoMeta } from "../../lib/seo";
 import { fetchAgents, fetchUseCases } from "../../lib/cms";
@@ -45,7 +46,7 @@ export const getStaticProps: GetStaticProps<IndustriesProps> = async () => {
 export default function IndustriesIndex({ industryCounts }: IndustriesProps) {
   const seoMeta: SeoMeta = {
     title: "Industries | Colaberry AI",
-    description: "Industry-specific AI workspaces for agents, MCP patterns, use cases, and measurable outcomes.",
+    description: "Deploy AI agents tailored to your industry. Pre-built playbooks for agriculture, energy, healthcare, and more.",
     canonical: buildCanonical("/industries"),
   };
 
@@ -62,33 +63,42 @@ export default function IndustriesIndex({ industryCounts }: IndustriesProps) {
   const industryHighlights = [
     {
       href: "/resources/case-studies",
-      title: "Outcome stories",
-      description: "Case studies with measurable outcomes and delivery context.",
+      title: "Proven results",
+      description: "Real deployments with documented ROI and timelines.",
       meta: "Outcomes",
       image: heroImage("hero-solutions-cinematic.webp"),
     },
     {
       href: "/solutions",
-      title: "Workspace templates",
-      description: "Repeatable industry-aligned playbooks and signal feeds.",
+      title: "Ready-to-deploy playbooks",
+      description: "Pre-built workflows aligned to your industry's needs.",
       meta: "Playbooks",
       image: heroImage("hero-platform-cinematic.webp"),
     },
     {
       href: "/updates",
-      title: "Domain signals",
-      description: "Key data sources, workflows, and AI surfaces per industry.",
+      title: "Industry intelligence",
+      description: "Curated data sources and AI signals for your sector.",
       meta: "Signals",
       image: heroImage("hero-updates-cinematic.webp"),
     },
     {
       href: "/aixcelerator/agents",
-      title: "Governed delivery",
-      description: "Ownership, approvals, and evaluation-ready metadata.",
+      title: "Enterprise governance",
+      description: "Built-in ownership, approvals, and audit trails.",
       meta: "Governance",
       image: heroImage("hero-agents-cinematic.webp"),
     },
   ];
+  const industrySummaries = industries
+    .map((industry) => {
+      const counts = industryCounts[industry.slug] || { agents: 0, useCases: 0 };
+      const score = counts.agents * 2 + counts.useCases * 3;
+      return { ...industry, counts, score };
+    })
+    .sort((left, right) => right.score - left.score || left.name.localeCompare(right.name));
+  const aggregateAgents = Object.values(industryCounts).reduce((sum, item) => sum + item.agents, 0);
+  const aggregateUseCases = Object.values(industryCounts).reduce((sum, item) => sum + item.useCases, 0);
 
   return (
     <Layout>
@@ -105,7 +115,7 @@ export default function IndustriesIndex({ industryCounts }: IndustriesProps) {
               "@type": "CollectionPage",
               name: "Colaberry AI Industries",
               description:
-                "Industry-specific AI workspaces for agents, MCP patterns, use cases, and measurable outcomes.",
+                "Deploy AI agents tailored to your industry. Pre-built playbooks for agriculture, energy, healthcare, and more.",
               url: `${process.env.NEXT_PUBLIC_SITE_URL || "https://colaberry.ai"}/industries`,
             }),
           }}
@@ -113,20 +123,20 @@ export default function IndustriesIndex({ industryCounts }: IndustriesProps) {
       </Head>
       <EnterprisePageHero
         kicker="Industry expertise"
-        title="Industries"
-        description="Domain-led delivery surfaces for sector-specific agents, MCP patterns, use cases, and outcomes."
+        title="AI built for your industry"
+        description="Pre-configured agents, proven playbooks, and measurable outcomes for each sector you operate in."
         image={heroImage("hero-industries-cinematic.webp")}
         alt="Industry landscape overview"
         imageKicker="Coverage"
-        imageTitle="Service line coverage map"
-        imageDescription="Industry-aligned AI delivery contexts with playbooks and measurable outcomes."
+        imageTitle="8 industries, one platform"
+        imageDescription="Each vertical includes tailored agents, integration patterns, and documented outcomes."
         chips={["Agriculture", "Energy", "Utilities", "Healthcare", "Manufacturing", "Supply chain"]}
         primaryAction={{ label: "Explore solutions", href: "/solutions" }}
         secondaryAction={{ label: "Browse case studies", href: "/resources/case-studies", variant: "secondary" }}
         metrics={[
-          { label: "Industry tracks", value: `${industries.length}`, note: "Current vertical delivery surfaces." },
-          { label: "Launch path", value: "Catalog → outcome", note: "From signals to deployable patterns." },
-          { label: "Distribution", value: "Global", note: "Shared framework, domain-adapted execution." },
+          { label: "Industry tracks", value: `${industries.length}`, note: "Active verticals with dedicated playbooks." },
+          { label: "Mapped agents", value: `${aggregateAgents}`, note: "Agents tagged to industry needs." },
+          { label: "Mapped use cases", value: `${aggregateUseCases}`, note: "Outcome patterns across sectors." },
         ]}
       />
 
@@ -142,6 +152,29 @@ export default function IndustriesIndex({ industryCounts }: IndustriesProps) {
             size="sm"
           />
         ))}
+      </section>
+
+      <section className="surface-panel mt-6 p-6">
+        <SectionHeader
+          kicker="Delivery signal"
+          title="Industry readiness by catalog density"
+          description="Tracks with more linked agents and use cases typically move faster from pilot to production."
+          size="md"
+        />
+        <div className="mt-5 grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
+          {industrySummaries.slice(0, 4).map((item) => (
+            <article key={`${item.slug}-signal`} className="card-elevated p-4">
+              <div className="text-sm font-semibold text-slate-900 dark:text-slate-100">{item.name}</div>
+              <div className="mt-2 text-xs text-slate-600 dark:text-slate-300">
+                {item.counts.agents} agent{item.counts.agents === 1 ? "" : "s"} • {item.counts.useCases} use case
+                {item.counts.useCases === 1 ? "" : "s"}
+              </div>
+              <div className="mt-3 inline-flex items-center rounded-md border border-[var(--trusted-stroke)] bg-[var(--trusted-surface)] px-2 py-0.5 text-xs font-semibold text-[var(--trusted-text)]">
+                {item.score >= 9 ? "Launch-ready" : item.score >= 4 ? "Scaling" : "Emerging"}
+              </div>
+            </article>
+          ))}
+        </div>
       </section>
 
       <div className="mt-6 grid gap-4 sm:mt-8 sm:grid-cols-2 lg:grid-cols-3">
@@ -166,9 +199,9 @@ export default function IndustriesIndex({ industryCounts }: IndustriesProps) {
       </div>
 
       <EnterpriseCtaBand
-        kicker="Industry expansion"
-        title="Move from catalog to outcome with domain-ready AI delivery"
-        description="Combine industry context, governed agents, and MCP integrations into repeatable playbooks that teams can deploy with confidence."
+        kicker="Get started"
+        title="Go live in your industry with AI that fits"
+        description="Combine tailored agents, governed workflows, and proven playbooks to deliver measurable results your team can trust."
         primaryHref="/solutions"
         primaryLabel="Explore solutions"
         secondaryHref="/resources/case-studies"

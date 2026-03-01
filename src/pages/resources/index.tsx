@@ -5,6 +5,7 @@ import Head from "next/head";
 import PremiumMediaCard from "../../components/PremiumMediaCard";
 import EnterpriseCtaBand from "../../components/EnterpriseCtaBand";
 import EnterprisePageHero from "../../components/EnterprisePageHero";
+import SectionHeader from "../../components/SectionHeader";
 import { heroImage } from "../../lib/media";
 import { seoTags, canonicalUrl as buildCanonical, type SeoMeta } from "../../lib/seo";
 import { fetchPodcastEpisodes, fetchArticles, fetchBooks, fetchCaseStudies } from "../../lib/cms";
@@ -35,47 +36,91 @@ export const getStaticProps: GetStaticProps<ResourcesProps> = async () => {
 };
 
 export default function Resources({ counts }: ResourcesProps) {
+  const totalAssets = counts.podcasts + counts.articles + counts.books + counts.caseStudies;
   const resourceHighlights = [
     {
       href: "/resources/podcasts",
       title: "Podcasts + transcripts",
-      description: `${counts.podcasts > 0 ? `${counts.podcasts} episodes. ` : ""}Searchable conversations tied to agents and MCP servers.`,
+      description: `${counts.podcasts > 0 ? `${counts.podcasts} episodes. ` : ""}Expert conversations on AI strategy, with full transcripts and inline playback.`,
       meta: "Audio",
       image: heroImage("hero-podcasts-cinematic.webp"),
     },
     {
       href: "/resources/white-papers",
       title: "White papers + POVs",
-      description: "Technical guidance, frameworks, and executive summaries.",
+      description: "Actionable frameworks and architecture guides for enterprise AI rollouts.",
       meta: "Research",
       image: heroImage("hero-whitepapers-cinematic.webp"),
     },
     {
       href: "/resources/articles",
       title: "Articles + analysis",
-      description: `${counts.articles > 0 ? `${counts.articles} articles. ` : ""}CMS-backed articles, practical notes, and implementation updates.`,
+      description: `${counts.articles > 0 ? `${counts.articles} articles. ` : ""}Practical guidance on deploying AI agents, from strategy to production.`,
       meta: "Editorial",
       image: heroImage("hero-updates-cinematic.webp"),
     },
     {
       href: "/resources/case-studies",
       title: "Case studies",
-      description: `${counts.caseStudies > 0 ? `${counts.caseStudies} studies. ` : ""}Outcome stories with measurable impact and context.`,
+      description: `${counts.caseStudies > 0 ? `${counts.caseStudies} studies. ` : ""}Real-world AI deployments with measurable ROI and lessons learned.`,
       meta: "Outcomes",
       image: heroImage("hero-case-studies-cinematic.webp"),
     },
     {
       href: "/resources/books",
       title: "Books + artifacts",
-      description: `${counts.books > 0 ? `${counts.books} titles. ` : ""}Reference material, templates, and delivery assets.`,
+      description: `${counts.books > 0 ? `${counts.books} titles. ` : ""}Books, templates, and reusable assets to accelerate AI adoption.`,
       meta: "Artifacts",
       image: heroImage("hero-books-cinematic.webp"),
+    },
+  ];
+  const decisionTracks = [
+    {
+      title: "Executive decision pack",
+      description: "ROI narrative, risk framing, and real deployment evidence for leadership reviews.",
+      href: "/resources/case-studies",
+      cta: "Open case studies",
+      note: "Best for CIOs, transformation leaders, and sponsors.",
+    },
+    {
+      title: "Architecture readiness pack",
+      description: "Reference guides and implementation patterns for teams planning governed rollouts.",
+      href: "/resources/white-papers",
+      cta: "Read white papers",
+      note: "Best for solution architects and platform engineers.",
+    },
+    {
+      title: "Delivery acceleration pack",
+      description: "Practical episodes, playbooks, and templates your squads can apply immediately.",
+      href: "/resources/podcasts",
+      cta: "Browse podcasts",
+      note: "Best for delivery leads and implementation teams.",
+    },
+  ];
+  const objectiveCollections = [
+    {
+      title: "Prove business impact",
+      description: "Use case studies and executive briefings to validate ROI before scaling.",
+      href: "/resources/case-studies",
+      label: "ROI proof",
+    },
+    {
+      title: "De-risk implementation",
+      description: "Use white papers and architecture notes to define controls, ownership, and guardrails.",
+      href: "/resources/white-papers",
+      label: "Risk controls",
+    },
+    {
+      title: "Upskill delivery teams",
+      description: "Use podcasts and books to align teams on modern AI delivery operating models.",
+      href: "/resources/books",
+      label: "Team enablement",
     },
   ];
 
   const seoMeta: SeoMeta = {
     title: "Resources | Colaberry AI - Podcasts, Books, White Papers, Case Studies",
-    description: "Explore Colaberry AI resources: podcasts with transcripts, white papers, books, case studies, and articles on enterprise AI agents, MCP servers, and skills.",
+    description: "Podcasts, white papers, case studies, and books to help your team plan, deploy, and scale enterprise AI with confidence.",
     canonical: buildCanonical("/resources"),
   };
 
@@ -90,37 +135,37 @@ export default function Resources({ counts }: ResourcesProps) {
           "@context": "https://schema.org",
           "@type": "CollectionPage",
           "name": "Colaberry AI Resources",
-          "description": "Enterprise AI knowledge resources: podcasts, books, white papers, case studies, and articles.",
+          "description": "Podcasts, white papers, case studies, and books to plan, deploy, and scale enterprise AI.",
           "url": `${process.env.NEXT_PUBLIC_SITE_URL || "https://colaberry.ai"}/resources`,
         }) }} />
       </Head>
       <EnterprisePageHero
-        kicker="Modular layer"
+        kicker="Knowledge hub"
         title="Resources"
-        description="A structured knowledge layer for podcasts, books, white papers, case studies, and editorial signals-ready for teams, SEO, and LLM indexing."
+        description="Everything your team needs to evaluate, plan, and deliver enterprise AI -- from strategy podcasts to production-ready frameworks."
         image={heroImage("hero-resources-cinematic.webp")}
         alt="Research workspace overview"
-        imageKicker="Knowledge hub"
-        imageTitle="Research and artifacts"
-        imageDescription="Podcasts, books, white papers, and curated signals in one governed publishing surface."
+        imageKicker="All formats"
+        imageTitle="One place for AI knowledge"
+        imageDescription="Podcasts, books, white papers, and case studies curated for decision-makers and practitioners."
         chips={["Podcasts", "White papers", "Books", "Case studies", "Articles"]}
         primaryAction={{ label: "Browse podcasts", href: "/resources/podcasts" }}
         secondaryAction={{ label: "Open updates feed", href: "/updates", variant: "secondary" }}
         metrics={[
           {
-            label: "Resource lanes",
-            value: `${resourceHighlights.length}`,
-            note: "Core resource surfaces in active navigation.",
+            label: "Published assets",
+            value: totalAssets > 0 ? `${totalAssets}` : "Growing",
+            note: "Live podcasts, articles, books, and case studies.",
           },
           {
-            label: "Publishing model",
-            value: "Internal + curated",
-            note: "Owned content with selective external aggregation.",
+            label: "Updated",
+            value: "Continuously",
+            note: "New content published and refreshed regularly.",
           },
           {
-            label: "Discovery",
-            value: "Search-ready",
-            note: "Metadata-first structure for users and assistants.",
+            label: "Built for",
+            value: "Decision-makers",
+            note: "Strategy, architecture, and ROI -- not just theory.",
           },
         ]}
       />
@@ -137,6 +182,31 @@ export default function Resources({ counts }: ResourcesProps) {
             size="sm"
           />
         ))}
+      </section>
+
+      <section className="surface-panel section-shell section-spacing p-5 sm:p-6">
+        <SectionHeader
+          kicker="Decision tracks"
+          title="Choose the right path by role and objective"
+          description="Each track bundles the fastest way to get from research to action, based on what your team needs to decide next."
+          size="md"
+        />
+        <div className="mt-5 grid gap-3 lg:grid-cols-3">
+          {decisionTracks.map((track) => (
+            <article key={track.title} className="card-feature p-4">
+              <div className="text-xs font-semibold uppercase tracking-[0.15em] text-slate-500">
+                {track.note}
+              </div>
+              <h2 className="mt-2 text-sm font-semibold text-slate-900 dark:text-slate-100">{track.title}</h2>
+              <p className="mt-1 text-xs leading-relaxed text-slate-600 dark:text-slate-300">
+                {track.description}
+              </p>
+              <Link href={track.href} className="btn btn-ghost mt-3 text-xs">
+                {track.cta}
+              </Link>
+            </article>
+          ))}
+        </div>
       </section>
 
       <div className="surface-panel section-shell section-spacing p-5 sm:p-6">
@@ -174,36 +244,60 @@ export default function Resources({ counts }: ResourcesProps) {
         </div>
       </div>
 
+      <section className="surface-panel section-shell section-spacing p-5 sm:p-6">
+        <SectionHeader
+          kicker="By objective"
+          title="Collections organized around enterprise outcomes"
+          description="Skip generic browsing and jump directly into content grouped for specific business priorities."
+          size="md"
+        />
+        <div className="mt-5 grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+          {objectiveCollections.map((collection) => (
+            <Link key={collection.title} href={collection.href} className="card-feature p-4">
+              <span className="chip chip-neutral rounded-full px-2.5 py-1 text-[11px] font-semibold">
+                {collection.label}
+              </span>
+              <h2 className="mt-2 text-sm font-semibold text-slate-900 dark:text-slate-100">
+                {collection.title}
+              </h2>
+              <p className="mt-1 text-xs leading-relaxed text-slate-600 dark:text-slate-300">
+                {collection.description}
+              </p>
+            </Link>
+          ))}
+        </div>
+      </section>
+
       <div className="section-spacing grid gap-3 sm:grid-cols-3">
-        <ResourceQuickLink href="/solutions" title="Solutions" description="Reusable solution patterns and packaged offerings." />
-        <ResourceQuickLink href="/updates" title="News & product" description="Product updates, announcements, and relevant news." />
-        <ResourceQuickLink href="/search" title="Search catalog" description="Full-text search across all content types." />
+        <ResourceQuickLink href="/solutions" title="Solutions" description="Pre-built AI solutions ready for enterprise deployment." />
+        <ResourceQuickLink href="/updates" title="News & product" description="Latest product updates, releases, and industry news." />
+        <ResourceQuickLink href="/search" title="Search catalog" description="Find any resource instantly across all content types." />
       </div>
 
       <div className="surface-panel section-shell section-spacing p-6">
         <div className="text-xs font-semibold uppercase tracking-[0.2em] text-slate-600 dark:text-slate-300">
-          How this evolves
+          What&apos;s next
         </div>
         <div className="mt-3 grid gap-3 text-sm text-slate-700 sm:grid-cols-2">
           <div className="section-card rounded-lg p-4">
-            <div className="font-semibold text-slate-900">Internal publishing</div>
+            <div className="font-semibold text-slate-900">Original research</div>
             <div className="mt-1 text-slate-600">
-              Structured posting for podcasts, books, white papers, and curated collections.
+              New white papers, podcasts, and case studies published on a regular cadence.
             </div>
           </div>
           <div className="section-card rounded-lg p-4">
-            <div className="font-semibold text-slate-900">External aggregation</div>
+            <div className="font-semibold text-slate-900">Curated industry signals</div>
             <div className="mt-1 text-slate-600">
-              Pull in relevant sources (feeds, links, announcements) with light editorial control.
+              Hand-picked external insights and market intelligence relevant to your AI strategy.
             </div>
           </div>
         </div>
       </div>
 
       <EnterpriseCtaBand
-        kicker="Knowledge engine"
-        title="Publish faster. Curate better. Keep every resource indexable."
-        description="Use one structured workflow for podcasts, articles, white papers, books, and case studies so teams and LLMs can discover trusted content quickly."
+        kicker="Stay informed"
+        title="Make faster AI decisions with the right knowledge."
+        description="Explore podcasts, white papers, case studies, and books built for teams evaluating and deploying enterprise AI."
         primaryHref="/resources/podcasts"
         primaryLabel="Browse podcasts"
         secondaryHref="/updates"

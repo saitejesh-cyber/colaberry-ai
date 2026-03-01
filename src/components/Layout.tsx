@@ -14,8 +14,26 @@ import {
 import { useRouter } from "next/router";
 import { fetchGlobalNavigation, GlobalNavigation } from "../lib/cms";
 import { captureUtmContextFromLocation } from "../lib/tracking";
+import { organizationSchema, webSiteSchema } from "../lib/seo";
 import NewsletterSignup from "./NewsletterSignup";
 import AnimatedSignalBanner from "./AnimatedSignalBanner";
+
+import {
+  fallbackNavigation,
+  normalizePath,
+  isExternalHref,
+  getLinkRel,
+  isActiveNavPath,
+  isCatalogWorkspacePath,
+  getSignalBannerConfig,
+  buildWorkspaceSections,
+  mergeGlobalNavigation,
+  getRequestDemoLabel,
+} from "./layout/navHelpers";
+import ThemeIcon from "./layout/ThemeIcon";
+import SocialIcon from "./layout/SocialIcon";
+import MobileLink from "./layout/MobileLink";
+import FooterLink from "./layout/FooterLink";
 
 const CookieConsentBanner = dynamic(() => import("./CookieConsentBanner"), {
   ssr: false,
@@ -24,507 +42,6 @@ const DemoRequestWizardModal = dynamic(
   () => import("./DemoRequestWizardModal"),
   { ssr: false },
 );
-
-const fallbackNavigation: GlobalNavigation = {
-  headerLinks: [
-    {
-      label: "Platform",
-      href: "/aixcelerator",
-      order: 1,
-      group: "header",
-      children: [
-        { label: "Agents", href: "/aixcelerator/agents", order: 1 },
-        { label: "MCP Servers", href: "/aixcelerator/mcp", order: 2 },
-        { label: "Skills", href: "/aixcelerator/skills", order: 3 },
-        { label: "Use Cases", href: "/use-cases", order: 4 },
-      ],
-    },
-    {
-      label: "Industries",
-      href: "/industries",
-      order: 2,
-      group: "header",
-      children: [
-        { label: "All Industries", href: "/industries", order: 1 },
-        { label: "Solutions & Playbooks", href: "/solutions", order: 2 },
-      ],
-    },
-    {
-      label: "Resources",
-      href: "/resources",
-      order: 3,
-      group: "header",
-      children: [
-        { label: "Podcasts", href: "/resources/podcasts", order: 1 },
-        { label: "Articles", href: "/resources/articles", order: 2 },
-        { label: "Books & White Papers", href: "/resources/books", order: 3 },
-        { label: "Case Studies", href: "/resources/case-studies", order: 4 },
-      ],
-    },
-    {
-      label: "Updates",
-      href: "/updates",
-      order: 4,
-      group: "header",
-      children: [{ label: "News & Product", href: "/updates", order: 1 }],
-    },
-  ],
-  footerColumns: [
-    {
-      title: "Product",
-      links: [
-        { label: "Platform", href: "/aixcelerator", order: 1, group: "Product" },
-        { label: "Agents", href: "/aixcelerator/agents", order: 2, group: "Product" },
-        { label: "MCP servers", href: "/aixcelerator/mcp", order: 3, group: "Product" },
-        { label: "Skills", href: "/aixcelerator/skills", order: 4, group: "Product" },
-        { label: "Discovery assistant", href: "/assistant", order: 5, group: "Product" },
-        { label: "Solutions", href: "/solutions", order: 6, group: "Product" },
-        { label: "Use cases", href: "/use-cases", order: 7, group: "Product" },
-        { label: "Industries", href: "/industries", order: 8, group: "Product" },
-      ],
-    },
-    {
-      title: "Resources",
-      links: [
-        { label: "Resources hub", href: "/resources", order: 1, group: "Resources" },
-        { label: "Podcasts", href: "/resources/podcasts", order: 2, group: "Resources" },
-        { label: "White papers", href: "/resources/white-papers", order: 3, group: "Resources" },
-        { label: "Articles", href: "/resources/articles", order: 4, group: "Resources" },
-        { label: "News & product", href: "/updates", order: 5, group: "Resources" },
-      ],
-    },
-  ],
-  cta: { label: "Book a demo", href: "/request-demo", group: "header" },
-  socialLinks: [
-    {
-      label: "LinkedIn",
-      href: "https://www.linkedin.com/company/colaberry",
-      target: "_blank",
-      icon: "linkedin",
-      order: 1,
-      group: "social",
-    },
-    {
-      label: "Instagram",
-      href: "https://www.instagram.com/colaberryinc/",
-      target: "_blank",
-      icon: "instagram",
-      order: 2,
-      group: "social",
-    },
-    {
-      label: "X",
-      href: "https://x.com/colaberryinc?lang=en",
-      target: "_blank",
-      icon: "x",
-      order: 3,
-      group: "social",
-    },
-    {
-      label: "Facebook",
-      href: "https://www.facebook.com/colaberryschoolofdataanalytics/",
-      target: "_blank",
-      icon: "facebook",
-      order: 4,
-      group: "social",
-    },
-    {
-      label: "YouTube",
-      href: "https://www.youtube.com/channel/UCb23caPCK7xW8roOkr_iKRA",
-      target: "_blank",
-      icon: "youtube",
-      order: 5,
-      group: "social",
-    },
-  ],
-  legalLinks: [
-    { label: "Privacy Policy", href: "/privacy-policy", order: 1, group: "legal" },
-    { label: "Cookie Policy", href: "/cookie-policy", order: 2, group: "legal" },
-  ],
-};
-
-const SOCIAL_ICON_PATHS: Record<string, ReactNode> = {
-  linkedin: (
-    <>
-      <path
-        d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 1 0-4 0v7h-4V9h4v2.2A4.5 4.5 0 0 1 16 8Z"
-        fill="currentColor"
-      />
-      <rect x="2" y="9" width="4" height="12" fill="currentColor" />
-      <circle cx="4" cy="4" r="2" fill="currentColor" />
-    </>
-  ),
-  instagram: (
-    <>
-      <rect x="3" y="3" width="18" height="18" rx="5" fill="none" stroke="currentColor" strokeWidth="1.6" />
-      <circle cx="12" cy="12" r="4" fill="none" stroke="currentColor" strokeWidth="1.6" />
-      <circle cx="17.5" cy="6.5" r="1.2" fill="currentColor" />
-    </>
-  ),
-  x: (
-    <path
-      d="M4 4h4.6l4 5.6L16.9 4H21l-6.6 8.6L21 20h-4.7l-4.2-5.9L7.3 20H3l7-8.9L4 4Z"
-      fill="currentColor"
-    />
-  ),
-  facebook: (
-    <path
-      d="M14.5 8.5h3V5h-3c-2.5 0-4.5 2-4.5 4.5V12H7v3h3v6h3.5v-6h3l.5-3h-3.5V9.5c0-.6.4-1 1-1Z"
-      fill="currentColor"
-    />
-  ),
-  youtube: (
-    <>
-      <path
-        d="M23 12s0-4.3-.6-5.7c-.4-1-1.2-1.8-2.2-2.2C18.8 3.5 12 3.5 12 3.5s-6.8 0-8.2.6c-1 .4-1.8 1.2-2.2 2.2C1 7.7 1 12 1 12s0 4.3.6 5.7c.4 1 1.2 1.8 2.2 2.2 1.4.6 8.2.6 8.2.6s6.8 0 8.2-.6c1-.4 1.8-1.2 2.2-2.2.6-1.4.6-5.7.6-5.7Z"
-        fill="currentColor"
-      />
-      <polygon points="10 8.5 16 12 10 15.5" fill="#ffffff" />
-    </>
-  ),
-};
-
-const DEFAULT_SOCIAL_ICON = (
-  <path
-    d="M10.4 13.6a1 1 0 0 1 1.4 0l1.6 1.6a4 4 0 1 1-5.7 5.7l-1.6-1.6a1 1 0 0 1 1.4-1.4l1.6 1.6a2 2 0 1 0 2.8-2.8l-1.6-1.6a1 1 0 0 1 0-1.5Zm2.8-2.8a1 1 0 0 1 0-1.4l1.6-1.6a4 4 0 1 1 5.7 5.7l-1.6 1.6a1 1 0 0 1-1.4-1.4l1.6-1.6a2 2 0 1 0-2.8-2.8l-1.6 1.6a1 1 0 0 1-1.5 0Z"
-    fill="currentColor"
-  />
-);
-
-function normalizeIconKey(value?: string | null) {
-  return (value ?? "").toLowerCase().replace(/[^a-z0-9]/g, "");
-}
-
-function resolveSocialIcon(icon?: string | null, label?: string | null) {
-  const raw = normalizeIconKey(icon) || normalizeIconKey(label);
-  const normalized =
-    raw === "twitter" || raw === "xcom"
-      ? "x"
-      : raw === "linkedin" || raw === "linked" || raw === "ln"
-      ? "linkedin"
-      : raw === "instagram" || raw === "ig"
-      ? "instagram"
-      : raw === "facebook" || raw === "fb"
-      ? "facebook"
-      : raw === "youtube" || raw === "yt"
-      ? "youtube"
-      : raw;
-  return SOCIAL_ICON_PATHS[normalized] ?? DEFAULT_SOCIAL_ICON;
-}
-
-function getLinkRel(target?: string | null) {
-  return target === "_blank" ? "noreferrer noopener" : undefined;
-}
-
-function isExternalHref(href: string) {
-  return /^https?:\/\//i.test(href);
-}
-
-function normalizePath(path: string) {
-  if (!path) return "/";
-  if (isExternalHref(path)) return path;
-  const [pathname] = path.split(/[?#]/);
-  const clean = pathname || "/";
-  if (clean.length > 1 && clean.endsWith("/")) return clean.slice(0, -1);
-  return clean;
-}
-
-function isActiveNavPath(currentPath: string, href: string, navPaths: string[]) {
-  if (!href || isExternalHref(href)) return false;
-  const linkPath = normalizePath(href);
-  if (currentPath === linkPath) return true;
-  if (linkPath === "/") return currentPath === "/";
-  if (!currentPath.startsWith(`${linkPath}/`)) return false;
-
-  const hasMoreSpecific = navPaths.some((candidate) => {
-    if (candidate.length <= linkPath.length) return false;
-    return currentPath === candidate || currentPath.startsWith(`${candidate}/`);
-  });
-  return !hasMoreSpecific;
-}
-
-const PLATFORM_CHILD_BLUEPRINT = [
-  { label: "Overview", href: "/aixcelerator" },
-  { label: "Agents", href: "/aixcelerator/agents" },
-  { label: "MCP servers", href: "/aixcelerator/mcp" },
-  { label: "Skills", href: "/aixcelerator/skills" },
-  { label: "Use cases", href: "/use-cases" },
-  { label: "Discovery assistant", href: "/assistant" },
-];
-
-const PLATFORM_CHILD_ALIASES: Record<string, string> = {
-  agents: "/aixcelerator/agents",
-  mcp: "/aixcelerator/mcp",
-  "mcp servers": "/aixcelerator/mcp",
-  "mcp server": "/aixcelerator/mcp",
-  skills: "/aixcelerator/skills",
-  skill: "/aixcelerator/skills",
-  "use cases": "/use-cases",
-  "use case": "/use-cases",
-  "discovery assistant": "/assistant",
-};
-
-function findPlatformChildBlueprint(link: GlobalNavigation["headerLinks"][number]) {
-  const normalizedPath = normalizePath(link.href);
-  const byPath = PLATFORM_CHILD_BLUEPRINT.find((entry) => normalizePath(entry.href) === normalizedPath);
-  if (byPath) return byPath;
-
-  const labelKey = link.label.trim().toLowerCase();
-  const aliasPath = PLATFORM_CHILD_ALIASES[labelKey];
-  if (!aliasPath) return null;
-  return PLATFORM_CHILD_BLUEPRINT.find((entry) => normalizePath(entry.href) === normalizePath(aliasPath)) || null;
-}
-
-function isPlatformLink(link: GlobalNavigation["headerLinks"][number]) {
-  const label = link.label.trim().toLowerCase();
-  return label === "platform" || normalizePath(link.href) === "/aixcelerator";
-}
-
-function normalizeHeaderNavigation(headerLinks: GlobalNavigation["headerLinks"]) {
-  if (!headerLinks.length) return headerLinks;
-
-  const platformIndex = headerLinks.findIndex(isPlatformLink);
-  if (platformIndex < 0) return headerLinks;
-
-  const platformLink = headerLinks[platformIndex];
-  const collectedChildren = new Map<string, GlobalNavigation["headerLinks"][number]>();
-  const upsertPlatformChild = (entry: GlobalNavigation["headerLinks"][number]) => {
-    const matchedBlueprint = findPlatformChildBlueprint(entry);
-    if (!matchedBlueprint) return;
-    const path = normalizePath(matchedBlueprint.href);
-    if (!collectedChildren.has(path)) {
-      collectedChildren.set(path, {
-        ...entry,
-        label: matchedBlueprint.label,
-        href: matchedBlueprint.href,
-      });
-    }
-  };
-
-  (platformLink.children || []).forEach((child) => upsertPlatformChild(child));
-
-  const nextHeaderLinks = headerLinks
-    .filter((link, index) => {
-      if (index === platformIndex) return false;
-      if (findPlatformChildBlueprint(link)) {
-        upsertPlatformChild({
-          label: link.label,
-          href: link.href,
-          target: link.target,
-          order: link.order,
-          group: link.group,
-        });
-        (link.children || []).forEach((child) => upsertPlatformChild(child));
-        return false;
-      }
-      return true;
-    })
-    .map((link) => {
-      if (link.label.trim().toLowerCase() !== "solutions" || !link.children?.length) {
-        return link;
-      }
-      const children = link.children.filter((child) => normalizePath(child.href) !== "/use-cases");
-      return children.length === link.children.length ? link : { ...link, children };
-    });
-
-  PLATFORM_CHILD_BLUEPRINT.forEach((entry) => {
-    if (!collectedChildren.has(normalizePath(entry.href))) {
-      collectedChildren.set(normalizePath(entry.href), {
-        label: entry.label,
-        href: entry.href,
-      });
-    }
-  });
-
-  const normalizedPlatformChildren = PLATFORM_CHILD_BLUEPRINT.map((entry, index) => {
-    const matched = collectedChildren.get(normalizePath(entry.href));
-    return {
-      ...matched,
-      label: matched?.label || entry.label,
-      href: matched?.href || entry.href,
-      order: index + 1,
-    };
-  });
-
-  const normalizedPlatform = {
-    ...platformLink,
-    label: "Platform",
-    href: "/aixcelerator",
-    children: normalizedPlatformChildren,
-  };
-
-  const insertAt = Math.min(platformIndex, nextHeaderLinks.length);
-  nextHeaderLinks.splice(insertAt, 0, normalizedPlatform);
-  return nextHeaderLinks;
-}
-
-function getRequestDemoLabel(label: string) {
-  return label;
-}
-
-function mergeGlobalNavigation(primary: GlobalNavigation | null, fallback: GlobalNavigation): GlobalNavigation {
-  if (!primary) return fallback;
-  const fallbackHeaderIndex = new Map(
-    fallback.headerLinks.map((link) => [`${link.label}|${link.href}`, link])
-  );
-  const headerLinks = primary.headerLinks.length
-    ? primary.headerLinks.map((link) => {
-        if (link.children?.length) return link;
-        const fallbackLink = fallbackHeaderIndex.get(`${link.label}|${link.href}`);
-        const fallbackChildren = fallbackLink?.children ?? [];
-        return fallbackChildren.length ? { ...link, children: fallbackChildren } : link;
-      })
-    : fallback.headerLinks;
-  const normalizedHeaderLinks = normalizeHeaderNavigation(headerLinks);
-
-  return {
-    headerLinks: normalizedHeaderLinks,
-    footerColumns: primary.footerColumns.length ? primary.footerColumns : fallback.footerColumns,
-    cta: primary.cta?.label && primary.cta?.href ? primary.cta : fallback.cta,
-    socialLinks: primary.socialLinks.length ? primary.socialLinks : fallback.socialLinks,
-    legalLinks: primary.legalLinks.length ? primary.legalLinks : fallback.legalLinks,
-  };
-}
-
-type WorkspaceLink = {
-  label: string;
-  href: string;
-  target?: string | null;
-};
-
-type WorkspaceSection = {
-  title: string;
-  links: WorkspaceLink[];
-};
-
-function dedupeWorkspaceLinks(links: WorkspaceLink[]) {
-  const seen = new Set<string>();
-  return links.filter((link) => {
-    const key = `${normalizePath(link.href)}|${link.label}`;
-    if (seen.has(key)) return false;
-    seen.add(key);
-    return true;
-  });
-}
-
-function getHeaderLinkByLabel(nav: GlobalNavigation, label: string) {
-  const target = label.trim().toLowerCase();
-  return nav.headerLinks.find((link) => link.label.trim().toLowerCase() === target);
-}
-
-function buildWorkspaceSections(nav: GlobalNavigation): WorkspaceSection[] {
-  const platformLink = nav.headerLinks.find(isPlatformLink) || fallbackNavigation.headerLinks[0];
-  const resourcesLink =
-    getHeaderLinkByLabel(nav, "resources") || getHeaderLinkByLabel(fallbackNavigation, "resources");
-  const updatesLink =
-    getHeaderLinkByLabel(nav, "updates") || getHeaderLinkByLabel(fallbackNavigation, "updates");
-  const industriesLink =
-    getHeaderLinkByLabel(nav, "industries") || getHeaderLinkByLabel(fallbackNavigation, "industries");
-  const solutionsLink =
-    getHeaderLinkByLabel(nav, "solutions") || getHeaderLinkByLabel(fallbackNavigation, "solutions");
-
-  const platformChildren = (platformLink.children || []).map((child) => ({
-    label: child.label,
-    href: child.href,
-    target: child.target,
-  }));
-  const platformSectionLinks = dedupeWorkspaceLinks([
-    { label: "Overview", href: platformLink.href, target: platformLink.target },
-    ...platformChildren,
-  ]).filter((link) => normalizePath(link.href) !== "/assistant");
-
-  const resourceChildren = (resourcesLink?.children || []).filter((child) =>
-    ["podcasts", "white papers", "articles", "books", "case studies", "resources hub"].includes(
-      child.label.trim().toLowerCase()
-    )
-  );
-  const catalogLinks = dedupeWorkspaceLinks([
-    { label: "Search catalog", href: "/search" },
-    { label: "Discovery assistant", href: "/assistant" },
-    ...resourceChildren.map((child) => ({ label: child.label, href: child.href, target: child.target })),
-    updatesLink ? { label: "News & product", href: updatesLink.href, target: updatesLink.target } : null,
-  ].filter(Boolean) as WorkspaceLink[]);
-
-  const exploreLinks = dedupeWorkspaceLinks([
-    industriesLink ? { label: "Industries", href: industriesLink.href, target: industriesLink.target } : null,
-    solutionsLink ? { label: "Solutions", href: solutionsLink.href, target: solutionsLink.target } : null,
-    resourcesLink ? { label: "Resources", href: resourcesLink.href, target: resourcesLink.target } : null,
-  ].filter(Boolean) as WorkspaceLink[]);
-
-  return [
-    { title: "Platform", links: platformSectionLinks },
-    { title: "Catalog", links: catalogLinks },
-    { title: "Explore", links: exploreLinks },
-  ].filter((section) => section.links.length > 0);
-}
-
-function isCatalogWorkspacePath(path: string) {
-  return (
-    path === "/assistant" ||
-    path.startsWith("/assistant/") ||
-    path === "/aixcelerator" ||
-    path.startsWith("/aixcelerator/") ||
-    path === "/use-cases" ||
-    path.startsWith("/use-cases/") ||
-    path === "/search"
-  );
-}
-
-function getSignalBannerConfig(path: string) {
-  if (path.startsWith("/resources") || path.startsWith("/updates")) {
-    return {
-      variant: "resources" as const,
-      kicker: "Knowledge Signals",
-      title: "Ship content assets with enterprise narrative quality",
-      description:
-        "Turn podcasts, articles, books, and case studies into governed discovery surfaces for teams and LLM indexing.",
-      primaryHref: "/resources",
-      primaryLabel: "Explore resources",
-      secondaryHref: "/resources/podcasts",
-      secondaryLabel: "Open podcasts",
-    };
-  }
-
-  if (path.startsWith("/solutions") || path.startsWith("/industries") || path.startsWith("/use-cases")) {
-    return {
-      variant: "solutions" as const,
-      kicker: "Execution Layer",
-      title: "Connect use cases to measurable enterprise outcomes",
-      description:
-        "Organize solution blueprints by industry, surface implementation detail, and route teams toward deployment readiness.",
-      primaryHref: "/solutions",
-      primaryLabel: "View solutions",
-      secondaryHref: "/use-cases",
-      secondaryLabel: "Browse use cases",
-    };
-  }
-
-  if (path.startsWith("/aixcelerator") || path.startsWith("/assistant") || path.startsWith("/search")) {
-    return {
-      variant: "catalog" as const,
-      kicker: "Catalog Workspace",
-      title: "Discover agents, MCP servers, and skills in one governed surface",
-      description:
-        "Use structured catalog views to compare readiness, ownership, integrations, and deployment posture before rollout.",
-      primaryHref: "/aixcelerator",
-      primaryLabel: "Open catalog",
-      secondaryHref: "/search",
-      secondaryLabel: "Search assets",
-    };
-  }
-
-  return {
-    variant: "platform" as const,
-    kicker: "Enterprise Platform",
-    title: "Build, govern, and scale AI programs from one operating layer",
-    description:
-      "Colaberry aligns strategy, catalog discovery, and production workflows across agents, MCP, skills, and evidence-backed resources.",
-    primaryHref: "/request-demo",
-    primaryLabel: "Request demo",
-    secondaryHref: "/aixcelerator",
-    secondaryLabel: "Explore platform",
-  };
-}
 
 export default function Layout({ children }: { children: ReactNode }) {
   const router = useRouter();
@@ -888,6 +405,25 @@ export default function Layout({ children }: { children: ReactNode }) {
             setOpenMenu((current) => (current === menuKey ? null : current));
           }
         }}
+        onKeyDown={(event) => {
+          if (!hasChildren || !isOpen) return;
+          const menuItems = Array.from(
+            event.currentTarget.querySelectorAll<HTMLElement>('[role="menuitem"]')
+          );
+          if (!menuItems.length) return;
+          const currentIndex = menuItems.indexOf(document.activeElement as HTMLElement);
+          if (event.key === "ArrowDown") {
+            event.preventDefault();
+            menuItems[currentIndex < menuItems.length - 1 ? currentIndex + 1 : 0]?.focus();
+          } else if (event.key === "ArrowUp") {
+            event.preventDefault();
+            menuItems[currentIndex > 0 ? currentIndex - 1 : menuItems.length - 1]?.focus();
+          } else if (event.key === "Escape") {
+            event.preventDefault();
+            setOpenMenu(null);
+            (event.currentTarget.querySelector("a") as HTMLElement)?.focus();
+          }
+        }}
       >
         <Link
           href={link.href}
@@ -902,7 +438,7 @@ export default function Layout({ children }: { children: ReactNode }) {
             <svg
               viewBox="0 0 20 20"
               aria-hidden="true"
-              className={`h-3.5 w-3.5 text-slate-400 transition-transform duration-200 ${isOpen ? "rotate-180 text-[#DC2626]" : "group-hover:translate-y-[1px]"}`}
+              className={`h-3.5 w-3.5 text-slate-400 transition-transform duration-200 ${isOpen ? "rotate-180 text-[var(--pivot-fill)]" : "group-hover:translate-y-[1px]"}`}
               fill="none"
             >
               <path
@@ -959,9 +495,11 @@ export default function Layout({ children }: { children: ReactNode }) {
       <Head>
         <link rel="preconnect" href="https://www.buzzsprout.com" />
         <link rel="dns-prefetch" href="https://www.buzzsprout.com" />
+        <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(organizationSchema()) }} />
+        <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(webSiteSchema()) }} />
       </Head>
-      <a href="#main-content" className="sr-only focus:not-sr-only focus:absolute focus:top-2 focus:left-2 focus:z-[100] focus:rounded-md focus:bg-white focus:px-4 focus:py-2 focus:text-sm focus:font-semibold focus:text-brand-deep focus:shadow-lg focus:ring-2 focus:ring-[#DC2626]/40">Skip to content</a>
-      <header role="banner" className={`site-header sticky top-0 z-40 border-b border-[var(--stroke)] bg-white dark:bg-[#111827] ${headerCompact ? "site-header--compact bg-white/85 dark:bg-[#111827]/90" : "shadow-sm"}`}>
+      <a href="#main-content" className="sr-only focus:not-sr-only focus:absolute focus:top-2 focus:left-2 focus:z-[100] focus:rounded-md focus:bg-white focus:px-4 focus:py-2 focus:text-sm focus:font-semibold focus:text-brand-deep focus:shadow-lg focus:ring-2 focus:ring-[var(--pivot-fill)]/40">Skip to content</a>
+      <header role="banner" className={`site-header sticky top-0 z-40 border-b border-[var(--stroke)] backdrop-blur-xl ${headerCompact ? "site-header--compact bg-white/80 dark:bg-[var(--bg)]/85" : "bg-white/95 shadow-sm dark:bg-[var(--bg)]/95"}`}>
         <div className={`flex w-full items-center justify-between gap-3 px-4 transition-[padding] duration-200 sm:px-6 lg:px-8 ${headerCompact ? "py-1.5" : "py-3"}`}>
           <div className="flex items-center gap-3">
             <Link href="/" className="flex min-w-0 items-center gap-2">
@@ -1046,6 +584,7 @@ export default function Layout({ children }: { children: ReactNode }) {
                 onClick={toggleTheme}
                 className="btn btn-ghost btn-icon"
                 aria-label={themeToggleLabel}
+                aria-pressed={isDarkMode}
               >
                 <span className="sr-only">{themeToggleLabel}</span>
                 <ThemeIcon isDark={isDarkMode} />
@@ -1072,7 +611,7 @@ export default function Layout({ children }: { children: ReactNode }) {
                   setMobileMenuOpen(false);
                   setWorkspaceMobileRailOpen(true);
                 }}
-                className="focus-ring inline-flex h-10 items-center gap-2 rounded-lg border border-slate-200/70 bg-white/85 px-3 text-sm font-semibold text-slate-700 hover:border-[#DC2626]/35 hover:text-[#111827] dark:border-slate-700 dark:bg-slate-900/70 dark:text-slate-100"
+                className="focus-ring inline-flex h-10 items-center gap-2 rounded-lg border border-slate-200/70 bg-white/85 px-3 text-sm font-semibold text-slate-700 hover:border-[var(--pivot-fill)]/35 hover:text-[var(--text-primary)] dark:border-slate-700 dark:bg-slate-900/70 dark:text-slate-100"
                 aria-expanded={workspaceMobileRailOpen}
                 aria-label="Open catalog sidebar"
               >
@@ -1108,6 +647,7 @@ export default function Layout({ children }: { children: ReactNode }) {
               onClick={toggleTheme}
               className="btn btn-ghost btn-icon"
               aria-label={themeToggleLabel}
+              aria-pressed={isDarkMode}
             >
               <span className="sr-only">{themeToggleLabel}</span>
               <ThemeIcon isDark={isDarkMode} />
@@ -1115,7 +655,7 @@ export default function Layout({ children }: { children: ReactNode }) {
             <button
               type="button"
               onClick={openMobileMenu}
-              className="focus-ring inline-flex h-10 items-center gap-2 rounded-lg border border-slate-200/70 bg-white/85 px-3 text-sm font-semibold text-slate-700 hover:border-[#DC2626]/35 hover:text-[#111827] dark:border-slate-700 dark:bg-slate-900/70 dark:text-slate-100"
+              className="focus-ring inline-flex h-10 items-center gap-2 rounded-lg border border-slate-200/70 bg-white/85 px-3 text-sm font-semibold text-slate-700 hover:border-[var(--pivot-fill)]/35 hover:text-[var(--text-primary)] dark:border-slate-700 dark:bg-slate-900/70 dark:text-slate-100"
               aria-expanded={mobileMenuOpen}
               aria-label="Open navigation menu"
             >
@@ -1134,7 +674,7 @@ export default function Layout({ children }: { children: ReactNode }) {
         >
           <aside
             data-mobile-menu
-            className="absolute right-0 top-0 flex h-full w-[min(92vw,380px)] flex-col border-l border-slate-200/70 bg-white/95 p-4 shadow-2xl dark:border-[#374151] dark:bg-[#111827]/95 animate-slide-in-right"
+            className="absolute right-0 top-0 flex h-full w-[min(92vw,380px)] flex-col border-l border-slate-200/70 bg-white/95 p-4 shadow-2xl dark:border-[var(--stroke)] dark:bg-[var(--bg)]/95 animate-slide-in-right"
             onClick={(event) => event.stopPropagation()}
             onTouchStart={(e) => {
               const startX = e.touches[0].clientX;
@@ -1262,7 +802,7 @@ export default function Layout({ children }: { children: ReactNode }) {
           onClick={() => setWorkspaceMobileRailOpen(false)}
         >
           <aside
-            className="absolute left-0 top-0 flex h-full w-[min(88vw,340px)] flex-col border-r border-slate-200/70 bg-white/95 p-4 shadow-2xl dark:border-[#374151] dark:bg-[#111827]/95"
+            className="absolute left-0 top-0 flex h-full w-[min(88vw,340px)] flex-col border-r border-slate-200/70 bg-white/95 p-4 shadow-2xl dark:border-[var(--stroke)] dark:bg-[var(--bg)]/95"
             onClick={(event) => event.stopPropagation()}
           >
             <div className="flex items-center justify-between">
@@ -1345,11 +885,11 @@ export default function Layout({ children }: { children: ReactNode }) {
                             title={workspaceRailCollapsed ? link.label : undefined}
                             className={`focus-ring flex items-center gap-2 rounded-xl border px-2.5 py-2 text-sm font-semibold transition ${
                               isActive
-                                ? "border-[#DC2626]/40 bg-[#DC2626]/10 text-[#111827] dark:border-[#F87171]/55 dark:bg-[#F87171]/25 dark:text-[#F9FAFB]"
-                                : "border-slate-200/70 bg-white/80 text-slate-700 hover:border-[#DC2626]/35 hover:text-[#111827] dark:border-slate-700 dark:bg-slate-900/75 dark:text-slate-200 dark:hover:border-[#F87171]/45 dark:hover:text-[#F9FAFB]"
+                                ? "border-[var(--pivot-fill)]/40 bg-[var(--pivot-fill)]/10 text-[var(--text-primary)] dark:border-[var(--pivot-fill)]/55 dark:bg-[var(--pivot-fill)]/25 dark:text-[var(--text-primary)]"
+                                : "border-slate-200/70 bg-white/80 text-slate-700 hover:border-[var(--pivot-fill)]/35 hover:text-[var(--text-primary)] dark:border-slate-700 dark:bg-slate-900/75 dark:text-slate-200 dark:hover:border-[var(--pivot-fill)]/45 dark:hover:text-[var(--text-primary)]"
                             } ${workspaceRailCollapsed ? "justify-center" : ""}`}
                           >
-                            <span className={`inline-flex h-7 w-7 shrink-0 items-center justify-center rounded-md border text-label font-semibold ${isActive ? "border-[#DC2626]/45 bg-white/90 text-[#111827] dark:border-[#F87171]/60 dark:bg-[#374151]/85 dark:text-[#F9FAFB]" : "border-slate-200/80 bg-white/90 text-slate-500 dark:border-slate-700 dark:bg-slate-900/80 dark:text-slate-300"}`}>
+                            <span className={`inline-flex h-7 w-7 shrink-0 items-center justify-center rounded-md border text-label font-semibold ${isActive ? "border-[var(--pivot-fill)]/45 bg-white/90 text-[var(--text-primary)] dark:border-[var(--pivot-fill)]/60 dark:bg-[#374151]/85 dark:text-[var(--text-primary)]" : "border-slate-200/80 bg-white/90 text-slate-500 dark:border-slate-700 dark:bg-slate-900/80 dark:text-slate-300"}`}>
                               {link.label
                                 .split(" ")
                                 .map((token) => token[0])
@@ -1388,7 +928,7 @@ export default function Layout({ children }: { children: ReactNode }) {
           <section className="cta-band-enterprise grid gap-6 rounded-2xl border border-slate-200/70 p-7 shadow-[0_24px_56px_rgba(15,23,42,0.14)] dark:border-slate-700/70 sm:p-8 lg:grid-cols-[1.5fr_1fr] lg:items-end lg:p-10">
             <div>
               <div className="inline-flex items-center gap-2 rounded-md border border-brand-teal-300/35 bg-slate-950/30 px-3 py-1 text-label font-semibold uppercase tracking-[0.18em] text-brand-teal-100">
-                <span aria-hidden="true" className="h-1.5 w-1.5 rounded-full bg-[#059669]" />
+                <span aria-hidden="true" className="h-1.5 w-1.5 rounded-full bg-[var(--trusted-fill)]" />
                 Enterprise AI delivery
               </div>
               <h2 className="font-display mt-4 text-display-xs font-bold leading-tight text-white sm:text-display-sm">
@@ -1412,18 +952,18 @@ export default function Layout({ children }: { children: ReactNode }) {
             </div>
           </section>
         </div>
-        <div className="border-b border-[#E5E7EB] px-4 py-6 sm:px-6 lg:px-8 dark:border-[#374151]">
+        <div className="border-b border-[var(--stroke)] px-4 py-6 sm:px-6 lg:px-8 dark:border-[var(--stroke)]">
           <div className="mx-auto flex max-w-7xl flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
             <div>
-              <div className="text-sm font-semibold text-[#111827] dark:text-[#F8FAFC]">Stay in the loop</div>
-              <p className="mt-1 text-sm text-[#6B7280] dark:text-[#94A3B8]">Get product updates and enterprise AI insights.</p>
+              <div className="text-sm font-semibold text-[var(--text-primary)] dark:text-[var(--text-primary)]">Stay in the loop</div>
+              <p className="mt-1 text-sm text-[var(--text-muted)] dark:text-[var(--text-muted)]">Get product updates and enterprise AI insights.</p>
             </div>
             <NewsletterSignup compact sourcePath={router.asPath} sourcePage="layout-footer" title="" description="" ctaLabel="Subscribe" />
           </div>
         </div>
         <div className="grid w-full grid-cols-2 gap-8 px-4 py-16 text-sm sm:grid-cols-3 sm:px-6 lg:grid-cols-5 lg:px-8 lg:py-20">
           <div>
-            <div className="text-xs font-semibold uppercase tracking-[0.18em] text-[#111827] dark:text-[#F8FAFC]">
+            <div className="text-xs font-semibold uppercase tracking-[0.18em] text-[var(--text-primary)] dark:text-[var(--text-primary)]">
               Company
             </div>
             <div className="mt-3 grid gap-2.5">
@@ -1441,7 +981,7 @@ export default function Layout({ children }: { children: ReactNode }) {
 
           {globalNav.footerColumns.map((column, index) => (
             <div key={`${column.title}-${index}`}>
-              <div className="text-xs font-semibold uppercase tracking-[0.18em] text-[#111827] dark:text-[#F8FAFC]">
+              <div className="text-xs font-semibold uppercase tracking-[0.18em] text-[var(--text-primary)] dark:text-[var(--text-primary)]">
                 {column.title}
               </div>
               <div className="mt-3 grid gap-2.5">
@@ -1451,7 +991,7 @@ export default function Layout({ children }: { children: ReactNode }) {
                       {link.label}
                     </FooterLink>
                     {link.children?.length ? (
-                      <div className="ml-3 mt-1.5 grid gap-1.5 border-l border-[#E5E7EB] pl-3 dark:border-[#374151]">
+                      <div className="ml-3 mt-1.5 grid gap-1.5 border-l border-[var(--stroke)] pl-3 dark:border-[var(--stroke)]">
                         {link.children.map((child) => (
                           <FooterLink
                             key={`${child.label}-${child.href}`}
@@ -1471,7 +1011,7 @@ export default function Layout({ children }: { children: ReactNode }) {
           ))}
 
           <div>
-            <div className="text-xs font-semibold uppercase tracking-[0.18em] text-[#111827] dark:text-[#F8FAFC]">
+            <div className="text-xs font-semibold uppercase tracking-[0.18em] text-[var(--text-primary)] dark:text-[var(--text-primary)]">
               Connect
             </div>
             <div className="mt-3 grid gap-2.5">
@@ -1480,7 +1020,7 @@ export default function Layout({ children }: { children: ReactNode }) {
               <div><FooterLink href="/search">Search</FooterLink></div>
             </div>
             <div className="mt-6">
-              <div className="text-[0.625rem] font-semibold uppercase tracking-[0.18em] text-[#6B7280] dark:text-[#94A3B8]">
+              <div className="text-[0.625rem] font-semibold uppercase tracking-[0.18em] text-[var(--text-muted)] dark:text-[var(--text-muted)]">
                 Enterprise AI. Governed. Delivered.
               </div>
             </div>
@@ -1488,8 +1028,8 @@ export default function Layout({ children }: { children: ReactNode }) {
         </div>
 
         {/* Trust + compliance badges */}
-        <div className="border-t border-[#E5E7EB] px-4 py-4 dark:border-[#374151] sm:px-6 lg:px-8">
-          <div className="flex flex-wrap items-center justify-center gap-4 text-xs text-[#6B7280] dark:text-[#94A3B8]">
+        <div className="border-t border-[var(--stroke)] px-4 py-4 dark:border-[var(--stroke)] sm:px-6 lg:px-8">
+          <div className="flex flex-wrap items-center justify-center gap-4 text-xs text-[var(--text-muted)] dark:text-[var(--text-muted)]">
             <span className="flex items-center gap-1.5">
               <svg viewBox="0 0 16 16" className="h-3.5 w-3.5" fill="none" stroke="currentColor" strokeWidth="1.5"><path d="M8 14s5.33-2.67 5.33-6.67V3.33L8 1.33 2.67 3.33v4C2.67 11.33 8 14 8 14z" /></svg>
               HSTS Preload
@@ -1508,10 +1048,10 @@ export default function Layout({ children }: { children: ReactNode }) {
             </span>
           </div>
         </div>
-        <div className="border-t border-[#E5E7EB] px-4 py-4 text-xs dark:border-[#374151] sm:px-6 lg:px-8">
+        <div className="border-t border-[var(--stroke)] px-4 py-4 text-xs dark:border-[var(--stroke)] sm:px-6 lg:px-8">
           <div className="flex flex-wrap items-center justify-between gap-4">
             <div className="flex flex-wrap items-center gap-4">
-              <span className="text-[#6B7280] dark:text-[#94A3B8]">&copy; {new Date().getFullYear()} Colaberry, Inc. All rights reserved.</span>
+              <span className="text-[var(--text-muted)] dark:text-[var(--text-muted)]">&copy; {new Date().getFullYear()} Colaberry, Inc. All rights reserved.</span>
               {globalNav.legalLinks.map((link) => (
                 <FooterLink
                   key={`${link.label}-${link.href}`}
@@ -1552,12 +1092,12 @@ export default function Layout({ children }: { children: ReactNode }) {
             aria-modal="true"
             aria-labelledby="global-search-title"
             ref={searchDialogRef}
-            className="w-full max-w-2xl rounded-xl border border-slate-200/70 bg-white p-6 shadow-2xl dark:border-[#374151] dark:bg-[#111827]"
+            className="w-full max-w-2xl rounded-xl border border-slate-200/70 bg-white p-6 shadow-2xl dark:border-[var(--stroke)] dark:bg-[var(--bg)]"
             onClick={(event) => event.stopPropagation()}
           >
             <div className="flex items-start justify-between gap-4">
               <div>
-                <div className="text-xs font-semibold uppercase tracking-[0.2em] text-slate-400 dark:text-[#9CA3AF]">
+                <div className="text-xs font-semibold uppercase tracking-[0.2em] text-slate-400 dark:text-[var(--text-muted)]">
                   Global search
                 </div>
                 <h2 id="global-search-title" className="mt-1 text-2xl font-semibold text-slate-900 dark:text-white">
@@ -1592,9 +1132,9 @@ export default function Layout({ children }: { children: ReactNode }) {
                     name="q"
                     type="search"
                     placeholder="Search agents, MCP servers, skills, resources, updates..."
-                    className="w-full rounded-lg border border-slate-200 bg-white px-4 py-3 pr-12 text-sm text-slate-900 placeholder:text-slate-500 shadow-sm focus:border-[#DC2626]/40 focus:outline-none focus:ring-2 focus:ring-[#DC2626]/25 dark:border-slate-700 dark:bg-slate-900/70 dark:text-slate-100 dark:placeholder:text-slate-500"
+                    className="w-full rounded-lg border border-slate-200 bg-white px-4 py-3 pr-12 text-sm text-slate-900 placeholder:text-slate-500 shadow-sm focus:border-[var(--pivot-fill)]/40 focus:outline-none focus:ring-2 focus:ring-[var(--pivot-fill)]/25 dark:border-slate-700 dark:bg-slate-900/70 dark:text-slate-100 dark:placeholder:text-slate-500"
                   />
-                  <span className="absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 dark:text-[#9CA3AF]">
+                  <span className="absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 dark:text-[var(--text-muted)]">
                     <svg aria-hidden="true" viewBox="0 0 24 24" className="h-5 w-5" fill="none">
                       <path
                         d="M10.5 18a7.5 7.5 0 1 1 0-15 7.5 7.5 0 0 1 0 15Z"
@@ -1632,7 +1172,7 @@ export default function Layout({ children }: { children: ReactNode }) {
                 <Link
                   key={item.href}
                   href={item.href}
-                  className="focus-ring rounded-lg border border-slate-200/80 bg-white px-4 py-3 text-sm font-semibold text-slate-800 hover:border-[#DC2626]/30 hover:text-[#DC2626] dark:border-[#374151] dark:bg-[#1F2937]/70 dark:text-slate-100"
+                  className="focus-ring rounded-lg border border-slate-200/80 bg-white px-4 py-3 text-sm font-semibold text-slate-800 hover:border-[var(--pivot-fill)]/30 hover:text-[var(--pivot-fill)] dark:border-[var(--stroke)] dark:bg-[#1E293B]/70 dark:text-slate-100"
                 >
                   {item.label}
                 </Link>
@@ -1643,10 +1183,10 @@ export default function Layout({ children }: { children: ReactNode }) {
       ) : null}
       {isCatalogWorkspace && discoveryOpen ? (
         <div className="fixed bottom-4 left-4 right-4 z-40 sm:left-auto sm:right-6">
-          <div className="surface-panel border border-slate-200/70 bg-white/95 p-4 shadow-xl dark:border-[#374151] dark:bg-[#111827]/90">
+          <div className="surface-panel border border-slate-200/70 bg-white/95 p-4 shadow-xl dark:border-[var(--stroke)] dark:bg-[var(--bg)]/90">
             <div className="flex items-start justify-between gap-4">
               <div>
-                <div className="text-xs font-semibold uppercase tracking-[0.2em] text-slate-400 dark:text-[#9CA3AF]">
+                <div className="text-xs font-semibold uppercase tracking-[0.2em] text-slate-400 dark:text-[var(--text-muted)]">
                   Quick start
                 </div>
                 <div className="mt-1 text-lg font-semibold text-slate-900 dark:text-white">
@@ -1684,7 +1224,7 @@ export default function Layout({ children }: { children: ReactNode }) {
                 <Link
                   key={item.href}
                   href={item.href}
-                  className="focus-ring rounded-xl border border-slate-200/70 bg-white px-3 py-2 text-sm font-semibold text-slate-700 hover:border-[#DC2626]/30 hover:text-[#DC2626] dark:border-slate-700 dark:bg-slate-900/70 dark:text-slate-100"
+                  className="focus-ring rounded-xl border border-slate-200/70 bg-white px-3 py-2 text-sm font-semibold text-slate-700 hover:border-[var(--pivot-fill)]/30 hover:text-[var(--pivot-fill)] dark:border-slate-700 dark:bg-slate-900/70 dark:text-slate-100"
                 >
                   {item.label}
                 </Link>
@@ -1698,7 +1238,7 @@ export default function Layout({ children }: { children: ReactNode }) {
           <form
             action="/search"
             method="get"
-            className="pointer-events-auto flex w-full max-w-2xl items-center gap-2 rounded-lg border border-slate-200/80 bg-white/95 p-2 shadow-xl dark:border-[#374151] dark:bg-[#111827]/95 lg:w-[36rem]"
+            className="pointer-events-auto flex w-full max-w-2xl items-center gap-2 rounded-lg border border-slate-200/80 bg-white/95 p-2 shadow-xl dark:border-[var(--stroke)] dark:bg-[var(--bg)]/95 lg:w-[36rem]"
           >
             <label htmlFor="workspace-ask" className="sr-only">
               Ask about this page
@@ -1708,7 +1248,7 @@ export default function Layout({ children }: { children: ReactNode }) {
               name="q"
               type="search"
               placeholder="Ask this page: agents, MCP servers, skills, use cases..."
-              className="w-full rounded-xl border border-transparent bg-transparent px-3 py-2 text-sm text-slate-900 placeholder:text-slate-400 focus:border-[#DC2626]/35 focus:outline-none dark:text-slate-100 dark:placeholder:text-slate-500"
+              className="w-full rounded-xl border border-transparent bg-transparent px-3 py-2 text-sm text-slate-900 placeholder:text-slate-400 focus:border-[var(--pivot-fill)]/35 focus:outline-none dark:text-slate-100 dark:placeholder:text-slate-500"
             />
             <button type="submit" className="btn btn-primary btn-sm whitespace-nowrap">
               Ask
@@ -1738,136 +1278,3 @@ export default function Layout({ children }: { children: ReactNode }) {
   );
 }
 
-function MobileLink({
-  href,
-  target,
-  active,
-  onClick,
-  className,
-  children,
-}: {
-  href: string;
-  target?: string | null;
-  active?: boolean;
-  onClick?: () => void;
-  className?: string;
-  children: ReactNode;
-}) {
-  const classes = [
-    "focus-ring",
-    "block",
-    "rounded-lg",
-    "px-3",
-    "py-2",
-    "text-sm",
-    "text-slate-700",
-    "hover:bg-slate-50",
-    "dark:text-slate-200",
-    "dark:hover:bg-slate-800/70",
-    active ? "bg-[#DC2626]/10 text-[#111827] dark:bg-[#F87171]/15 dark:text-[#F9FAFB]" : "",
-    className,
-  ]
-    .filter(Boolean)
-    .join(" ");
-  return (
-    <Link
-      href={href}
-      target={target ?? undefined}
-      rel={getLinkRel(target)}
-      className={classes}
-      onClick={onClick}
-    >
-      {children}
-    </Link>
-  );
-}
-
-function FooterLink({
-  href,
-  target,
-  className,
-  children,
-}: {
-  href: string;
-  target?: string | null;
-  className?: string;
-  children: ReactNode;
-}) {
-  const classes = [
-    "footer-link",
-    "focus-ring",
-    "inline-flex",
-    "items-center",
-    "gap-1",
-    "text-[#111827]",
-    "dark:text-[#E5E7EB]",
-    "hover:text-slate-600",
-    "dark:hover:text-slate-200",
-    "hover:underline",
-    "underline-offset-4",
-    className ?? "font-semibold",
-  ]
-    .filter(Boolean)
-    .join(" ");
-  return (
-    <Link
-      href={href}
-      target={target ?? undefined}
-      rel={getLinkRel(target)}
-      className={classes}
-    >
-      {children}
-    </Link>
-  );
-}
-
-function ThemeIcon({ isDark }: { isDark: boolean }) {
-  if (isDark) {
-    return (
-      <svg viewBox="0 0 24 24" className="h-4 w-4" aria-hidden="true" fill="none">
-        <circle cx="12" cy="12" r="4" stroke="currentColor" strokeWidth="1.6" />
-        <path
-          d="M12 3v2.5M12 18.5V21M3 12h2.5M18.5 12H21M5.6 5.6l1.8 1.8M16.6 16.6l1.8 1.8M18.4 5.6l-1.8 1.8M7.4 16.6l-1.8 1.8"
-          stroke="currentColor"
-          strokeWidth="1.6"
-          strokeLinecap="round"
-        />
-      </svg>
-    );
-  }
-
-  return (
-    <svg viewBox="0 0 24 24" className="h-4 w-4" aria-hidden="true" fill="currentColor">
-      <path d="M21 14.5A8.5 8.5 0 1 1 9.5 3 7 7 0 0 0 21 14.5Z" />
-    </svg>
-  );
-}
-
-function SocialIcon({
-  href,
-  label,
-  icon,
-  target,
-}: {
-  href: string;
-  label: string;
-  icon?: string | null;
-  target?: string | null;
-}) {
-  const iconMarkup = resolveSocialIcon(icon, label);
-  const linkTarget = target ?? "_blank";
-  return (
-    <a
-      href={href}
-      target={linkTarget}
-      rel={getLinkRel(linkTarget)}
-      className="social-button focus-ring inline-flex h-11 w-11 items-center justify-center rounded-lg border border-slate-200/70 bg-white/80 text-slate-500 transition hover:border-slate-300 hover:text-slate-700 hover:shadow-sm dark:border-slate-700 dark:bg-slate-900/70 dark:text-slate-300 dark:hover:border-slate-600 dark:hover:text-white"
-      aria-label={label}
-    >
-      <svg viewBox="0 0 24 24" className="h-5 w-5" aria-hidden="true">
-        {iconMarkup}
-      </svg>
-      <span className="sr-only">{label}</span>
-    </a>
-  );
-}

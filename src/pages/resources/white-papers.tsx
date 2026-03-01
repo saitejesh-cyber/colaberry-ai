@@ -2,6 +2,8 @@ import Layout from "../../components/Layout";
 import Head from "next/head";
 import Link from "next/link";
 import EnterprisePageHero from "../../components/EnterprisePageHero";
+import EnterpriseCtaBand from "../../components/EnterpriseCtaBand";
+import SectionHeader from "../../components/SectionHeader";
 import { heroImage } from "../../lib/media";
 import { seoTags, canonicalUrl as buildCanonical, type SeoMeta } from "../../lib/seo";
 import type { GetStaticProps } from "next";
@@ -22,9 +24,31 @@ export const getStaticProps: GetStaticProps<WhitePapersProps> = async () => {
 };
 
 export default function WhitePapersPage({ whitePapers }: WhitePapersProps) {
+  const decisionTracks = [
+    {
+      title: "Architecture track",
+      description: "Reference designs and implementation patterns for reliable, scalable AI systems.",
+      href: "/solutions",
+      cta: "Explore solutions",
+    },
+    {
+      title: "Governance track",
+      description: "Controls, policies, and guardrails for trust, compliance, and auditability.",
+      href: "/resources/case-studies",
+      cta: "Review case studies",
+    },
+    {
+      title: "Execution track",
+      description: "Rollout playbooks that connect architecture decisions to delivery outcomes.",
+      href: "/resources/articles",
+      cta: "Read articles",
+    },
+  ];
+  const downloadableCount = whitePapers.filter((item) => Boolean(item.downloadUrl)).length;
+  const publishedCount = whitePapers.filter((item) => (item.status || "").toLowerCase() === "published").length;
   const seoMeta: SeoMeta = {
     title: "White Papers | Colaberry AI",
-    description: "Technical deep-dives, POVs, and reference architectures for enterprise teams deploying AI at scale.",
+    description: "Reference architectures, governance frameworks, and deployment playbooks for enterprise AI teams scaling with confidence.",
     canonical: buildCanonical("/resources/white-papers"),
   };
 
@@ -44,7 +68,7 @@ export default function WhitePapersPage({ whitePapers }: WhitePapersProps) {
               "@context": "https://schema.org",
               "@type": "CollectionPage",
               "name": "White Papers | Colaberry AI",
-              "description": "Technical deep-dives, POVs, and reference architectures for enterprise teams deploying AI at scale.",
+              "description": "Reference architectures, governance frameworks, and deployment playbooks for enterprise AI teams.",
               "url": `${process.env.NEXT_PUBLIC_SITE_URL || "https://colaberry.ai"}/resources/white-papers`,
             }),
           }}
@@ -54,33 +78,55 @@ export default function WhitePapersPage({ whitePapers }: WhitePapersProps) {
       <EnterprisePageHero
         kicker="Resources"
         title="White papers"
-        description="Technical deep-dives, POVs, and reference architectures for enterprise teams deploying AI at scale."
+        description="Detailed architecture guides, governance frameworks, and deployment playbooks -- built for teams making high-stakes AI decisions."
         image={heroImage("hero-whitepapers-cinematic.webp")}
-        alt="Enterprise research and architecture review surface"
-        imageKicker="Research"
-        imageTitle="Reference architectures"
-        imageDescription="Technical guidance with reusable frameworks and governance patterns."
-        chips={["Architecture", "Governance", "Playbooks", "POVs"]}
+        alt="White papers and architecture guides for enterprise AI"
+        imageKicker="Deep dives"
+        imageTitle="De-risk your AI strategy"
+        imageDescription="Proven frameworks and governance patterns used in production deployments."
+        chips={["Architecture", "Governance", "Deployment", "Risk management"]}
         primaryAction={{ label: "Open updates feed", href: "/updates" }}
         secondaryAction={{ label: "Back to resources", href: "/resources", variant: "secondary" }}
         metrics={[
           {
-            label: "Focus",
-            value: "Technical depth",
-            note: "Implementation-ready guidance.",
+            label: "Papers",
+            value: hasCmsData ? String(whitePapers.length) : "Growing",
+            note: "Research-backed guidance for enterprise deployment.",
           },
           {
-            label: "Coverage",
-            value: "Architecture + governance",
-            note: "From system design to controls.",
+            label: "Downloads",
+            value: String(downloadableCount),
+            note: "Assets available immediately for implementation teams.",
           },
           {
-            label: "Audience",
-            value: "Engineering + leadership",
-            note: "Built for cross-functional adoption.",
+            label: "Published",
+            value: hasCmsData ? String(publishedCount) : "Planned",
+            note: "Actively maintained guidance with release cadence.",
           },
         ]}
       />
+
+      <section className="surface-panel section-spacing p-5 sm:p-6">
+        <SectionHeader
+          kicker="Decision pathways"
+          title="Pick the white paper stream by decision type"
+          description="Move from broad research to role-specific guidance based on what your team needs to solve next."
+          size="md"
+        />
+        <div className="mt-4 grid gap-3 lg:grid-cols-3">
+          {decisionTracks.map((track) => (
+            <article key={track.title} className="card-feature p-4">
+              <h2 className="text-sm font-semibold text-slate-900 dark:text-slate-100">{track.title}</h2>
+              <p className="mt-1 text-xs leading-relaxed text-slate-600 dark:text-slate-300">
+                {track.description}
+              </p>
+              <Link href={track.href} className="btn btn-ghost mt-3 text-xs">
+                {track.cta}
+              </Link>
+            </article>
+          ))}
+        </div>
+      </section>
 
       {/* CMS-driven white paper cards */}
       {hasCmsData && (
@@ -152,26 +198,21 @@ export default function WhitePapersPage({ whitePapers }: WhitePapersProps) {
       {/* Static placeholders shown only when CMS is empty */}
       {!hasCmsData && (
         <div className="section-spacing grid gap-4 lg:grid-cols-3">
-          <PlannedCard title="Reference architectures" description="Platform patterns and enterprise rollout." />
-          <PlannedCard title="Governance" description="Controls, auditability, and risk management." />
-          <PlannedCard title="Industry playbooks" description="Domain-specific delivery frameworks." />
+          <PlannedCard title="Reference architectures" description="Proven platform patterns for enterprise-scale AI rollout." />
+          <PlannedCard title="Governance" description="Controls and audit frameworks that satisfy compliance requirements." />
+          <PlannedCard title="Industry playbooks" description="Domain-specific deployment guides with real-world benchmarks." />
         </div>
       )}
 
-      <div className="section-spacing flex flex-col gap-3 sm:flex-row">
-        <Link
-          href="/resources"
-          className="btn btn-secondary"
-        >
-          Back to Resources
-        </Link>
-        <Link
-          href="/updates"
-          className="btn btn-primary"
-        >
-          View News & Product
-        </Link>
-      </div>
+      <EnterpriseCtaBand
+        kicker="Operationalize"
+        title="Turn white-paper guidance into implementation momentum"
+        description="Bridge research and delivery with decision-ready artifacts across architecture, governance, and rollout."
+        primaryHref="/resources"
+        primaryLabel="Back to resources"
+        secondaryHref="/updates"
+        secondaryLabel="View latest updates"
+      />
     </Layout>
   );
 }

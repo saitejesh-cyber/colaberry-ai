@@ -3,7 +3,6 @@ import Link from "next/link";
 import Head from "next/head";
 import type { GetStaticProps } from "next";
 import SectionHeader from "../../components/SectionHeader";
-import MediaPanel from "../../components/MediaPanel";
 import EnterprisePageHero from "../../components/EnterprisePageHero";
 import StatePanel from "../../components/StatePanel";
 import { coreCapabilities, modularLayers } from "../../data/platformCapabilities";
@@ -36,8 +35,8 @@ export const getStaticProps: GetStaticProps<AIXceleratorProps> = async () => {
 
 export default function AIXcelerator({ latestUseCases, fetchError }: AIXceleratorProps) {
   const seoMeta: SeoMeta = {
-    title: "AIXcelerator Platform | Colaberry AI - Enterprise Agent Delivery",
-    description: "AIXcelerator is the core platform for governed AI agent delivery. Discover agents, MCP servers, skills, and use cases in one enterprise operating surface.",
+    title: "AIXcelerator Platform | Colaberry AI - Ship AI Agents Faster",
+    description: "Deploy governed AI agents in weeks, not months. AIXcelerator gives your team agents, integrations, and skills in one production-ready surface.",
     canonical: buildCanonical("/aixcelerator"),
   };
 
@@ -53,7 +52,7 @@ export default function AIXcelerator({ latestUseCases, fetchError }: AIXcelerato
           "@type": "WebApplication",
           "name": "AIXcelerator",
           "applicationCategory": "Enterprise AI Platform",
-          "description": "Core platform for governed AI agent delivery, observability, and evaluation.",
+          "description": "Ship governed AI agents to production faster with built-in observability and evaluation.",
           "url": buildCanonical("/aixcelerator"),
           "provider": { "@type": "Organization", "name": "Colaberry AI" },
         }) }} />
@@ -69,21 +68,21 @@ export default function AIXcelerator({ latestUseCases, fetchError }: AIXcelerato
       ) : null}
 
       <EnterprisePageHero
-        kicker="Core platform + modular layers"
+        kicker="Enterprise AI platform"
         title="AIXcelerator"
-        description="The core platform for governed agent delivery. Move from opportunity and workflow definition to production execution — then close the loop with observability and evaluation."
+        description="Go from AI pilot to production in weeks. One surface for agents, integrations, and skills -- with governance and observability built in."
         image={heroImage("hero-platform-cinematic.webp")}
         alt="AIXcelerator platform overview"
         imageKicker="Platform"
-        imageTitle="Governed delivery surface"
-        imageDescription="From opportunity definition to production execution and evaluation."
-        chips={["Agent delivery", "MCP patterns", "Skills", "Use cases", "Observability"]}
-        primaryAction={{ label: "Explore agents", href: "/aixcelerator/agents" }}
-        secondaryAction={{ label: "Book a demo", href: "/request-demo", variant: "secondary" }}
+        imageTitle="Production-ready AI delivery"
+        imageDescription="Agents, integrations, and skills governed from day one."
+        chips={["Agents", "MCP integrations", "Skills", "Use cases", "Observability"]}
+        primaryAction={{ label: "Explore the agent catalog", href: "/aixcelerator/agents" }}
+        secondaryAction={{ label: "Schedule a demo", href: "/request-demo", variant: "secondary" }}
         metrics={[
           { label: "Catalog surfaces", value: "5", note: "Agents, MCP, skills, use cases, research." },
-          { label: "Governance", value: "Built-in", note: "Ownership, approval, and lifecycle tracking." },
-          { label: "Distribution", value: "Global", note: "Shared framework, domain-adapted execution." },
+          { label: "Governance", value: "Built-in", note: "Ownership, approval, and lifecycle controls." },
+          { label: "Reach", value: "Cross-industry", note: "One framework, domain-adapted execution." },
         ]}
       />
 
@@ -91,8 +90,8 @@ export default function AIXcelerator({ latestUseCases, fetchError }: AIXcelerato
         <div className="flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
           <SectionHeader
             kicker="Core"
-            title="Core platform surface"
-            description="The trusted foundation for agent delivery, governance, and observability."
+            title="Ship agents with confidence"
+            description="The foundation your team needs for governed delivery, lifecycle tracking, and real-time observability."
             size="md"
           />
           <div className="hidden rounded-md bg-slate-100 px-2.5 py-1 text-xs font-medium text-slate-700 sm:inline-flex">
@@ -118,15 +117,15 @@ export default function AIXcelerator({ latestUseCases, fetchError }: AIXcelerato
         <div className="flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
           <SectionHeader
             kicker="Layers"
-            title="Modular capability layers"
-            description="First-class capabilities introduced incrementally on top of the core. Each layer can start as a curated surface and mature into a full system over time."
+            title="Extend at your own pace"
+            description="Add capabilities incrementally on top of the core. Each layer starts curated and matures into a full operational system."
             size="md"
           />
           <Link
             href="/resources"
             className="btn btn-cta mt-3 sm:mt-0"
           >
-            Explore resource layers
+            Browse resource layers
           </Link>
         </div>
 
@@ -147,12 +146,12 @@ export default function AIXcelerator({ latestUseCases, fetchError }: AIXcelerato
         <div className="flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
           <SectionHeader
             kicker="Signals"
-            title="Latest use cases"
-            description="Fresh deployment patterns teams can review before moving into full execution design."
+            title="Proven deployment patterns"
+            description="See how teams are deploying AI today. Review real use cases before planning your own rollout."
             size="md"
           />
           <Link href="/use-cases" className="btn btn-cta mt-3 sm:mt-0">
-            Open use case catalog
+            View all use cases
           </Link>
         </div>
 
@@ -198,20 +197,20 @@ export default function AIXcelerator({ latestUseCases, fetchError }: AIXcelerato
       <section className="mt-10 surface-panel p-6 sm:mt-12">
         <SectionHeader
           kicker="Roadmap"
-          title="Discovery layer next steps"
-          description="Clear milestones that deepen how teams and LLMs explore the catalog."
+          title="What we are building next"
+          description="Upcoming milestones that make it easier for your team -- and LLMs -- to find the right agent."
           size="md"
         />
         <div className="mt-5 grid gap-4 sm:grid-cols-2">
           <RoadmapItem
-            title="LLM-friendly detail pages"
+            title="LLM-ready detail pages"
             status="Now live"
-            description="Structured profiles for Agents and MCP servers with metadata-first layouts."
+            description="Structured agent and MCP profiles optimized for both human review and LLM consumption."
           />
           <RoadmapItem
-            title="Chatbot exploration layer"
+            title="Conversational catalog search"
             status="Planned"
-            description="Conversational discovery across agents, MCPs, and knowledge signals."
+            description="Ask questions in natural language to find the right agent, integration, or skill for your workflow."
           />
         </div>
       </section>

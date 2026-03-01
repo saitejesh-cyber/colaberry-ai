@@ -3,6 +3,7 @@ import Layout from "../../../components/Layout";
 import Breadcrumb from "../../../components/Breadcrumb";
 import Link from "next/link";
 import Head from "next/head";
+import Image from "next/image";
 import type { GetServerSideProps } from "next";
 import RichText from "../../../components/RichText";
 import SectionHeader from "../../../components/SectionHeader";
@@ -24,6 +25,8 @@ type PodcastDetailProps = {
   relatedEpisodes: PodcastEpisode[];
 };
 
+const PODCAST_BRAND_IMAGE = "/media/podcast/colaberry-ai-podcast-brand.svg";
+
 type RouteParams = {
   slug?: string;
 };
@@ -35,39 +38,42 @@ export const getServerSideProps: GetServerSideProps<PodcastDetailProps, RoutePar
   if (!slug) {
     return { notFound: true };
   }
-  const episode = await fetchPodcastBySlug(slug);
+  try {
+    const episode = await fetchPodcastBySlug(slug);
+    if (!episode) {
+      return { notFound: true };
+    }
 
-  if (!episode) {
+    let relatedEpisodes: PodcastEpisode[] = [];
+    try {
+      relatedEpisodes = await fetchRelatedPodcastEpisodes(episode, { limit: 4 });
+    } catch {
+      relatedEpisodes = [];
+    }
+
+    const rawTranscript = typeof episode.transcript === "string" ? episode.transcript : "";
+    const sanitizedTranscript = rawTranscript
+      ? sanitizeHtml(rawTranscript, {
+          allowedTags: ["p", "br", "strong", "em", "b", "i", "u", "ul", "ol", "li", "h2", "h3", "h4", "a"],
+          allowedAttributes: {
+            a: ["href", "target", "rel"],
+          },
+          allowedSchemes: ["http", "https", "mailto"],
+        })
+      : null;
+
+    return {
+      props: {
+        episode: {
+          ...episode,
+          transcript: sanitizedTranscript || episode.transcript || null,
+        },
+        relatedEpisodes,
+      },
+    };
+  } catch {
     return { notFound: true };
   }
-
-  let relatedEpisodes: PodcastEpisode[] = [];
-  try {
-    relatedEpisodes = await fetchRelatedPodcastEpisodes(episode, { limit: 4 });
-  } catch {
-    relatedEpisodes = [];
-  }
-
-  const rawTranscript = typeof episode.transcript === "string" ? episode.transcript : "";
-  const sanitizedTranscript = rawTranscript
-    ? sanitizeHtml(rawTranscript, {
-        allowedTags: ["p", "br", "strong", "em", "b", "i", "u", "ul", "ol", "li", "h2", "h3", "h4", "a"],
-        allowedAttributes: {
-          a: ["href", "target", "rel"],
-        },
-        allowedSchemes: ["http", "https", "mailto"],
-      })
-    : null;
-
-  return {
-    props: {
-      episode: {
-        ...episode,
-        transcript: sanitizedTranscript || episode.transcript || null,
-      },
-      relatedEpisodes,
-    },
-  };
 };
 
 export default function PodcastDetail({ episode, relatedEpisodes }: PodcastDetailProps) {
@@ -101,6 +107,7 @@ export default function PodcastDetail({ episode, relatedEpisodes }: PodcastDetai
   const [isPlaying, setIsPlaying] = useState(false);
   const [currentTime, setCurrentTime] = useState(0);
   const [duration, setDuration] = useState(0);
+  const [shareStatus, setShareStatus] = useState<"idle" | "copied" | "error">("idle");
 
   useEffect(() => {
     if (!hasLoggedView.current) {
@@ -196,6 +203,8 @@ export default function PodcastDetail({ episode, relatedEpisodes }: PodcastDetai
   const subscribeLinks = (episode.platformLinks || []).filter(
     (link): link is PlatformLink & { url: string } => Boolean(link?.url)
   );
+  const episodeHighlights = buildEpisodeHighlights(episode, transcriptSegments);
+  const episodeMoments = buildEpisodeMoments(episode, transcriptSegments);
 
   const publishedLabel = episode.publishedDate
     ? new Date(episode.publishedDate).toLocaleDateString("en-US", {
@@ -204,6 +213,8 @@ export default function PodcastDetail({ episode, relatedEpisodes }: PodcastDetai
         day: "numeric",
       })
     : null;
+  const detailArtwork = episode.coverImageUrl || PODCAST_BRAND_IMAGE;
+  const episodeSummary = getEpisodeSummary(episode.description, 260);
 
   const formatTime = (value: number) => {
     if (!Number.isFinite(value) || value <= 0) {
@@ -233,6 +244,36 @@ export default function PodcastDetail({ episode, relatedEpisodes }: PodcastDetai
     setIsPlaying(false);
   };
 
+  const handleSeekToMoment = (startTime: number | null) => {
+    if (!usesNativePlayer || startTime === null) return;
+    const audio = audioRef.current;
+    if (!audio) return;
+    audio.currentTime = startTime;
+    if (audio.paused) {
+      void audio.play();
+    }
+  };
+
+  const copyShareLink = async () => {
+    if (!canonicalUrl || typeof navigator === "undefined" || !navigator.clipboard) {
+      setShareStatus("error");
+      return;
+    }
+    try {
+      await navigator.clipboard.writeText(canonicalUrl);
+      logPodcastEvent("share", "copy", { slug: episode.slug, title: episode.title });
+      setShareStatus("copied");
+    } catch {
+      setShareStatus("error");
+    }
+  };
+
+  useEffect(() => {
+    if (shareStatus === "idle") return;
+    const timeout = window.setTimeout(() => setShareStatus("idle"), 2200);
+    return () => window.clearTimeout(timeout);
+  }, [shareStatus]);
+
   return (
     <Layout>
       <Head>
@@ -251,27 +292,116 @@ export default function PodcastDetail({ episode, relatedEpisodes }: PodcastDetai
         { label: episode.title },
       ]} />
 
-      {/* ── Compact episode header ── */}
-      <header className="section-shell px-4 pt-4 pb-2 sm:px-6">
-        <h1 className="font-display text-display-sm font-bold text-slate-900 dark:text-slate-100 sm:text-display-md">
-          {episode.title}
-        </h1>
-        <p className="mt-2 flex flex-wrap items-center gap-x-2 gap-y-1 text-sm text-slate-500 dark:text-slate-400">
-          <span>{publishedLabel || "Date pending"}</span>
-          {episode.duration ? <><span aria-hidden="true">·</span><span>{episode.duration}</span></> : null}
-          {episode.episodeNumber ? <><span aria-hidden="true">·</span><span>Episode {episode.episodeNumber}</span></> : null}
-        </p>
-        <div className="mt-3 flex flex-wrap gap-2">
-          {(episode.tags || []).slice(0, 5).map((tag) => (
-            <Link key={tag.slug} href={`/resources/podcasts/tag/${tag.slug}`} className="chip chip-muted rounded-md px-2.5 py-1 text-xs font-semibold">
-              #{tag.name}
-            </Link>
-          ))}
-          {hasTranscriptContent ? (
-            <span className="inline-flex items-center gap-1 rounded-md bg-[var(--trusted-surface)] px-2.5 py-1 text-xs font-semibold text-[var(--trusted-text)] ring-1 ring-inset ring-[var(--trusted-stroke)]">
-              Transcript
-            </span>
-          ) : null}
+      <header className="hero-surface section-shell px-4 py-6 sm:px-6 lg:px-8">
+        <div className="grid gap-6 lg:grid-cols-[minmax(0,1fr)_280px] lg:items-start">
+          <div className="min-w-0">
+            <p className="text-label font-semibold uppercase tracking-[0.14em] text-slate-500 dark:text-slate-400">
+              Colaberry AI Podcast
+            </p>
+            <h1 className="mt-2 font-display text-display-sm font-bold text-slate-900 dark:text-slate-100 sm:text-display-md">
+              {episode.title}
+            </h1>
+            <p className="mt-3 flex flex-wrap items-center gap-x-2 gap-y-1 text-sm text-slate-500 dark:text-slate-400">
+              <span>{publishedLabel || "Date pending"}</span>
+              {episode.duration ? (
+                <>
+                  <span aria-hidden="true">·</span>
+                  <span>{episode.duration}</span>
+                </>
+              ) : null}
+              {episode.episodeNumber ? (
+                <>
+                  <span aria-hidden="true">·</span>
+                  <span>Episode {episode.episodeNumber}</span>
+                </>
+              ) : null}
+              {episode.podcastType ? (
+                <>
+                  <span aria-hidden="true">·</span>
+                  <span className="capitalize">{episode.podcastType}</span>
+                </>
+              ) : null}
+            </p>
+            {episodeSummary ? (
+              <p className="mt-4 max-w-3xl text-sm leading-relaxed text-slate-600 dark:text-slate-300 sm:text-base">
+                {episodeSummary}
+              </p>
+            ) : null}
+
+            <div className="mt-5 flex flex-wrap gap-2">
+              <button
+                type="button"
+                onClick={() => playerRef.current?.scrollIntoView({ behavior: "smooth", block: "start" })}
+                className="btn btn-cta"
+              >
+                Play episode
+              </button>
+              {hasTranscriptContent ? (
+                <button
+                  type="button"
+                  onClick={() => {
+                    setContentTab("transcript");
+                    document.getElementById("transcript")?.scrollIntoView({ behavior: "smooth", block: "start" });
+                  }}
+                  className="btn btn-secondary"
+                >
+                  Open transcript
+                </button>
+              ) : null}
+              <Link href="/resources/podcasts" className="btn btn-ghost">
+                Browse catalog
+              </Link>
+            </div>
+
+            <div className="mt-4 flex flex-wrap gap-2">
+              {(episode.tags || []).slice(0, 5).map((tag) => (
+                <Link key={tag.slug} href={`/resources/podcasts/tag/${tag.slug}`} className="chip chip-muted rounded-md px-2.5 py-1 text-xs font-semibold">
+                  #{tag.name}
+                </Link>
+              ))}
+              {hasTranscriptContent ? (
+                <span className="inline-flex items-center gap-1 rounded-md bg-[var(--trusted-surface)] px-2.5 py-1 text-xs font-semibold text-[var(--trusted-text)] ring-1 ring-inset ring-[var(--trusted-stroke)]">
+                  Transcript available
+                </span>
+              ) : null}
+            </div>
+          </div>
+
+          <div className="mx-auto w-full max-w-[280px]">
+            <div className="relative overflow-hidden rounded-2xl border border-slate-200/70 bg-white shadow-lg dark:border-slate-700/60 dark:bg-slate-900/70">
+              <Image
+                src={detailArtwork}
+                alt={episode.coverImageAlt || episode.title}
+                width={900}
+                height={900}
+                className="aspect-square w-full object-cover"
+                unoptimized
+              />
+              {episode.duration ? (
+                <span className="absolute bottom-3 right-3 rounded bg-black/70 px-2 py-1 text-xs font-semibold text-white">
+                  {episode.duration}
+                </span>
+              ) : null}
+            </div>
+            <div className="mt-3 grid grid-cols-2 gap-2">
+              <div className="rounded-lg border border-slate-200/70 bg-white/90 p-2 dark:border-slate-700 dark:bg-slate-900/70">
+                <p className="text-[10px] font-semibold uppercase tracking-[0.12em] text-slate-500 dark:text-slate-400">
+                  Published
+                </p>
+                <p className="mt-1 text-xs font-semibold text-slate-700 dark:text-slate-200">
+                  {publishedLabel || "Pending"}
+                </p>
+              </div>
+              <div className="rounded-lg border border-slate-200/70 bg-white/90 p-2 dark:border-slate-700 dark:bg-slate-900/70">
+                <p className="text-[10px] font-semibold uppercase tracking-[0.12em] text-slate-500 dark:text-slate-400">
+                  Channel
+                </p>
+                <p className="mt-1 text-xs font-semibold text-slate-700 dark:text-slate-200">
+                  {episode.podcastType?.toLowerCase() === "external" ? "External" : "Colaberry"}
+                </p>
+              </div>
+            </div>
+          </div>
         </div>
       </header>
 
@@ -350,14 +480,11 @@ export default function PodcastDetail({ episode, relatedEpisodes }: PodcastDetai
                 <button
                   type="button"
                   onClick={() => {
-                    if (canonicalUrl) {
-                      navigator.clipboard.writeText(canonicalUrl);
-                      logPodcastEvent("share", "copy", { slug: episode.slug, title: episode.title });
-                    }
+                    void copyShareLink();
                   }}
                   className="btn btn-ghost btn-compact"
                 >
-                  Copy link
+                  {shareStatus === "copied" ? "Copied" : shareStatus === "error" ? "Copy failed" : "Copy link"}
                 </button>
                 {hasTranscriptContent && (
                   <button
@@ -369,6 +496,9 @@ export default function PodcastDetail({ episode, relatedEpisodes }: PodcastDetai
                   </button>
                 )}
               </div>
+              {shareStatus === "copied" ? (
+                <span className="text-xs text-[var(--trusted-text)]">Share link copied.</span>
+              ) : null}
             </div>
 
             <div className="mt-4 flex flex-wrap gap-2">
@@ -391,6 +521,38 @@ export default function PodcastDetail({ episode, relatedEpisodes }: PodcastDetai
                 </Link>
               ))}
             </div>
+
+            {episodeMoments.length > 0 ? (
+              <div className="mt-5 rounded-xl border border-slate-200/70 bg-white/90 p-4 dark:border-slate-700/60 dark:bg-slate-900/60">
+                <div className="flex flex-wrap items-center justify-between gap-2">
+                  <div className="text-xs font-semibold uppercase tracking-[0.12em] text-slate-500 dark:text-slate-400">
+                    Key moments
+                  </div>
+                  <span className="text-[11px] font-medium text-slate-500 dark:text-slate-400">
+                    {usesNativePlayer ? "Tap to jump in audio" : "Use transcript for full context"}
+                  </span>
+                </div>
+                <ul className="mt-3 grid gap-2">
+                  {episodeMoments.map((moment) => (
+                    <li key={`${moment.title}-${moment.startTime ?? "na"}`}>
+                      <button
+                        type="button"
+                        disabled={!usesNativePlayer || moment.startTime === null}
+                        onClick={() => handleSeekToMoment(moment.startTime)}
+                        className="focus-ring flex w-full items-start justify-between gap-3 rounded-md border border-slate-200/70 bg-white px-3 py-2 text-left transition hover:border-slate-300 hover:bg-slate-50 disabled:cursor-not-allowed disabled:opacity-65 dark:border-slate-700 dark:bg-slate-900/70 dark:hover:border-slate-600 dark:hover:bg-slate-800/80"
+                      >
+                        <span className="text-sm font-semibold text-slate-800 dark:text-slate-100">
+                          {moment.title}
+                        </span>
+                        <span className="shrink-0 text-xs font-semibold text-slate-500 dark:text-slate-400">
+                          {moment.startTime === null ? "Note" : formatMomentTime(moment.startTime)}
+                        </span>
+                      </button>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            ) : null}
           </div>
 
           {/* ── Description / Transcript tabs ── */}
@@ -403,7 +565,7 @@ export default function PodcastDetail({ episode, relatedEpisodes }: PodcastDetai
                 onClick={() => setContentTab("description")}
                 className={`flex min-h-[36px] items-center rounded-md px-4 py-1.5 text-xs font-semibold transition ${
                   contentTab === "description"
-                    ? "bg-brand-purple-600 text-white shadow-sm"
+                    ? "bg-[var(--pivot-fill)] text-[var(--pivot-on-fill)] shadow-sm"
                     : "text-slate-600 hover:bg-slate-100 dark:text-slate-300 dark:hover:bg-slate-800"
                 }`}
               >
@@ -417,7 +579,7 @@ export default function PodcastDetail({ episode, relatedEpisodes }: PodcastDetai
                   onClick={() => setContentTab("transcript")}
                   className={`flex min-h-[36px] items-center rounded-md px-4 py-1.5 text-xs font-semibold transition ${
                     contentTab === "transcript"
-                      ? "bg-brand-purple-600 text-white shadow-sm"
+                      ? "bg-[var(--pivot-fill)] text-[var(--pivot-on-fill)] shadow-sm"
                       : "text-slate-600 hover:bg-slate-100 dark:text-slate-300 dark:hover:bg-slate-800"
                   }`}
                 >
@@ -462,6 +624,37 @@ export default function PodcastDetail({ episode, relatedEpisodes }: PodcastDetai
         </div>
 
         <aside className="flex flex-col gap-4">
+          <div className="detail-section">
+            <div className="text-label font-semibold uppercase tracking-[0.14em] text-slate-500 dark:text-slate-400">
+              Episode at a glance
+            </div>
+            <div className="mt-3 grid gap-2">
+              <DetailLine label="Published" value={publishedLabel || "Pending"} />
+              <DetailLine label="Duration" value={episode.duration || "TBD"} />
+              <DetailLine label="Episode" value={episode.episodeNumber ? `#${episode.episodeNumber}` : "N/A"} />
+              <DetailLine
+                label="Source"
+                value={episode.podcastType?.toLowerCase() === "external" ? "External" : "Colaberry AI"}
+              />
+              <DetailLine label="Transcript" value={hasTranscriptContent ? "Available" : "Pending"} />
+            </div>
+            {episodeHighlights.length > 0 ? (
+              <div className="mt-4 border-t border-slate-200/60 pt-4 dark:border-slate-700/60">
+                <div className="text-xs font-semibold uppercase tracking-[0.12em] text-slate-500 dark:text-slate-400">
+                  Episode highlights
+                </div>
+                <ul className="mt-2 grid gap-1.5 text-sm text-slate-700 dark:text-slate-300">
+                  {episodeHighlights.map((item) => (
+                    <li key={item} className="flex gap-2">
+                      <span className="mt-2 h-1.5 w-1.5 rounded-full bg-[var(--pivot-fill)]" />
+                      <span>{item}</span>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            ) : null}
+          </div>
+
           <div className="detail-section">
             <div className="text-label font-semibold uppercase tracking-[0.14em] text-slate-500 dark:text-slate-400">
               Listen on
@@ -614,7 +807,6 @@ export default function PodcastDetail({ episode, relatedEpisodes }: PodcastDetai
         </div>
       )}
 
-      <ShareActions title={episode.title} />
     </Layout>
   );
 }
@@ -643,30 +835,113 @@ function ScrollProgress() {
   );
 }
 
-function ShareActions({ title: _title }: { title: string }) {
-  const [copied, setCopied] = useState(false);
-  const copy = () => {
-    navigator.clipboard.writeText(window.location.href).then(() => {
-      setCopied(true);
-      setTimeout(() => setCopied(false), 2000);
-    });
-  };
+function DetailLine({ label, value }: { label: string; value: string }) {
   return (
-    <div className="fixed bottom-6 right-6 z-30 flex gap-2">
-      <button
-        type="button"
-        className="flex h-10 w-10 items-center justify-center rounded-full border border-[var(--stroke)] bg-[var(--surface-strong)] shadow-lg transition-colors hover:bg-[var(--surface-soft)]"
-        aria-label="Copy link"
-        onClick={copy}
-      >
-        {copied ? (
-          <svg viewBox="0 0 20 20" className="h-4 w-4 text-[var(--trust-green)]" fill="currentColor"><path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" /></svg>
-        ) : (
-          <svg viewBox="0 0 24 24" className="h-4 w-4 text-[var(--text-secondary)]" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71" /><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71" /></svg>
-        )}
-      </button>
+    <div className="flex items-center justify-between rounded-md border border-slate-200/70 bg-white/70 px-3 py-2 dark:border-slate-700 dark:bg-slate-900/60">
+      <span className="text-[10px] font-semibold uppercase tracking-[0.12em] text-slate-500 dark:text-slate-400">
+        {label}
+      </span>
+      <span className="text-xs font-semibold text-slate-700 dark:text-slate-200">
+        {value}
+      </span>
     </div>
   );
+}
+
+type RichTextChild = {
+  text?: string | null;
+};
+
+type RichTextBlock = {
+  type?: string | null;
+  children?: RichTextChild[] | null;
+};
+
+function getEpisodeSummary(description: PodcastEpisode["description"], maxLen = 240) {
+  if (!description) return "";
+
+  if (typeof description === "string") {
+    const compact = description.replace(/\s+/g, " ").trim();
+    return compact.length > maxLen ? `${compact.slice(0, maxLen).trimEnd()}…` : compact;
+  }
+
+  if (Array.isArray(description)) {
+    const text = description
+      .filter((block): block is RichTextBlock => typeof block === "object" && block !== null)
+      .filter((block) => block.type === "paragraph")
+      .flatMap((block) => (block.children || []).map((child) => child?.text || ""))
+      .join(" ")
+      .replace(/\s+/g, " ")
+      .trim();
+
+    return text.length > maxLen ? `${text.slice(0, maxLen).trimEnd()}…` : text;
+  }
+
+  return "";
+}
+
+function buildEpisodeHighlights(
+  episode: PodcastEpisode,
+  transcriptSegments: Array<{ text?: string | null }>
+) {
+  const highlights = new Set<string>();
+
+  for (const tag of episode.tags || []) {
+    if (!tag?.name) continue;
+    highlights.add(tag.name.trim());
+    if (highlights.size >= 3) break;
+  }
+
+  if (highlights.size < 3) {
+    for (const segment of transcriptSegments) {
+      const text = (segment.text || "").replace(/\s+/g, " ").trim();
+      if (text.length < 48) continue;
+      highlights.add(text.slice(0, 90) + (text.length > 90 ? "…" : ""));
+      if (highlights.size >= 3) break;
+    }
+  }
+
+  return Array.from(highlights).slice(0, 3);
+}
+
+type EpisodeMoment = {
+  title: string;
+  startTime: number | null;
+};
+
+function buildEpisodeMoments(
+  episode: PodcastEpisode,
+  transcriptSegments: Array<{ start?: number | null; text?: string | null }>
+): EpisodeMoment[] {
+  if (Array.isArray(episode.chapters) && episode.chapters.length > 0) {
+    return episode.chapters
+      .slice(0, 6)
+      .map((chapter) => ({
+        title: chapter.title || "Chapter",
+        startTime: Number.isFinite(chapter.startTime) ? chapter.startTime : null,
+      }))
+      .filter((chapter) => Boolean(chapter.title.trim()));
+  }
+
+  const derivedMoments: EpisodeMoment[] = [];
+  for (const segment of transcriptSegments) {
+    const text = (segment.text || "").replace(/\s+/g, " ").trim();
+    if (text.length < 52) continue;
+    const title = text.length > 90 ? `${text.slice(0, 90).trimEnd()}…` : text;
+    derivedMoments.push({
+      title,
+      startTime: Number.isFinite(segment.start) ? Number(segment.start) : null,
+    });
+    if (derivedMoments.length >= 6) break;
+  }
+  return derivedMoments;
+}
+
+function formatMomentTime(value: number) {
+  if (!Number.isFinite(value) || value < 0) return "0:00";
+  const minutes = Math.floor(value / 60);
+  const seconds = Math.floor(value % 60);
+  return `${minutes}:${seconds.toString().padStart(2, "0")}`;
 }
 
 function formatDate(value?: string | null) {
@@ -680,4 +955,3 @@ function formatDate(value?: string | null) {
     timeZone: "UTC",
   });
 }
-

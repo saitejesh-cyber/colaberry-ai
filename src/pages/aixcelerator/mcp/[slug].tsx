@@ -7,7 +7,7 @@ import Layout from "../../../components/Layout";
 import Breadcrumb from "../../../components/Breadcrumb";
 import SectionHeader from "../../../components/SectionHeader";
 import EnterprisePageHero from "../../../components/EnterprisePageHero";
-import MCPCard from "../../../components/MCPCard";
+import CatalogCard from "../../../components/CatalogCard";
 import { fetchMCPServerBySlug, fetchRelatedMCPServers, MCPServer } from "../../../lib/cms";
 import { heroImage } from "../../../lib/media";
 import type { ReactNode } from "react";
@@ -424,7 +424,7 @@ export default function MCPDetail({ mcp, allowPrivate, relatedServers }: MCPDeta
                         <ul className="mt-3 space-y-2 text-sm text-slate-700 dark:text-slate-300">
                           {requirements.map((item, index) => (
                             <li key={`req-${index}`} className="flex gap-2">
-                              <span className="mt-2 h-1.5 w-1.5 shrink-0 rounded-full bg-[#059669]" />
+                              <span className="mt-2 h-1.5 w-1.5 shrink-0 rounded-full bg-[var(--trusted-fill)]" />
                               <span>{item}</span>
                             </li>
                           ))}
@@ -612,7 +612,7 @@ export default function MCPDetail({ mcp, allowPrivate, relatedServers }: MCPDeta
               <div className="mt-6 grid gap-4 lg:grid-cols-3">
                 {relatedServers.map((related) => (
                   <div key={related.slug || String(related.id)} className="card-elevated rounded-xl">
-                    <MCPCard mcp={related} />
+                    <CatalogCard item={related} variant="mcp" />
                   </div>
                 ))}
               </div>
@@ -656,7 +656,7 @@ export default function MCPDetail({ mcp, allowPrivate, relatedServers }: MCPDeta
         </aside>
       </section>
 
-      <ShareActions title={mcp.name} />
+      <ShareActions />
     </Layout>
   );
 }
@@ -685,7 +685,7 @@ function ScrollProgress() {
   );
 }
 
-function ShareActions({ title: _title }: { title: string }) {
+function ShareActions() {
   const [copied, setCopied] = useState(false);
   const copy = () => {
     navigator.clipboard.writeText(window.location.href).then(() => {
@@ -791,7 +791,7 @@ function ListSection({ title, items, empty }: { title: string; items: string[]; 
         <ul className="mt-3 space-y-2 text-sm text-slate-700 dark:text-slate-300">
           {items.map((item, index) => (
             <li key={`${title}-${index}`} className="flex gap-2">
-              <span className="mt-2 h-1.5 w-1.5 shrink-0 rounded-full bg-[#059669]" />
+              <span className="mt-2 h-1.5 w-1.5 shrink-0 rounded-full bg-[var(--trusted-fill)]" />
               <span>{item}</span>
             </li>
           ))}
@@ -870,7 +870,7 @@ function GuidanceBlock({
       <ul className="mt-3 space-y-2 text-sm text-slate-700 dark:text-slate-300">
         {items.map((item, index) => (
           <li key={`${title}-${index}`} className="flex gap-2">
-            <span className="mt-2 h-1.5 w-1.5 shrink-0 rounded-full bg-[#059669]" />
+            <span className="mt-2 h-1.5 w-1.5 shrink-0 rounded-full bg-[var(--trusted-fill)]" />
             <span>{item}</span>
           </li>
         ))}

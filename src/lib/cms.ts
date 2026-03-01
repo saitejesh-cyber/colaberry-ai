@@ -4,6 +4,9 @@ const CMS_API_TOKEN = (process.env.CMS_API_TOKEN || "").trim();
 const CMS_CACHE_TTL_MS = Number(process.env.NEXT_PUBLIC_CMS_CACHE_TTL_MS || 300000);
 const CMS_ALLOW_DRAFT_FALLBACK =
   process.env.CMS_ALLOW_DRAFT_FALLBACK === "true" || process.env.NEXT_PUBLIC_SHOW_PRIVATE === "true";
+const CMS_SOFT_FAIL =
+  process.env.CMS_SOFT_FAIL === "true" ||
+  (process.env.NODE_ENV !== "production" && process.env.CMS_SOFT_FAIL !== "false");
 
 type CacheEntry<T> = {
   expiresAt: number;
@@ -33,16 +36,53 @@ type CMSSingleResponse<T = any> = {
 
 const cmsCache = new Map<string, CacheEntry<any>>();
 const cmsInflight = new Map<string, Promise<any>>();
+const cmsSoftFailWarnings = new Set<string>();
+
+function toCmsErrorMessage(error: unknown): string {
+  return error instanceof Error ? error.message : String(error || "Unknown CMS error");
+}
+
+function isCmsConnectivityError(error: unknown): boolean {
+  const message = toCmsErrorMessage(error).toLowerCase();
+  return (
+    message.includes("fetch failed") ||
+    message.includes("networkerror") ||
+    message.includes("network request failed") ||
+    message.includes("econnrefused") ||
+    message.includes("enotfound") ||
+    message.includes("eai_again") ||
+    message.includes("etimedout") ||
+    message.includes("cms url is not configured") ||
+    message.includes("invalid cms request url")
+  );
+}
+
+function logCmsSoftFailOnce(context: string, error: unknown) {
+  if (cmsSoftFailWarnings.has(context)) return;
+  cmsSoftFailWarnings.add(context);
+  // One-time warning per context to avoid dev console flood.
+  console.warn(`[cms] soft-fail (${context}): ${toCmsErrorMessage(error)}`);
+}
 
 async function fetchCMSJson<T>(
   url: string,
   options: { cacheMs?: number; allowStaleOnError?: boolean; authMode?: "default" | "none" } = {}
 ): Promise<T> {
   if (!CMS_URL || !/^https?:\/\//i.test(CMS_URL)) {
-    throw new Error("CMS URL is not configured. Set NEXT_PUBLIC_CMS_URL (or CMS_URL) to an absolute URL.");
+    const error = new Error("CMS URL is not configured. Set NEXT_PUBLIC_CMS_URL (or CMS_URL) to an absolute URL.");
+    if (CMS_SOFT_FAIL) {
+      logCmsSoftFailOnce("invalid-cms-url", error);
+      return {} as T;
+    }
+    throw error;
   }
   if (!/^https?:\/\//i.test(url)) {
-    throw new Error(`Invalid CMS request URL: ${url}`);
+    const error = new Error(`Invalid CMS request URL: ${url}`);
+    if (CMS_SOFT_FAIL) {
+      logCmsSoftFailOnce("invalid-request-url", error);
+      return {} as T;
+    }
+    throw error;
   }
   const authMode = options.authMode ?? "default";
   const cacheKey = `${authMode}:${url}`;
@@ -101,6 +141,10 @@ async function fetchCMSJson<T>(
     .catch((error) => {
       if (options.allowStaleOnError && cached) {
         return cached.data as T;
+      }
+      if (CMS_SOFT_FAIL && isCmsConnectivityError(error)) {
+        logCmsSoftFailOnce(cacheKey, error);
+        return {} as T;
       }
       throw error;
     })

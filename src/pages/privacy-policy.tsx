@@ -1,5 +1,10 @@
 import Head from "next/head";
+import Link from "next/link";
 import Layout from "../components/Layout";
+import EnterpriseCtaBand from "../components/EnterpriseCtaBand";
+import EnterprisePageHero from "../components/EnterprisePageHero";
+import SectionHeader from "../components/SectionHeader";
+import { heroImage } from "../lib/media";
 import { seoTags, canonicalUrl as buildCanonical, type SeoMeta } from "../lib/seo";
 
 export default function PrivacyPolicyPage() {
@@ -26,18 +31,54 @@ export default function PrivacyPolicyPage() {
         }) }} />
       </Head>
 
-      <section className="mx-auto w-full max-w-4xl">
-        <div className="surface-panel border border-slate-200/80 bg-white/95 px-6 py-8 shadow-sm dark:border-[#374151] dark:bg-[#111827]/85 sm:px-8">
-          <div className="inline-flex items-center gap-2 rounded-md border border-slate-200 bg-slate-100 px-3 py-1 text-label font-semibold uppercase tracking-[0.14em] text-[#111827] dark:border-slate-700 dark:bg-slate-800 dark:text-[#F9FAFB]">
-            Legal
-          </div>
-          <h1 className="mt-4 font-display text-display-sm sm:text-display-md font-bold text-slate-900 dark:text-slate-100">
-            Privacy Policy
-          </h1>
-          <p className="mt-3 text-sm text-slate-600 dark:text-slate-300">
-            Last updated: February 17, 2026
-          </p>
+      <EnterprisePageHero
+        kicker="Legal"
+        title="Privacy Policy"
+        description="How Colaberry AI collects, uses, and protects data across product experiences, subscriptions, and support interactions."
+        image={heroImage("hero-platform-cinematic.webp")}
+        alt="Privacy and data governance overview"
+        imageKicker="Data governance"
+        imageTitle="Clarity and control"
+        imageDescription="Transparent policy for collection, usage, retention, and privacy rights."
+        chips={["Data collection", "Usage controls", "Retention", "User rights"]}
+        primaryAction={{ label: "Cookie policy", href: "/cookie-policy" }}
+        secondaryAction={{ label: "Contact privacy team", href: "mailto:privacy@colaberry.ai", external: true, variant: "secondary" }}
+        metrics={[
+          {
+            label: "Policy scope",
+            value: "Site + services",
+            note: "Applies across Colaberry AI product surfaces.",
+          },
+          {
+            label: "Last updated",
+            value: "Feb 17, 2026",
+            note: "Reviewed with current subscription and analytics practices.",
+          },
+          {
+            label: "Contact",
+            value: "privacy@colaberry.ai",
+            note: "For privacy requests and data-rights inquiries.",
+          },
+        ]}
+      />
 
+      <section className="surface-panel section-spacing p-5 sm:p-6">
+        <SectionHeader
+          kicker="At a glance"
+          title="Privacy principles in plain language"
+          description="A quick summary before the full policy details."
+          size="md"
+        />
+        <div className="mt-4 grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
+          <div className="section-card rounded-xl p-4 text-sm text-slate-700 dark:text-slate-200">Collect only what is needed to deliver requested services.</div>
+          <div className="section-card rounded-xl p-4 text-sm text-slate-700 dark:text-slate-200">Use data for reliability, support, and product improvement.</div>
+          <div className="section-card rounded-xl p-4 text-sm text-slate-700 dark:text-slate-200">Do not sell personal data.</div>
+          <div className="section-card rounded-xl p-4 text-sm text-slate-700 dark:text-slate-200">Provide clear contact path for privacy rights and requests.</div>
+        </div>
+      </section>
+
+      <section className="mx-auto w-full max-w-4xl">
+        <div className="surface-panel px-6 py-8 shadow-sm sm:px-8">
           <div className="mt-6 space-y-6 text-sm leading-7 text-slate-700 dark:text-slate-300">
             <section>
               <h2 className="text-lg font-semibold text-slate-900 dark:text-slate-100">What we collect</h2>
@@ -83,8 +124,26 @@ export default function PrivacyPolicyPage() {
               </p>
             </section>
           </div>
+          <div className="mt-6 flex flex-wrap items-center gap-3">
+            <Link href="/cookie-policy" className="btn btn-secondary btn-sm">
+              Cookie policy
+            </Link>
+            <Link href="/updates" className="btn btn-ghost btn-sm">
+              Back to updates
+            </Link>
+          </div>
         </div>
       </section>
+
+      <EnterpriseCtaBand
+        kicker="Need support"
+        title="Questions about privacy or data handling?"
+        description="Reach the privacy team directly for data requests, policy clarifications, or compliance-related inquiries."
+        primaryHref="mailto:privacy@colaberry.ai"
+        primaryLabel="Email privacy team"
+        secondaryHref="/cookie-policy"
+        secondaryLabel="Review cookie policy"
+      />
     </Layout>
   );
 }

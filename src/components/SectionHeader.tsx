@@ -44,7 +44,7 @@ export default function SectionHeader({
         <div
           className={`inline-flex w-fit items-center gap-2 rounded-md border border-slate-200 bg-slate-100 px-3 py-1 text-label font-semibold uppercase tracking-[0.14em] text-slate-700 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-300 ${kickerAlign}`}
         >
-          <span aria-hidden="true" className="h-1.5 w-1.5 rounded-full bg-[#059669]" />
+          <span aria-hidden="true" className="h-1.5 w-1.5 rounded-full bg-[var(--trusted-fill)]" />
           <span>{kicker}</span>
         </div>
       ) : null}

@@ -1,5 +1,10 @@
 import Head from "next/head";
+import Link from "next/link";
 import Layout from "../components/Layout";
+import EnterpriseCtaBand from "../components/EnterpriseCtaBand";
+import EnterprisePageHero from "../components/EnterprisePageHero";
+import SectionHeader from "../components/SectionHeader";
+import { heroImage } from "../lib/media";
 import { seoTags, canonicalUrl as buildCanonical, type SeoMeta } from "../lib/seo";
 
 export default function CookiePolicyPage() {
@@ -26,18 +31,53 @@ export default function CookiePolicyPage() {
         }) }} />
       </Head>
 
-      <section className="mx-auto w-full max-w-4xl">
-        <div className="surface-panel border border-slate-200/80 bg-white/95 px-6 py-8 shadow-sm dark:border-[#374151] dark:bg-[#111827]/85 sm:px-8">
-          <div className="inline-flex items-center gap-2 rounded-md border border-slate-200 bg-slate-100 px-3 py-1 text-label font-semibold uppercase tracking-[0.14em] text-[#111827] dark:border-slate-700 dark:bg-slate-800 dark:text-[#F9FAFB]">
-            Legal
-          </div>
-          <h1 className="mt-4 font-display text-display-sm sm:text-display-md font-bold text-slate-900 dark:text-slate-100">
-            Cookie Policy
-          </h1>
-          <p className="mt-3 text-sm text-slate-600 dark:text-slate-300">
-            Last updated: February 17, 2026
-          </p>
+      <EnterprisePageHero
+        kicker="Legal"
+        title="Cookie Policy"
+        description="How Colaberry AI uses essential and optional cookies, and how you can control preferences at any time."
+        image={heroImage("hero-resources-cinematic.webp")}
+        alt="Cookie policy and consent management overview"
+        imageKicker="Consent controls"
+        imageTitle="Transparent tracking choices"
+        imageDescription="Clear separation between essential, analytics, and advertising usage."
+        chips={["Essential", "Analytics", "Advertising", "Preference controls"]}
+        primaryAction={{ label: "Privacy policy", href: "/privacy-policy" }}
+        secondaryAction={{ label: "Back to updates", href: "/updates", variant: "secondary" }}
+        metrics={[
+          {
+            label: "Last updated",
+            value: "Feb 17, 2026",
+            note: "Aligned with current consent and tracking behavior.",
+          },
+          {
+            label: "Control model",
+            value: "User-managed",
+            note: "Preferences can be updated at any time.",
+          },
+          {
+            label: "Default posture",
+            value: "Essential only",
+            note: "Optional categories require consent.",
+          },
+        ]}
+      />
 
+      <section className="surface-panel section-spacing p-5 sm:p-6">
+        <SectionHeader
+          kicker="Cookie categories"
+          title="What each cookie class does"
+          description="A quick operational summary before the full policy details."
+          size="md"
+        />
+        <div className="mt-4 grid gap-3 sm:grid-cols-3">
+          <div className="section-card rounded-xl p-4 text-sm text-slate-700 dark:text-slate-200">Essential cookies power authentication, security, and baseline site behavior.</div>
+          <div className="section-card rounded-xl p-4 text-sm text-slate-700 dark:text-slate-200">Analytics cookies measure engagement and performance for product improvement.</div>
+          <div className="section-card rounded-xl p-4 text-sm text-slate-700 dark:text-slate-200">Advertising cookies support attribution and campaign effectiveness when enabled.</div>
+        </div>
+      </section>
+
+      <section className="mx-auto w-full max-w-4xl">
+        <div className="surface-panel px-6 py-8 shadow-sm sm:px-8">
           <div className="mt-6 space-y-6 text-sm leading-7 text-slate-700 dark:text-slate-300">
             <section>
               <h2 className="text-lg font-semibold text-slate-900 dark:text-slate-100">Essential cookies</h2>
@@ -71,8 +111,26 @@ export default function CookiePolicyPage() {
               </p>
             </section>
           </div>
+          <div className="mt-6 flex flex-wrap items-center gap-3">
+            <Link href="/privacy-policy" className="btn btn-secondary btn-sm">
+              Privacy policy
+            </Link>
+            <Link href="/updates" className="btn btn-ghost btn-sm">
+              Back to updates
+            </Link>
+          </div>
         </div>
       </section>
+
+      <EnterpriseCtaBand
+        kicker="Preference updates"
+        title="Need to change consent settings?"
+        description="Use Cookie Preferences on any page to update analytics and advertising consent instantly."
+        primaryHref="/privacy-policy"
+        primaryLabel="Review privacy policy"
+        secondaryHref="/updates"
+        secondaryLabel="Back to updates"
+      />
     </Layout>
   );
 }

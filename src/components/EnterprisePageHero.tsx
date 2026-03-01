@@ -62,7 +62,7 @@ export default function EnterprisePageHero({
   metrics = [],
 }: EnterprisePageHeroProps) {
   return (
-    <section className="relative overflow-hidden rounded-2xl bg-gradient-to-b from-white via-[var(--pivot-surface)] to-[var(--neutral-fill)] dark:from-[var(--bg)] dark:via-[#450A0A] dark:to-[var(--surface-strong)]">
+    <section className="relative overflow-hidden rounded-2xl bg-gradient-to-b from-white via-[var(--pivot-surface)] to-[var(--neutral-fill)] dark:from-[var(--bg)] dark:via-[#1E1B4B] dark:to-[var(--surface-strong)]">
       <div className="relative z-10 grid gap-8 px-6 py-16 sm:px-8 sm:py-20 lg:grid-cols-[1.08fr_0.92fr] lg:items-start lg:px-10 lg:py-24">
         <div className="flex flex-col gap-4">
           <div className="rise-in rise-delay-1 inline-flex w-fit items-center gap-2.5 rounded-full border border-slate-200 bg-slate-100 px-3.5 py-1.5 text-xs font-semibold uppercase tracking-[0.18em] text-slate-700 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-300">

@@ -6,7 +6,9 @@ import Link from "next/link";
 import sanitizeHtml from "sanitize-html";
 import Layout from "../../../components/Layout";
 import Breadcrumb from "../../../components/Breadcrumb";
+import EnterpriseCtaBand from "../../../components/EnterpriseCtaBand";
 import EnterprisePageHero from "../../../components/EnterprisePageHero";
+import SectionHeader from "../../../components/SectionHeader";
 import StatePanel from "../../../components/StatePanel";
 import { Article, ArticleMedia, fetchArticleBySlug } from "../../../lib/cms";
 import { heroImage } from "../../../lib/media";
@@ -47,6 +49,7 @@ export const getStaticProps: GetStaticProps<ArticleDetailProps> = async ({ param
 export default function ArticleDetailPage({ article }: ArticleDetailProps) {
   const publishedLabel = formatDateLabel(article.publishedAt || article.updatedAt);
   const blocks = Array.isArray(article.blocks) ? article.blocks : [];
+  const readingMinutes = Math.max(1, Math.round(estimateWordCount(blocks) / 220));
   const seoMeta: SeoMeta = {
     title: `${article.title} | Articles | Colaberry AI`,
     description: article.description || "Enterprise AI article from Colaberry AI resources.",
@@ -124,6 +127,41 @@ export default function ArticleDetailPage({ article }: ArticleDetailProps) {
           ]}
         />
       </div>
+
+      <section className="surface-panel section-shell section-spacing p-5 sm:p-6">
+        <SectionHeader
+          kicker="At a glance"
+          title="Article intelligence"
+          description="Quick context for readers before diving into the full body."
+          size="md"
+        />
+        <div className="mt-4 grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
+          <div className="section-card rounded-xl p-4">
+            <div className="text-xs font-semibold uppercase tracking-[0.14em] text-slate-500">Category</div>
+            <div className="mt-1 text-sm font-semibold text-slate-900 dark:text-slate-100">
+              {article.category?.name || "Article"}
+            </div>
+          </div>
+          <div className="section-card rounded-xl p-4">
+            <div className="text-xs font-semibold uppercase tracking-[0.14em] text-slate-500">Author</div>
+            <div className="mt-1 text-sm font-semibold text-slate-900 dark:text-slate-100">
+              {article.author?.name || "Colaberry editorial"}
+            </div>
+          </div>
+          <div className="section-card rounded-xl p-4">
+            <div className="text-xs font-semibold uppercase tracking-[0.14em] text-slate-500">Reading time</div>
+            <div className="mt-1 text-sm font-semibold text-slate-900 dark:text-slate-100">
+              ~{readingMinutes} min
+            </div>
+          </div>
+          <div className="section-card rounded-xl p-4">
+            <div className="text-xs font-semibold uppercase tracking-[0.14em] text-slate-500">Published</div>
+            <div className="mt-1 text-sm font-semibold text-slate-900 dark:text-slate-100">
+              {publishedLabel || "Pending"}
+            </div>
+          </div>
+        </div>
+      </section>
 
       {article.coverImageUrl ? (
         <div className="surface-panel section-shell section-spacing overflow-hidden p-0">
@@ -250,7 +288,17 @@ export default function ArticleDetailPage({ article }: ArticleDetailProps) {
         </Link>
       </div>
 
-      <ShareActions title={article.title} />
+      <EnterpriseCtaBand
+        kicker="Keep reading"
+        title="Turn this article into practical next steps"
+        description="Continue with related resources, implementation patterns, and decision-ready assets for your team."
+        primaryHref="/resources"
+        primaryLabel="Explore resources"
+        secondaryHref="/updates"
+        secondaryLabel="Open updates feed"
+      />
+
+      <ShareActions />
     </Layout>
   );
 }
@@ -279,13 +327,21 @@ function ScrollProgress() {
   );
 }
 
-function ShareActions({ title: _title }: { title: string }) {
-  const [copied, setCopied] = useState(false);
-  const copy = () => {
-    navigator.clipboard.writeText(window.location.href).then(() => {
-      setCopied(true);
-      setTimeout(() => setCopied(false), 2000);
-    });
+function ShareActions() {
+  const [status, setStatus] = useState<"idle" | "copied" | "error">("idle");
+  const copy = async () => {
+    if (typeof navigator === "undefined" || !navigator.clipboard || typeof window === "undefined") {
+      setStatus("error");
+      return;
+    }
+    try {
+      await navigator.clipboard.writeText(window.location.href);
+      setStatus("copied");
+      setTimeout(() => setStatus("idle"), 2000);
+    } catch {
+      setStatus("error");
+      setTimeout(() => setStatus("idle"), 2000);
+    }
   };
   return (
     <div className="fixed bottom-6 right-6 z-30 flex gap-2">
@@ -295,8 +351,10 @@ function ShareActions({ title: _title }: { title: string }) {
         aria-label="Copy link"
         onClick={copy}
       >
-        {copied ? (
+        {status === "copied" ? (
           <svg viewBox="0 0 20 20" className="h-4 w-4 text-[var(--trust-green)]" fill="currentColor"><path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" /></svg>
+        ) : status === "error" ? (
+          <svg viewBox="0 0 24 24" className="h-4 w-4 text-amber-600" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10" /><path d="M12 8v5" /><path d="M12 16h.01" /></svg>
         ) : (
           <svg viewBox="0 0 24 24" className="h-4 w-4 text-[var(--text-secondary)]" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71" /><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71" /></svg>
         )}
@@ -364,4 +422,23 @@ function extractMediaList(value: unknown): ArticleMedia[] {
   }
   const one = extractMediaEntry(root);
   return one ? [one] : [];
+}
+
+function estimateWordCount(blocks: Array<Record<string, unknown>>) {
+  const text = blocks
+    .map((block) => {
+      const component = String(block.__component || "");
+      if (component === "shared.rich-text") {
+        return typeof block.body === "string" ? block.body.replace(/<[^>]*>/g, " ") : "";
+      }
+      if (component === "shared.quote") {
+        return `${typeof block.title === "string" ? block.title : ""} ${typeof block.body === "string" ? block.body : ""}`.trim();
+      }
+      return "";
+    })
+    .join(" ")
+    .replace(/\s+/g, " ")
+    .trim();
+  if (!text) return 0;
+  return text.split(" ").filter(Boolean).length;
 }

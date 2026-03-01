@@ -44,3 +44,28 @@
 - Confirmed `cairl-modern-client` is separate codebase (Vite SPA) — no alignment needed
 - CMS fork has diverged: 167 lines uncommitted schema changes, 1 transcript fix to merge
 - Output: `07-fork-alignment-report.md`, `07-final-handoff.md`
+
+## 2026-03-01
+
+### Premium Revamp Continuation
+- Extended premium enterprise revamp across long-tail resource and utility routes:
+  - `resources`, `updates`, `books`
+  - `resources/podcasts` listing + detail re-audit
+  - `resources/articles`, `resources/white-papers`, `resources/case-studies`
+  - podcast facet routes (`company`, `tag`)
+  - utility/legal routes (`search`, `privacy-policy`, `cookie-policy`, `unsubscribe`)
+- Added structured “decision tracks”, “action playbooks”, “signal summaries”, and stronger CTA continuity across routes.
+
+### QA + Verification
+- Repeated validation after each batch:
+  - `npm run lint` → pass
+  - `npm run build` → pass
+- Documented known Next.js 16/Turbopack intermittent prerender manifest failures; successful mitigation for build verification is `rm -rf .next && npm run build`.
+- Attempted runtime smoke tests via local `next start`/`next dev` on multiple ports:
+  - blocked by missing runtime manifests (`pages-manifest.json`, `.next/dev/server/*`) in this execution environment.
+- `npm run audit:data` remains blocked with `fetch failed` due unavailable upstream/CMS connectivity during run.
+
+### Documentation Updated
+- `09-sprint-execution-board.md` expanded with all completed revamp slices and current blockers.
+- `07-quality-metrics-report.md` updated with 2026-03-01 final QA addendum.
+- `STATUS.md` updated with final state and runtime blocker note.

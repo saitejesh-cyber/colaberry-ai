@@ -46,7 +46,7 @@ export default function PremiumMediaCard({
       <div className="media-premium-frame border-0 border-b border-slate-200/80 rounded-none">
         <div className={`relative w-full ${aspectClass}`}>
           {imgError ? (
-            <div className="absolute inset-0 flex items-center justify-center bg-slate-100 dark:bg-[#1F2937]">
+            <div className="absolute inset-0 flex items-center justify-center bg-slate-100 dark:bg-[var(--surface-elevated)]">
               <svg viewBox="0 0 24 24" className="h-10 w-10 text-slate-300 dark:text-slate-600" fill="none" aria-hidden="true">
                 <rect x="3" y="3" width="18" height="18" rx="3" stroke="currentColor" strokeWidth="1.5" />
                 <circle cx="8.5" cy="8.5" r="1.5" fill="currentColor" />

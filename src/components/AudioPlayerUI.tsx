@@ -4,6 +4,7 @@ type AudioPlayerUIProps = {
   src: string;
   title?: string;
   onPlay?: () => void;
+  audioRef?: React.RefObject<HTMLAudioElement | null>;
 };
 
 const SPEEDS = [0.75, 1, 1.25, 1.5, 2] as const;
@@ -19,8 +20,9 @@ export default function AudioPlayerUI({
   src,
   title,
   onPlay,
+  audioRef,
 }: AudioPlayerUIProps) {
-  const audioRef = useRef<HTMLAudioElement>(null);
+  const internalAudioRef = useRef<HTMLAudioElement>(null);
   const progressRef = useRef<HTMLDivElement>(null);
   const [playing, setPlaying] = useState(false);
   const [currentTime, setCurrentTime] = useState(0);
@@ -28,14 +30,18 @@ export default function AudioPlayerUI({
   const [speed, setSpeed] = useState(1);
   const [volume, setVolume] = useState(1);
   const hasFiredPlay = useRef(false);
+  const resolveAudio = useCallback(
+    () => audioRef?.current ?? internalAudioRef.current,
+    [audioRef]
+  );
 
   /* Sync state from audio element */
   useEffect(() => {
-    const audio = audioRef.current;
+    const audio = resolveAudio();
     if (!audio) return;
 
     const onTimeUpdate = () => setCurrentTime(audio.currentTime);
-    const onLoaded = () => setDuration(audio.duration);
+    const onLoaded = () => setDuration(Number.isFinite(audio.duration) ? audio.duration : 0);
     const onEnded = () => setPlaying(false);
 
     audio.addEventListener("timeupdate", onTimeUpdate);
@@ -49,10 +55,10 @@ export default function AudioPlayerUI({
       audio.removeEventListener("durationchange", onLoaded);
       audio.removeEventListener("ended", onEnded);
     };
-  }, []);
+  }, [resolveAudio]);
 
   const togglePlay = useCallback(() => {
-    const audio = audioRef.current;
+    const audio = resolveAudio();
     if (!audio) return;
     if (audio.paused) {
       audio.play();
@@ -65,48 +71,48 @@ export default function AudioPlayerUI({
       audio.pause();
       setPlaying(false);
     }
-  }, [onPlay]);
+  }, [onPlay, resolveAudio]);
 
   const skip = useCallback((delta: number) => {
-    const audio = audioRef.current;
+    const audio = resolveAudio();
     if (!audio) return;
     audio.currentTime = Math.max(0, Math.min(audio.currentTime + delta, audio.duration || 0));
-  }, []);
+  }, [resolveAudio]);
 
   const seek = useCallback(
     (e: React.MouseEvent<HTMLDivElement>) => {
-      const audio = audioRef.current;
+      const audio = resolveAudio();
       const bar = progressRef.current;
       if (!audio || !bar || !duration) return;
       const rect = bar.getBoundingClientRect();
       const ratio = Math.max(0, Math.min((e.clientX - rect.left) / rect.width, 1));
       audio.currentTime = ratio * duration;
     },
-    [duration]
+    [duration, resolveAudio]
   );
 
   const cycleSpeed = useCallback(() => {
-    const audio = audioRef.current;
+    const audio = resolveAudio();
     if (!audio) return;
     const idx = SPEEDS.indexOf(speed as (typeof SPEEDS)[number]);
     const next = SPEEDS[(idx + 1) % SPEEDS.length];
     audio.playbackRate = next;
     setSpeed(next);
-  }, [speed]);
+  }, [speed, resolveAudio]);
 
   const changeVolume = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
-    const audio = audioRef.current;
+    const audio = resolveAudio();
     if (!audio) return;
     const v = parseFloat(e.target.value);
     audio.volume = v;
     setVolume(v);
-  }, []);
+  }, [resolveAudio]);
 
   const progress = duration > 0 ? (currentTime / duration) * 100 : 0;
 
   return (
     <div className="surface-panel rounded-xl border border-[var(--stroke)] p-4">
-      <audio ref={audioRef} src={src} preload="metadata" />
+      <audio ref={audioRef ?? internalAudioRef} src={src} preload="metadata" />
 
       {title ? (
         <div className="mb-3 text-sm font-semibold text-[var(--text-primary)] line-clamp-1">
@@ -131,11 +137,11 @@ export default function AudioPlayerUI({
         }}
       >
         <div
-          className="absolute inset-y-0 left-0 rounded-full bg-gradient-to-r from-[#DC2626] to-[#34D399] transition-[width] duration-100"
+          className="absolute inset-y-0 left-0 rounded-full bg-gradient-to-r from-[var(--pivot-fill)] to-[var(--trusted-fill)] transition-[width] duration-100"
           style={{ width: `${progress}%` }}
         />
         <div
-          className="absolute top-1/2 h-4 w-4 -translate-x-1/2 -translate-y-1/2 rounded-full border-2 border-white bg-[#DC2626] opacity-0 shadow transition-opacity group-hover:opacity-100"
+          className="absolute top-1/2 h-4 w-4 -translate-x-1/2 -translate-y-1/2 rounded-full border-2 border-white bg-[var(--pivot-fill)] opacity-0 shadow transition-opacity group-hover:opacity-100"
           style={{ left: `${progress}%` }}
         />
       </div>
@@ -153,7 +159,7 @@ export default function AudioPlayerUI({
           <button
             type="button"
             onClick={() => skip(-15)}
-            className="flex h-8 w-8 items-center justify-center rounded-full text-[var(--text-secondary)] transition-colors hover:bg-[var(--surface-soft)] hover:text-[var(--text-primary)]"
+            className="flex h-11 w-11 items-center justify-center rounded-full text-[var(--text-secondary)] transition-colors hover:bg-[var(--surface-soft)] hover:text-[var(--text-primary)]"
             aria-label="Skip back 15 seconds"
           >
             <svg viewBox="0 0 24 24" className="h-4 w-4" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
@@ -185,7 +191,7 @@ export default function AudioPlayerUI({
           <button
             type="button"
             onClick={() => skip(15)}
-            className="flex h-8 w-8 items-center justify-center rounded-full text-[var(--text-secondary)] transition-colors hover:bg-[var(--surface-soft)] hover:text-[var(--text-primary)]"
+            className="flex h-11 w-11 items-center justify-center rounded-full text-[var(--text-secondary)] transition-colors hover:bg-[var(--surface-soft)] hover:text-[var(--text-primary)]"
             aria-label="Skip forward 15 seconds"
           >
             <svg viewBox="0 0 24 24" className="h-4 w-4" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">

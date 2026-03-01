@@ -1,6 +1,7 @@
 import type { NextConfig } from "next";
 
 const cmsUrl = process.env.NEXT_PUBLIC_CMS_URL;
+const distDir = process.env.NEXT_DIST_DIR?.trim();
 const cmsRemotePattern = (() => {
   if (!cmsUrl) return null;
   try {
@@ -17,6 +18,7 @@ const cmsRemotePattern = (() => {
 })();
 
 const nextConfig: NextConfig = {
+  distDir: distDir && distDir.length > 0 ? distDir : ".next",
   images: {
     qualities: [75, 90],
     remotePatterns: cmsRemotePattern ? [cmsRemotePattern] : [],

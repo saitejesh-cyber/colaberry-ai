@@ -129,8 +129,8 @@ export default function TranscriptTimeline({ segments, audioRef }: TranscriptTim
             aria-current={isActive ? "true" : undefined}
             className={`focus-ring group flex w-full items-start gap-3 rounded-lg border px-4 py-3 text-left transition ${
               isActive
-                ? "border-brand-purple-600/50 bg-brand-purple-600/5 dark:border-[#F87171]/50 dark:bg-[#F87171]/10"
-                : "border-slate-200/80 bg-white/80 hover:border-brand-purple-600/30 dark:border-slate-700 dark:bg-[#1F2937]/80 dark:hover:border-[#F87171]/30"
+                ? "border-brand-purple-600/50 bg-brand-purple-600/5 dark:border-[var(--pivot-fill)]/50 dark:bg-[var(--pivot-fill)]/10"
+                : "border-slate-200/80 bg-white/80 hover:border-brand-purple-600/30 dark:border-slate-700 dark:bg-[var(--surface-elevated)]/80 dark:hover:border-[var(--pivot-fill)]/30"
             }`}
           >
             <span className="mt-0.5 shrink-0 text-xs font-semibold uppercase tracking-[0.2em] text-slate-500">

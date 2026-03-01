@@ -1,5 +1,5 @@
 import CatalogSearchBox from "../../components/CatalogSearchBox";
-import MCPCard from "../../components/MCPCard";
+import CatalogCard from "../../components/CatalogCard";
 import Layout from "../../components/Layout";
 import SectionHeader from "../../components/SectionHeader";
 import EnterprisePageHero from "../../components/EnterprisePageHero";
@@ -95,9 +95,9 @@ export default function MCP({ mcps, allowPrivate, fetchError }: MCPPageProps) {
     return acc;
   }, {});
   const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://colaberry.ai";
-  const metaTitle = "MCP Servers Catalog | Colaberry AI";
+  const metaTitle = "MCP Servers Catalog | Colaberry AI - Connect Agents to Your Stack";
   const metaDescription =
-    "Browse MCP servers with connector patterns, auth readiness, and industry alignment-structured for SEO and LLM discovery.";
+    "Connect AI agents to your business apps and data. Browse MCP servers by industry, auth readiness, and integration type.";
   const seoMeta: SeoMeta = {
     title: metaTitle,
     description: metaDescription,
@@ -211,29 +211,29 @@ export default function MCP({ mcps, allowPrivate, fetchError }: MCPPageProps) {
       )}
 
       <EnterprisePageHero
-        kicker="MCP library"
+        kicker="MCP integrations"
         title="MCP Servers"
-        description="A curated library for connecting agents to business apps, data, and developer tools — with public and private options for secure deployment."
+        description="Connect your agents to the tools your team already uses. Pre-built, auth-ready integrations for business apps, data sources, and developer platforms."
         image={heroImage("hero-mcp-cinematic.webp")}
         alt="MCP Servers catalog"
         imageKicker="Integration"
-        imageTitle="Connector-ready surface"
-        imageDescription="Standardize tool access with MCP server patterns and endpoints."
+        imageTitle="Plug in, not build from scratch"
+        imageDescription="Auth-ready connectors that standardize how agents access tools and data."
         chips={mcpSignals}
-        primaryAction={{ label: "Browse servers", href: "#catalog" }}
-        secondaryAction={{ label: "Book a demo", href: "/request-demo", variant: "secondary" }}
+        primaryAction={{ label: "Start browsing servers", href: "#catalog" }}
+        secondaryAction={{ label: "Schedule a demo", href: "/request-demo", variant: "secondary" }}
         metrics={[
-          { label: "Total servers", value: `${mcps.length}`, note: "Curated integration library." },
-          { label: "Security", value: "Auth-ready", note: "TLS, rate-limited, scoped access." },
-          { label: "Coverage", value: "Cross-industry", note: "Business apps to dev tools." },
+          { label: "Total servers", value: `${mcps.length}`, note: "Pre-built integration library." },
+          { label: "Security", value: "Auth-ready", note: "TLS, rate limits, and scoped access." },
+          { label: "Coverage", value: "Cross-industry", note: "Business apps to developer tools." },
         ]}
       />
 
       <section className="surface-panel mt-6 p-6">
         <SectionHeader
-          kicker="Catalog snapshot"
-          title="Coverage and delivery readiness"
-          description="A quick view of integration breadth and industry alignment."
+          kicker="At a glance"
+          title="Integration coverage"
+          description="See how many connectors are available across industries and deployment stages."
           size="md"
         />
         <div className="mt-5 grid gap-4 sm:grid-cols-3 sm:items-center sm:gap-6">
@@ -253,22 +253,22 @@ export default function MCP({ mcps, allowPrivate, fetchError }: MCPPageProps) {
 
       <section className="surface-panel mt-6 p-6">
         <SectionHeader
-          kicker="Discovery signals"
-          title="Latest and trending MCP servers"
-          description="Monitor newest entries and high-interest connectors before diving into the full catalog."
+          kicker="Highlights"
+          title="Recently added and most popular"
+          description="Spot new connectors and high-demand integrations before exploring the full catalog."
           size="md"
         />
         <div className="mt-5 grid gap-4 lg:grid-cols-2">
           <SignalRail
-            title="Latest additions"
-            description="Most recently updated server profiles."
+            title="Recently updated"
+            description="Newest server profiles added or refreshed."
             items={latestMCPs}
             emptyText="No recently updated MCP entries available."
             detailType="latest"
           />
           <SignalRail
-            title="Trending now"
-            description="Servers with stronger usage, quality, and freshness signals."
+            title="Most popular"
+            description="Servers with the highest usage, ratings, and recent activity."
             items={trendingMCPs}
             emptyText="Trending signals will appear after more MCP activity is recorded."
             detailType="trending"
@@ -278,9 +278,9 @@ export default function MCP({ mcps, allowPrivate, fetchError }: MCPPageProps) {
 
       <section className="surface-panel mt-8 p-6">
         <SectionHeader
-          kicker="Filters"
-          title="Search and filter"
-          description="Find MCP servers by industry, status, tags, and visibility."
+          kicker="Refine"
+          title="Find the right integration"
+          description="Narrow by industry, deployment status, source, or tag."
           size="md"
         />
         <div className="mt-4 grid gap-3 lg:grid-cols-12">
@@ -468,7 +468,7 @@ export default function MCP({ mcps, allowPrivate, fetchError }: MCPPageProps) {
 
       <div ref={gridRef} className="stagger-grid mt-6 grid gap-5 sm:mt-8 sm:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-4">
         {visibleMCPs.map((m) => (
-          <MCPCard key={m.slug || String(m.id)} mcp={m} />
+          <CatalogCard key={m.slug || String(m.id)} item={m} variant="mcp" />
         ))}
       </div>
 
@@ -728,7 +728,7 @@ function BackToTop() {
     <button
       type="button"
       onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
-      className="back-to-top visible"
+      className="back-to-top btn-icon visible"
       aria-label="Back to top"
     >
       <svg viewBox="0 0 24 24" className="h-5 w-5" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">

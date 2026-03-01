@@ -6,30 +6,30 @@
       <stop offset="1" stop-color="#1F2937"/>
     </linearGradient>
     <radialGradient id="orb-coral" cx="28%" cy="22%" r="50%">
-      <stop offset="0" stop-color="#DC2626" stop-opacity="0.28"/>
-      <stop offset="1" stop-color="#DC2626" stop-opacity="0"/>
+      <stop offset="0" stop-color="#4F46E5" stop-opacity="0.28"/>
+      <stop offset="1" stop-color="#4F46E5" stop-opacity="0"/>
     </radialGradient>
     <radialGradient id="orb-emerald" cx="75%" cy="72%" r="48%">
-      <stop offset="0" stop-color="#059669" stop-opacity="0.22"/>
-      <stop offset="1" stop-color="#059669" stop-opacity="0"/>
+      <stop offset="0" stop-color="#0D9488" stop-opacity="0.22"/>
+      <stop offset="1" stop-color="#0D9488" stop-opacity="0"/>
     </radialGradient>
     <radialGradient id="orb-center" cx="50%" cy="50%" r="36%">
-      <stop offset="0" stop-color="#F87171" stop-opacity="0.10"/>
-      <stop offset="1" stop-color="#F87171" stop-opacity="0"/>
+      <stop offset="0" stop-color="#818CF8" stop-opacity="0.10"/>
+      <stop offset="1" stop-color="#818CF8" stop-opacity="0"/>
     </radialGradient>
     <linearGradient id="mic-body" x1="0" y1="0" x2="0" y2="1">
       <stop offset="0" stop-color="#F9FAFB"/>
       <stop offset="1" stop-color="#D1D5DB"/>
     </linearGradient>
     <linearGradient id="mic-glow" x1="0" y1="0" x2="0" y2="1">
-      <stop offset="0" stop-color="#F87171" stop-opacity="0.5"/>
-      <stop offset="0.5" stop-color="#DC2626" stop-opacity="0.3"/>
-      <stop offset="1" stop-color="#059669" stop-opacity="0.4"/>
+      <stop offset="0" stop-color="#818CF8" stop-opacity="0.5"/>
+      <stop offset="0.5" stop-color="#4F46E5" stop-opacity="0.3"/>
+      <stop offset="1" stop-color="#0D9488" stop-opacity="0.4"/>
     </linearGradient>
     <linearGradient id="wave-grad" x1="0" y1="0" x2="1" y2="0">
-      <stop offset="0" stop-color="#F87171" stop-opacity="0.7"/>
-      <stop offset="0.5" stop-color="#DC2626" stop-opacity="0.85"/>
-      <stop offset="1" stop-color="#10B981" stop-opacity="0.7"/>
+      <stop offset="0" stop-color="#818CF8" stop-opacity="0.7"/>
+      <stop offset="0.5" stop-color="#4F46E5" stop-opacity="0.85"/>
+      <stop offset="1" stop-color="#2DD4BF" stop-opacity="0.7"/>
     </linearGradient>
     <pattern id="grid" width="70" height="70" patternUnits="userSpaceOnUse">
       <path d="M70 0H0V70" stroke="#94A3B8" stroke-opacity="0.06" stroke-width="1" fill="none"/>
@@ -82,7 +82,7 @@
 
   <!-- Glow ring behind mic -->
   <circle cx="700" cy="680" r="180" fill="none" stroke="url(#mic-glow)" stroke-width="3" opacity="0.5" filter="url(#blur-sm)"/>
-  <circle cx="700" cy="680" r="180" fill="none" stroke="#F87171" stroke-width="1.5" stroke-opacity="0.2"/>
+  <circle cx="700" cy="680" r="180" fill="none" stroke="#818CF8" stroke-width="1.5" stroke-opacity="0.2"/>
 
   <!-- Microphone body -->
   <g transform="translate(700,680)">
@@ -106,22 +106,22 @@
   </g>
 
   <!-- "AI Podcast" heading -->
-  <text x="700" y="260" text-anchor="middle" font-family="'PT Serif', Georgia, serif" font-size="120" font-weight="700" fill="#F9FAFB" letter-spacing="-1">AI Podcast</text>
+  <text x="700" y="260" text-anchor="middle" font-family="'Inter', system-ui, sans-serif" font-size="120" font-weight="700" fill="#F9FAFB" letter-spacing="-1">AI Podcast</text>
 
   <!-- "#DailyNews" subheading -->
-  <text x="700" y="360" text-anchor="middle" font-family="'Source Sans 3', 'Source Sans Pro', sans-serif" font-size="64" font-weight="600" fill="#D1D5DB" opacity="0.8">#DailyNews</text>
+  <text x="700" y="360" text-anchor="middle" font-family="'Inter', system-ui, sans-serif" font-size="64" font-weight="600" fill="#D1D5DB" opacity="0.8">#DailyNews</text>
 
   <!-- Bottom branding -->
-  <text x="700" y="1200" text-anchor="middle" font-family="'Source Sans 3', 'Source Sans Pro', sans-serif" font-size="52" font-weight="700" fill="#F9FAFB" letter-spacing="1">colaberry<tspan fill="#DC2626">Ai</tspan></text>
-  <text x="700" y="1260" text-anchor="middle" font-family="'Source Sans 3', 'Source Sans Pro', sans-serif" font-size="32" font-weight="600" fill="#9CA3AF" letter-spacing="2">Research Labs</text>
+  <text x="700" y="1200" text-anchor="middle" font-family="'Inter', system-ui, sans-serif" font-size="52" font-weight="700" fill="#F9FAFB" letter-spacing="1">colaberry<tspan fill="#4F46E5">Ai</tspan></text>
+  <text x="700" y="1260" text-anchor="middle" font-family="'Inter', system-ui, sans-serif" font-size="32" font-weight="600" fill="#9CA3AF" letter-spacing="2">Research Labs</text>
 
   <!-- Decorative corner accents -->
-  <line x1="60" y1="60" x2="60" y2="140" stroke="#DC2626" stroke-width="2" stroke-opacity="0.3"/>
-  <line x1="60" y1="60" x2="140" y2="60" stroke="#DC2626" stroke-width="2" stroke-opacity="0.3"/>
-  <line x1="1340" y1="60" x2="1340" y2="140" stroke="#059669" stroke-width="2" stroke-opacity="0.3"/>
-  <line x1="1340" y1="60" x2="1260" y2="60" stroke="#059669" stroke-width="2" stroke-opacity="0.3"/>
-  <line x1="60" y1="1340" x2="60" y2="1260" stroke="#059669" stroke-width="2" stroke-opacity="0.3"/>
-  <line x1="60" y1="1340" x2="140" y2="1340" stroke="#059669" stroke-width="2" stroke-opacity="0.3"/>
-  <line x1="1340" y1="1340" x2="1340" y2="1260" stroke="#DC2626" stroke-width="2" stroke-opacity="0.3"/>
-  <line x1="1340" y1="1340" x2="1260" y2="1340" stroke="#DC2626" stroke-width="2" stroke-opacity="0.3"/>
+  <line x1="60" y1="60" x2="60" y2="140" stroke="#4F46E5" stroke-width="2" stroke-opacity="0.3"/>
+  <line x1="60" y1="60" x2="140" y2="60" stroke="#4F46E5" stroke-width="2" stroke-opacity="0.3"/>
+  <line x1="1340" y1="60" x2="1340" y2="140" stroke="#0D9488" stroke-width="2" stroke-opacity="0.3"/>
+  <line x1="1340" y1="60" x2="1260" y2="60" stroke="#0D9488" stroke-width="2" stroke-opacity="0.3"/>
+  <line x1="60" y1="1340" x2="60" y2="1260" stroke="#0D9488" stroke-width="2" stroke-opacity="0.3"/>
+  <line x1="60" y1="1340" x2="140" y2="1340" stroke="#0D9488" stroke-width="2" stroke-opacity="0.3"/>
+  <line x1="1340" y1="1340" x2="1340" y2="1260" stroke="#4F46E5" stroke-width="2" stroke-opacity="0.3"/>
+  <line x1="1340" y1="1340" x2="1260" y2="1340" stroke="#4F46E5" stroke-width="2" stroke-opacity="0.3"/>
 </svg>

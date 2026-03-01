@@ -134,7 +134,7 @@ export default function PodcastPlayer({
   }
 
   if (audioUrl) {
-    return <AudioPlayerUI src={audioUrl} onPlay={onPlay} />;
+    return <AudioPlayerUI src={audioUrl} onPlay={onPlay} audioRef={audioRef} />;
   }
 
   return null;

@@ -87,6 +87,20 @@ export default function UseCasesPage({ useCases, allowPrivate, fetchError }: Use
       }, {}),
     [useCases]
   );
+  const verifiedCount = useMemo(
+    () => scopedUseCases.filter((item) => item.verified).length,
+    [scopedUseCases]
+  );
+  const topIndustrySignals = useMemo(() => {
+    const counts = new Map<string, number>();
+    for (const item of scopedUseCases) {
+      const key = (item.industry || "General").trim();
+      counts.set(key, (counts.get(key) ?? 0) + 1);
+    }
+    return Array.from(counts.entries())
+      .sort((left, right) => right[1] - left[1] || left[0].localeCompare(right[0]))
+      .slice(0, 8);
+  }, [scopedUseCases]);
 
   const filteredUseCases = useMemo(() => {
     const query = search.trim().toLowerCase();
@@ -170,7 +184,7 @@ export default function UseCasesPage({ useCases, allowPrivate, fetchError }: Use
   const canonicalUrl = `${siteUrl}/use-cases`;
   const seoMeta: SeoMeta = {
     title: "Use Cases | Colaberry AI",
-    description: "Discover enterprise AI use cases with structured context across industries, outcomes, and implementation patterns.",
+    description: "See how enterprises deploy AI to solve real problems. Browse use cases by industry, outcome, and agent.",
     canonical: buildCanonical("/use-cases"),
   };
 
@@ -188,7 +202,7 @@ export default function UseCasesPage({ useCases, allowPrivate, fetchError }: Use
               "@context": "https://schema.org",
               "@type": "CollectionPage",
               "name": "Colaberry AI Use Cases",
-              "description": "Discover enterprise AI use cases with structured context across industries, outcomes, and implementation patterns.",
+              "description": "See how enterprises deploy AI to solve real problems. Browse use cases by industry, outcome, and agent.",
               "url": canonicalUrl,
             }),
           }}
@@ -206,32 +220,32 @@ export default function UseCasesPage({ useCases, allowPrivate, fetchError }: Use
       ) : null}
 
       <EnterprisePageHero
-        kicker="Solutions layer"
-        title="Use Cases"
-        description="Structured deployment patterns connecting agents, MCP servers, outcomes, and operational context."
+        kicker="Proven deployments"
+        title="Real problems, real outcomes"
+        description="Each use case shows the problem, the AI approach, and the measurable result -- so you can evaluate what fits."
         image={heroImage("hero-solutions-cinematic.webp")}
         alt="Enterprise AI use case catalog"
         imageKicker="Use cases"
-        imageTitle="Execution playbooks"
-        imageDescription="Problem framing, implementation patterns, outcomes, and linked assets."
-        chips={["Outcome-led", "Industry-aligned", "Agent + MCP linked", "LLM-readable"]}
+        imageTitle="From problem to production"
+        imageDescription="Each use case links to the agents, integrations, and outcomes that power it."
+        chips={["Outcome-first", "Industry-aligned", "Agent-linked", "Production-ready"]}
         primaryAction={{ label: "Browse use cases", href: "#catalog" }}
         secondaryAction={{ label: "Book a demo", href: "/request-demo", variant: "secondary" }}
         metrics={[
-          { label: "Total use cases", value: `${useCases.length}`, note: "Structured deployment profiles." },
-          { label: "Coverage", value: "Cross-industry", note: "Agriculture to fintech." },
-          { label: "Integration", value: "Agent-linked", note: "Connected to agents and MCP servers." },
+          { label: "Use cases", value: `${useCases.length}`, note: "Documented with outcomes and context." },
+          { label: "Coverage", value: "Cross-industry", note: "From agriculture to fintech." },
+          { label: "Linked assets", value: "Agents + MCP", note: "Every use case connects to real tools." },
         ]}
       />
 
       <section className="surface-panel mt-6 p-6 sm:mt-8">
         <SectionHeader
-          kicker="Catalog snapshot"
-          title="Coverage and deployment readiness"
-          description="A quick view of breadth across industries, visibility, and connected assets."
+          kicker="At a glance"
+          title="Catalog coverage"
+          description="How many use cases are available, which industries they cover, and their current status."
           size="md"
         />
-        <div className="mt-5 grid gap-4 sm:grid-cols-3 sm:items-center sm:gap-6">
+        <div className="mt-5 grid gap-4 sm:grid-cols-2 lg:grid-cols-4 sm:items-center sm:gap-6">
           <Stat title="Use cases" value={String(useCases.length)} note="Structured profiles" />
           <Stat
             title="Industries"
@@ -243,27 +257,49 @@ export default function UseCasesPage({ useCases, allowPrivate, fetchError }: Use
             value={`${visibilityCounts.public ?? 0} public`}
             note={allowPrivate ? `${visibilityCounts.private ?? 0} private` : "Private hidden"}
           />
+          <Stat
+            title="Verified"
+            value={String(verifiedCount)}
+            note="Profiles with stronger readiness signals."
+          />
         </div>
+        {topIndustrySignals.length > 0 ? (
+          <div className="mt-5 flex flex-wrap gap-2">
+            {topIndustrySignals.map(([industry, count]) => (
+              <button
+                key={`${industry}-${count}`}
+                type="button"
+                onClick={() => {
+                  setIndustryFilter(industry);
+                  setVisibleCount(PAGE_SIZE);
+                }}
+                className="chip chip-neutral rounded-md px-3 py-1 text-xs font-semibold"
+              >
+                {industry} ({count})
+              </button>
+            ))}
+          </div>
+        ) : null}
       </section>
 
       <section className="surface-panel mt-6 p-6">
         <SectionHeader
-          kicker="Discovery signals"
-          title="Latest and trending use cases"
-          description="Track newest playbooks and high-interest deployment patterns."
+          kicker="What's hot"
+          title="Latest and trending"
+          description="Recently updated use cases and the ones getting the most attention right now."
           size="md"
         />
         <div className="mt-5 grid gap-4 lg:grid-cols-2">
           <SignalRail
-            title="Latest updates"
-            description="Most recently updated use case profiles."
+            title="Recently updated"
+            description="Use cases with the freshest content and outcomes."
             items={latestUseCases}
             emptyText="No recently updated use cases available."
             detailType="latest"
           />
           <SignalRail
             title="Trending now"
-            description="Use cases with stronger linkage, quality, and freshness signals."
+            description="High-interest use cases based on linked agents, completeness, and recency."
             items={trendingUseCases}
             emptyText="Trending signals will appear after more use case activity is recorded."
             detailType="trending"
@@ -271,7 +307,7 @@ export default function UseCasesPage({ useCases, allowPrivate, fetchError }: Use
         </div>
       </section>
 
-      <section className="surface-panel mt-6 p-6">
+      <section id="catalog" className="surface-panel mt-6 p-6">
         <div className="grid gap-3 md:grid-cols-[1.4fr_1fr_1fr_auto]">
           <input
             type="search"
@@ -280,7 +316,7 @@ export default function UseCasesPage({ useCases, allowPrivate, fetchError }: Use
               setSearch(event.target.value);
               setVisibleCount(PAGE_SIZE);
             }}
-            placeholder="Search title, industry, tags, or companies..."
+            placeholder="Search by problem, industry, or outcome..."
             className="input-premium w-full"
             aria-label="Search use cases"
           />
@@ -371,8 +407,8 @@ export default function UseCasesPage({ useCases, allowPrivate, fetchError }: Use
         <div className="mt-6">
           <StatePanel
             variant="empty"
-            title="No use cases found"
-            description="Try broader search terms or clear filters to see more results."
+            title="No matching use cases"
+            description="Try a different keyword or clear your filters to browse the full catalog."
           />
         </div>
       ) : (
@@ -443,7 +479,45 @@ export default function UseCasesPage({ useCases, allowPrivate, fetchError }: Use
         <div ref={sentinelRef} className="h-1 w-full" aria-hidden="true" />
       </div>
 
-      <CatalogSearchBox placeholder="Search use cases or ask a question..." />
+      <section className="surface-panel mt-6 p-6">
+        <SectionHeader
+          kicker="Delivery paths"
+          title="Choose your next execution lane"
+          description="Move from exploration to production with a path aligned to your team maturity and timeline."
+          size="md"
+        />
+        <div className="mt-5 grid gap-4 lg:grid-cols-3">
+          <article className="card-elevated p-4">
+            <div className="text-sm font-semibold text-slate-900 dark:text-slate-100">Evaluate</div>
+            <p className="mt-1 text-sm text-slate-600 dark:text-slate-300">
+              Review high-signal use cases and compare business outcomes across industries.
+            </p>
+            <Link href="/industries" className="mt-3 inline-flex text-xs font-semibold text-slate-700 hover:text-slate-900 dark:text-slate-200">
+              Explore industries →
+            </Link>
+          </article>
+          <article className="card-elevated p-4">
+            <div className="text-sm font-semibold text-slate-900 dark:text-slate-100">Design</div>
+            <p className="mt-1 text-sm text-slate-600 dark:text-slate-300">
+              Map use cases to agents, MCP servers, and governance controls before implementation.
+            </p>
+            <Link href="/solutions" className="mt-3 inline-flex text-xs font-semibold text-slate-700 hover:text-slate-900 dark:text-slate-200">
+              View solutions →
+            </Link>
+          </article>
+          <article className="card-elevated p-4">
+            <div className="text-sm font-semibold text-slate-900 dark:text-slate-100">Launch</div>
+            <p className="mt-1 text-sm text-slate-600 dark:text-slate-300">
+              Run an executive demo to align stakeholders and finalize your phased rollout plan.
+            </p>
+            <Link href="/request-demo" className="mt-3 inline-flex text-xs font-semibold text-slate-700 hover:text-slate-900 dark:text-slate-200">
+              Book a demo →
+            </Link>
+          </article>
+        </div>
+      </section>
+
+      <CatalogSearchBox placeholder="Describe a problem or search by industry..." />
       <BackToTop />
     </Layout>
   );

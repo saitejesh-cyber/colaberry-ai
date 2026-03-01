@@ -168,8 +168,8 @@ export default function SkillsPage({ skills, allowPrivate, fetchError }: SkillsP
   const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://colaberry.ai";
   const canonicalUrl = `${siteUrl}/aixcelerator/skills`;
   const seoMeta: SeoMeta = {
-    title: "AI Skills Catalog | Colaberry AI",
-    description: "Discover reusable AI skills across official toolkits, developer workflows, domain operations, and agent orchestration patterns.",
+    title: "AI Skills Catalog | Colaberry AI - Reusable Agent Capabilities",
+    description: "Add proven capabilities to your agents in minutes. Browse reusable skills for developer workflows, domain operations, and orchestration.",
     canonical: buildCanonical("/aixcelerator/skills"),
   };
 
@@ -187,7 +187,7 @@ export default function SkillsPage({ skills, allowPrivate, fetchError }: SkillsP
               "@context": "https://schema.org",
               "@type": "CollectionPage",
               "name": "Colaberry AI Skills Catalog",
-              "description": "Discover reusable AI skills across official toolkits, developer workflows, domain operations, and agent orchestration patterns.",
+              "description": "Add proven capabilities to your agents in minutes. Browse reusable skills for developer workflows, domain operations, and orchestration.",
               "url": canonicalUrl,
             }),
           }}
@@ -205,29 +205,29 @@ export default function SkillsPage({ skills, allowPrivate, fetchError }: SkillsP
       ) : null}
 
       <EnterprisePageHero
-        kicker="Skills layer"
-        title="AI Skills Catalog"
-        description="Reusable capability units for agents and workflows — official pre-built, developer, domain, and orchestration skills."
+        kicker="Skills catalog"
+        title="AI Skills"
+        description="Stop rebuilding common capabilities. Plug reusable, tested skills into your agents and workflows -- from pre-built toolkits to domain-specific operations."
         image={heroImage("hero-platform-cinematic.webp")}
         alt="AI skills catalog"
         imageKicker="Catalog"
-        imageTitle="Composable capability units"
-        imageDescription="Skills become building blocks linked to agents, MCP servers, and workflows."
-        chips={["Pre-built skills", "Developer skills", "Domain skills", "Orchestration skills"]}
-        primaryAction={{ label: "Browse skills", href: "#catalog" }}
-        secondaryAction={{ label: "Book a demo", href: "/request-demo", variant: "secondary" }}
+        imageTitle="Build faster with proven skills"
+        imageDescription="Each skill links directly to agents, MCP servers, and workflows."
+        chips={["Pre-built", "Developer", "Domain", "Orchestration"]}
+        primaryAction={{ label: "Start browsing skills", href: "#catalog" }}
+        secondaryAction={{ label: "Schedule a demo", href: "/request-demo", variant: "secondary" }}
         metrics={[
-          { label: "Total skills", value: `${skills.length}`, note: "Reusable capability profiles." },
-          { label: "Categories", value: "4 layers", note: "Pre-built, dev, domain, orchestration." },
-          { label: "Integration", value: "Agent-linked", note: "Compose into agent workflows." },
+          { label: "Total skills", value: `${skills.length}`, note: "Ready-to-use capability profiles." },
+          { label: "Categories", value: "4 types", note: "Pre-built, dev, domain, orchestration." },
+          { label: "Integration", value: "Agent-linked", note: "Compose directly into workflows." },
         ]}
       />
 
       <section className="surface-panel mt-6 p-6 sm:mt-8">
         <SectionHeader
-          kicker="Catalog snapshot"
-          title="Coverage and operational readiness"
-          description="Quick signal view across visibility, categories, and linked assets."
+          kicker="At a glance"
+          title="Skills coverage"
+          description="See the breadth of available skills across categories, providers, and visibility."
           size="md"
         />
         <div className="mt-5 grid gap-4 sm:grid-cols-3 sm:items-center sm:gap-6">
@@ -243,22 +243,22 @@ export default function SkillsPage({ skills, allowPrivate, fetchError }: SkillsP
 
       <section className="surface-panel mt-6 p-6">
         <SectionHeader
-          kicker="Discovery signals"
-          title="Latest and trending skills"
-          description="Track new capabilities and high-interest reusable units."
+          kicker="Highlights"
+          title="Recently added and most popular"
+          description="Spot new capabilities and high-demand skills before exploring the full catalog."
           size="md"
         />
         <div className="mt-5 grid gap-4 lg:grid-cols-2">
           <SkillSignalRail
-            title="Latest skills"
-            description="Most recently updated skill profiles."
+            title="Recently updated"
+            description="Newest skill profiles added or refreshed."
             items={latestSkills}
             emptyText="No recent skill updates available."
             detailType="latest"
           />
           <SkillSignalRail
-            title="Trending skills"
-            description="Skills with stronger quality, usage, and freshness signals."
+            title="Most popular"
+            description="Skills with the highest quality, usage, and recent activity."
             items={trendingSkills}
             emptyText="Trending signals will appear as skill activity grows."
             detailType="trending"
@@ -421,7 +421,7 @@ function SkillCard({ skill }: { skill: Skill }) {
           {skill.lastUpdated ? `Updated ${formatDate(skill.lastUpdated)}` : "Update date pending"}
         </div>
         <Link href={`/aixcelerator/skills/${skill.slug || skill.id}`} className="btn btn-secondary btn-sm">
-          View detail
+          View skill details
         </Link>
       </div>
     </article>
@@ -612,7 +612,7 @@ function BackToTop() {
     <button
       type="button"
       onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
-      className="back-to-top visible"
+      className="back-to-top btn-icon visible"
       aria-label="Back to top"
     >
       <svg viewBox="0 0 24 24" className="h-5 w-5" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">

@@ -3,6 +3,7 @@ import Layout from "../../components/Layout";
 import Link from "next/link";
 import SectionHeader from "../../components/SectionHeader";
 import EnterprisePageHero from "../../components/EnterprisePageHero";
+import EnterpriseCtaBand from "../../components/EnterpriseCtaBand";
 import { heroImage } from "../../lib/media";
 import { seoTags, canonicalUrl as buildCanonical, type SeoMeta } from "../../lib/seo";
 import type { GetStaticProps } from "next";
@@ -25,11 +26,33 @@ export const getStaticProps: GetStaticProps<BooksProps> = async () => {
 export default function Books({ books }: BooksProps) {
   const seoMeta: SeoMeta = {
     title: "Books & Artifacts | Colaberry AI",
-    description: "Books and companion artifacts including templates, worksheets, code samples, and related learning assets.",
+    description: "Books, templates, and reusable assets to help your team build trustworthy AI systems and accelerate enterprise adoption.",
     canonical: buildCanonical("/resources/books"),
   };
 
   const hasCmsBooks = books.length > 0;
+  const downloadableCount = books.filter((book) => Boolean(book.downloadUrl)).length;
+  const upcomingCount = books.filter((book) => (book.status || "").toLowerCase() === "planned").length;
+  const trackCards = [
+    {
+      title: "Executive learning track",
+      description: "Outcome-driven material for sponsors validating value, risk, and operating model decisions.",
+      href: "/resources/case-studies",
+      cta: "Open case studies",
+    },
+    {
+      title: "Architecture track",
+      description: "Books and artifacts for governance, reference architecture, and controlled rollout design.",
+      href: "/resources/white-papers",
+      cta: "Read white papers",
+    },
+    {
+      title: "Delivery track",
+      description: "Implementation-ready assets for squads shipping agents, integrations, and measurable outcomes.",
+      href: "/resources/podcasts",
+      cta: "Browse podcasts",
+    },
+  ];
 
   return (
     <Layout>
@@ -42,7 +65,7 @@ export default function Books({ books }: BooksProps) {
           "@context": "https://schema.org",
           "@type": "CollectionPage",
           "name": "Books & Artifacts",
-          "description": "Books and companion artifacts including templates, worksheets, code samples, and related learning assets.",
+          "description": "Books, templates, and reusable assets to build trustworthy AI systems and accelerate enterprise adoption.",
           "url": buildCanonical("/resources/books"),
           "publisher": { "@type": "Organization", "name": "Colaberry AI" },
         }) }} />
@@ -50,14 +73,54 @@ export default function Books({ books }: BooksProps) {
       <EnterprisePageHero
         kicker="Resources"
         title="Books & artifacts"
-        description="Books and companion artifacts — templates, worksheets, code samples, and related learning assets."
+        description="Deep-dive books and ready-to-use templates that help teams build, govern, and scale AI with confidence."
         image={heroImage("hero-books-cinematic.webp")}
-        alt="Curated books and artifact knowledge surface"
+        alt="Books and delivery assets for enterprise AI teams"
         imageKicker="Artifacts"
-        imageTitle="Learning assets"
-        imageDescription="Curated books and reusable artifacts."
+        imageTitle="Accelerate your team"
+        imageDescription="Books and reusable assets designed for practitioners and leaders."
         primaryAction={{ label: "Browse resources", href: "/resources" }}
+        secondaryAction={{ label: "Explore case studies", href: "/resources/case-studies", variant: "secondary" }}
+        metrics={[
+          {
+            label: "Published titles",
+            value: hasCmsBooks ? String(books.length) : "Featured",
+            note: "Books and artifacts mapped to enterprise AI delivery.",
+          },
+          {
+            label: "Downloads",
+            value: String(downloadableCount),
+            note: "Assets immediately available to your team.",
+          },
+          {
+            label: "Roadmap items",
+            value: String(upcomingCount),
+            note: "Planned additions queued in the content backlog.",
+          },
+        ]}
       />
+
+      <section className="surface-panel mt-6 p-6 sm:mt-8">
+        <SectionHeader
+          kicker="Learning pathways"
+          title="Pick the track that matches your role"
+          description="Each pathway groups resources by the decision you are trying to make next."
+          size="md"
+        />
+        <div className="mt-4 grid gap-3 lg:grid-cols-3">
+          {trackCards.map((track) => (
+            <article key={track.title} className="card-feature p-4">
+              <h2 className="text-sm font-semibold text-slate-900 dark:text-slate-100">{track.title}</h2>
+              <p className="mt-1 text-xs leading-relaxed text-slate-600 dark:text-slate-300">
+                {track.description}
+              </p>
+              <Link href={track.href} className="btn btn-ghost mt-3 text-xs">
+                {track.cta}
+              </Link>
+            </article>
+          ))}
+        </div>
+      </section>
 
       {/* CMS-driven book cards */}
       {hasCmsBooks && (
@@ -65,7 +128,7 @@ export default function Books({ books }: BooksProps) {
           {books.map((book) => (
             <div
               key={book.id}
-              className="surface-panel border border-slate-200/80 bg-white/90 dark:bg-[var(--surface-strong)]/90 p-6"
+              className="surface-panel p-6"
             >
               <div className="flex items-start justify-between gap-4">
                 <div className="min-w-0 flex-1">
@@ -141,19 +204,19 @@ export default function Books({ books }: BooksProps) {
         <SectionHeader
           kicker="Featured book"
           title="Trust Before Intelligence"
-          description="A foundational guide to responsible AI delivery—designed for leadership teams, operators, and LLM indexability."
+          description="A practical guide to building trust into every stage of enterprise AI delivery -- for leaders, operators, and technical teams."
           size="md"
         />
         <div className="mt-4 grid gap-3 sm:grid-cols-2">
           {[
-            "Trust-by-design principles for enterprise AI adoption.",
-            "Governance, reliability, and alignment frameworks.",
-            "Practical checklists for teams and delivery leaders.",
-            "LLM-ready summaries for faster discovery.",
+            "Build stakeholder confidence before scaling AI investments.",
+            "Governance and risk frameworks that satisfy compliance teams.",
+            "Actionable checklists for CIOs, delivery leads, and engineers.",
+            "Reduce time-to-trust with structured adoption playbooks.",
           ].map((item) => (
             <div
               key={item}
-              className="rounded-2xl border border-slate-200/80 bg-white/90 dark:bg-[var(--surface-strong)]/90 p-4 text-sm text-slate-700 shadow-sm"
+              className="section-card rounded-2xl p-4 text-sm text-slate-700 dark:text-slate-200"
             >
               {item}
             </div>
@@ -180,41 +243,36 @@ export default function Books({ books }: BooksProps) {
       {/* Planned placeholders shown only when CMS is empty */}
       {!hasCmsBooks && (
         <div className="mt-6 grid gap-4 lg:grid-cols-3">
-          <PlannedCard title="Books" description="Catalog books, chapters, and release notes." badge="Planned" />
+          <PlannedCard title="Books" description="Full-length guides on AI strategy, governance, and delivery." badge="Planned" />
           <PlannedCard
             title="Artifacts"
-            description="Store/download templates, worksheets, and companion assets."
+            description="Downloadable templates, checklists, and companion assets."
             badge="Planned"
           />
           <PlannedCard
             title="Learning paths"
-            description="Curate reading + artifacts by role, industry, or solution."
+            description="Curated reading tracks by role, industry, or solution area."
             badge="Planned"
           />
         </div>
       )}
 
-      <div className="mt-8 flex flex-col gap-3 sm:flex-row">
-        <Link
-          href="/resources"
-          className="btn btn-secondary"
-        >
-          Back to Resources
-        </Link>
-        <Link
-          href="/solutions"
-          className="btn btn-primary"
-        >
-          Explore Solutions
-        </Link>
-      </div>
+      <EnterpriseCtaBand
+        kicker="Scale capability"
+        title="Turn reading into delivery momentum"
+        description="Use books and artifacts to align leadership, architecture, and delivery on one AI execution model."
+        primaryHref="/resources"
+        primaryLabel="Back to resources"
+        secondaryHref="/solutions"
+        secondaryLabel="Explore solutions"
+      />
     </Layout>
   );
 }
 
 function PlannedCard({ title, description, badge }: { title: string; description: string; badge: string }) {
   return (
-    <div className="surface-panel border border-slate-200/80 bg-white/90 dark:bg-[var(--surface-strong)]/90 p-6">
+    <div className="surface-panel p-6">
       <div className="flex items-start justify-between gap-4">
         <div>
           <div className="text-base font-semibold text-slate-900">{title}</div>

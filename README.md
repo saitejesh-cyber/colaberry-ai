@@ -16,6 +16,24 @@ bun dev
 
 Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
 
+### Local stability note (Next.js 16)
+
+If you see `.next/dev/*` ENOENT errors (for example `_buildManifest.js.tmp` or
+`routes-manifest.json`) while running dev, use this recovery sequence:
+
+```bash
+npm run clean:next
+npm run dev
+```
+
+`npm run dev` uses webpack mode for stability. Turbopack is still available:
+
+```bash
+npm run dev:turbo
+```
+
+Recommended Node runtime is `22.x` LTS.
+
 You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
 
 This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.

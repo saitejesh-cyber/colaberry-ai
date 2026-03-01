@@ -2,6 +2,7 @@ import Head from "next/head";
 import Link from "next/link";
 import type { GetServerSideProps } from "next";
 import Layout from "../components/Layout";
+import EnterpriseCtaBand from "../components/EnterpriseCtaBand";
 import SectionHeader from "../components/SectionHeader";
 import StatePanel from "../components/StatePanel";
 import { seoTags, canonicalUrl as buildCanonical, type SeoMeta } from "../lib/seo";
@@ -72,70 +73,70 @@ const STATIC_PAGES: Array<Omit<SearchResult, "id">> = [
   {
     type: "Pages",
     title: "AIXcelerator platform",
-    description: "Core platform, modular layers, and governance surface.",
+    description: "The AI platform powering governed agents and integrations.",
     href: "/aixcelerator",
     meta: "Platform",
   },
   {
     type: "Pages",
     title: "Agents catalog",
-    description: "Governed catalog of enterprise agents and assistants.",
+    description: "Browse and compare enterprise-ready AI agents.",
     href: "/aixcelerator/agents",
     meta: "Agents",
   },
   {
     type: "Pages",
     title: "Skills catalog",
-    description: "Reusable capability units for official, workflow, domain, and orchestration tasks.",
+    description: "Reusable AI capabilities for workflows, domains, and orchestration.",
     href: "/aixcelerator/skills",
     meta: "Skills",
   },
   {
     type: "Pages",
     title: "MCP servers library",
-    description: "Standardized MCP server registry and integrations.",
+    description: "Connect AI agents to external tools via MCP servers.",
     href: "/aixcelerator/mcp",
     meta: "MCP",
   },
   {
     type: "Pages",
     title: "Use cases",
-    description: "Structured use cases linked to agents, MCP servers, and outcomes.",
+    description: "See how AI solves real problems, with linked agents and outcomes.",
     href: "/use-cases",
     meta: "Solutions",
   },
   {
     type: "Pages",
     title: "Industries",
-    description: "Industry pages with aligned solutions and case studies.",
+    description: "AI solutions tailored to your industry with case studies.",
     href: "/industries",
     meta: "Industries",
   },
   {
     type: "Pages",
     title: "Solutions",
-    description: "Packaged offerings and reusable playbooks.",
+    description: "Ready-to-deploy AI solutions with governance built in.",
     href: "/solutions",
     meta: "Solutions",
   },
   {
     type: "Pages",
     title: "Resources hub",
-    description: "Podcasts, books, white papers, and curated signals.",
+    description: "Podcasts, white papers, and research to inform your AI strategy.",
     href: "/resources",
     meta: "Resources",
   },
   {
     type: "Pages",
     title: "Articles",
-    description: "CMS-backed analysis and implementation guidance.",
+    description: "In-depth analysis and practical implementation guidance.",
     href: "/resources/articles",
     meta: "Resources",
   },
   {
     type: "Pages",
     title: "News and product updates",
-    description: "Announcements, releases, and ecosystem signals.",
+    description: "Product releases, AI news, and daily briefings.",
     href: "/updates",
     meta: "Updates",
   },
@@ -426,10 +427,21 @@ export const getServerSideProps: GetServerSideProps<SearchPageProps> = async ({ 
 export default function SearchPage({ query, results, fetchError }: SearchPageProps) {
   const grouped = groupResults(results);
   const hasResults = grouped.length > 0;
+  const topResultTypes = grouped
+    .slice(0, 4)
+    .map((group) => `${group.type}: ${group.items.length}`);
+  const searchShortcuts = [
+    "agent ops",
+    "mcp integration",
+    "customer support",
+    "governance",
+    "healthcare",
+    "supply chain",
+  ];
 
   const seoMeta: SeoMeta = {
     title: query ? `${query} - Search | Colaberry AI` : "Search | Colaberry AI",
-    description: "Search across agents, MCP servers, skills, use cases, podcasts, case studies, and core pages.",
+    description: "Find the right AI agent, integration, or use case in seconds. Search the full Colaberry AI catalog.",
     canonical: buildCanonical("/search"),
     noindex: true,
   };
@@ -457,8 +469,8 @@ export default function SearchPage({ query, results, fetchError }: SearchPagePro
             as="h1"
             size="xl"
             kicker="Search"
-            title={query ? `Results for \"${query}\"` : "Search the catalog"}
-            description="Search across agents, MCP servers, skills, use cases, podcasts, case studies, and core pages."
+            title={query ? `Results for \"${query}\"` : "Find what you need, fast"}
+            description="Search agents, integrations, use cases, podcasts, and more across the entire catalog."
           />
         </div>
         <div className="rise-in rise-delay-2 detail-section">
@@ -474,7 +486,7 @@ export default function SearchPage({ query, results, fetchError }: SearchPagePro
               name="q"
               type="search"
               defaultValue={query}
-              placeholder="Search agents, MCP servers, skills, use cases, podcasts..."
+              placeholder="Try an industry, agent name, or use case..."
               aria-label="Search the catalog"
               className="input-premium"
             />
@@ -483,17 +495,59 @@ export default function SearchPage({ query, results, fetchError }: SearchPagePro
             </button>
           </form>
           <p className="mt-2 text-xs text-slate-500">
-            Try keywords like industry names, skill categories, agent types, MCP servers, or podcast topics.
+            Try industry names, agent types, skill categories, or topics like &quot;supply chain&quot; or &quot;analytics.&quot;
           </p>
+          <div className="mt-3 flex flex-wrap gap-2">
+            {searchShortcuts.map((shortcut) => (
+              <Link
+                key={shortcut}
+                href={`/search?q=${encodeURIComponent(shortcut)}`}
+                className="chip chip-neutral rounded-md px-3 py-1 text-xs font-semibold"
+              >
+                {shortcut}
+              </Link>
+            ))}
+          </div>
         </div>
       </div>
+
+      {hasResults ? (
+        <section className="surface-panel mt-6 p-5 sm:p-6">
+          <SectionHeader
+            kicker="Search intelligence"
+            title="Result distribution"
+            description="A quick view of where matches are concentrated so teams can navigate faster."
+            size="md"
+          />
+          <div className="mt-4 grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
+            <div className="section-card rounded-xl p-4">
+              <div className="text-xs font-semibold uppercase tracking-[0.14em] text-slate-500">Total results</div>
+              <div className="mt-1 text-2xl font-semibold text-slate-900 dark:text-slate-100">{results.length}</div>
+            </div>
+            <div className="section-card rounded-xl p-4">
+              <div className="text-xs font-semibold uppercase tracking-[0.14em] text-slate-500">Result groups</div>
+              <div className="mt-1 text-2xl font-semibold text-slate-900 dark:text-slate-100">{grouped.length}</div>
+            </div>
+            <div className="section-card rounded-xl p-4 sm:col-span-2">
+              <div className="text-xs font-semibold uppercase tracking-[0.14em] text-slate-500">Top buckets</div>
+              <div className="mt-2 flex flex-wrap gap-2">
+                {topResultTypes.map((item) => (
+                  <span key={item} className="chip chip-muted rounded-md px-3 py-1 text-xs font-semibold">
+                    {item}
+                  </span>
+                ))}
+              </div>
+            </div>
+          </div>
+        </section>
+      ) : null}
 
       {!query ? (
         <div className="mt-8">
           <StatePanel
             variant="empty"
-            title="Start with a search term"
-            description="Enter a keyword to explore agents, MCP servers, skills, use cases, podcasts, and case studies."
+            title="What are you looking for?"
+            description="Enter a keyword to find agents, integrations, use cases, or resources across the catalog."
           />
         </div>
       ) : null}
@@ -502,8 +556,8 @@ export default function SearchPage({ query, results, fetchError }: SearchPagePro
         <div className="mt-8">
           <StatePanel
             variant="empty"
-            title="No results yet"
-            description="Try a broader keyword, check spelling, or search by industry."
+            title="No matches found"
+            description="Try a different keyword, check your spelling, or browse by industry."
           />
         </div>
       ) : null}
@@ -542,6 +596,16 @@ export default function SearchPage({ query, results, fetchError }: SearchPagePro
           ))}
         </div>
       ) : null}
+
+      <EnterpriseCtaBand
+        kicker="Need guided discovery"
+        title="Map search results to a rollout-ready plan"
+        description="Use catalog matches to identify the best solution path for your team, then validate it with a focused demo."
+        primaryHref="/request-demo"
+        primaryLabel="Book a demo"
+        secondaryHref="/resources"
+        secondaryLabel="Explore resources"
+      />
     </Layout>
   );
 }

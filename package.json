@@ -3,15 +3,22 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "next dev",
+    "dev": "NEXT_DIST_DIR=.next-dev next dev --webpack",
+    "dev:turbo": "next dev",
     "build": "next build",
     "start": "next start -p $PORT",
+    "clean:next": "rm -rf .next .next-dev",
     "lint": "eslint",
+    "qa:smoke": "bash scripts/qa-runtime-smoke.sh",
     "assets:heroes": "node scripts/generate-enterprise-hero-assets.mjs",
     "import:podcasts:csv": "node scripts/import-podcasts-csv.mjs",
     "audit:data": "node scripts/audit-data-readiness.mjs"
   },
+  "engines": {
+    "node": ">=20.11 <24"
+  },
   "dependencies": {
+    "22": "^0.0.0",
     "next": "^16.1.6",
     "react": "19.2.3",
     "react-dom": "19.2.3",

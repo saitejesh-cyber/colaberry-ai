@@ -369,7 +369,7 @@ export default function UseCaseDetailPage({ useCase, allowPrivate }: UseCaseDeta
         </aside>
       </section>
 
-      <ShareActions title={useCase.title} />
+      <ShareActions />
     </Layout>
   );
 }
@@ -398,7 +398,7 @@ function ScrollProgress() {
   );
 }
 
-function ShareActions({ title: _title }: { title: string }) {
+function ShareActions() {
   const [copied, setCopied] = useState(false);
   const copy = () => {
     navigator.clipboard.writeText(window.location.href).then(() => {
@@ -410,7 +410,7 @@ function ShareActions({ title: _title }: { title: string }) {
     <div className="fixed bottom-6 right-6 z-30 flex gap-2">
       <button
         type="button"
-        className="flex h-10 w-10 items-center justify-center rounded-full border border-[var(--stroke)] bg-[var(--surface-strong)] shadow-lg transition-colors hover:bg-[var(--surface-soft)]"
+        className="flex h-11 w-11 items-center justify-center rounded-full border border-[var(--stroke)] bg-[var(--surface-strong)] shadow-lg transition-colors hover:bg-[var(--surface-soft)]"
         aria-label="Copy link"
         onClick={copy}
       >
@@ -501,7 +501,7 @@ function ListBlock({ title, items, empty }: { title: string; items: string[]; em
         <ul className="mt-3 space-y-2 text-sm text-slate-700 dark:text-slate-300">
           {items.map((item) => (
             <li key={item} className="flex gap-2">
-              <span className="mt-2 h-1.5 w-1.5 shrink-0 rounded-full bg-[#059669]" />
+              <span className="mt-2 h-1.5 w-1.5 shrink-0 rounded-full bg-[var(--trusted-fill)]" />
               <span>{item}</span>
             </li>
           ))}

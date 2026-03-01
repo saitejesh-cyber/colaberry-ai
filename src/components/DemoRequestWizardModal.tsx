@@ -165,12 +165,12 @@ export default function DemoRequestWizardModal({
         aria-modal="true"
         aria-labelledby="demo-wizard-title"
         aria-describedby="demo-wizard-desc"
-        className="w-full max-w-2xl rounded-xl border border-slate-200/80 bg-white p-6 shadow-2xl dark:border-[#374151] dark:bg-[#111827]"
+        className="w-full max-w-2xl rounded-xl border border-slate-200/80 bg-white p-6 shadow-2xl dark:border-[var(--stroke)] dark:bg-[var(--bg)]"
         onClick={(event) => event.stopPropagation()}
       >
         <div className="flex items-start justify-between gap-3">
           <div>
-            <div className="text-xs font-semibold uppercase tracking-[0.2em] text-slate-500 dark:text-[#9CA3AF]">Book a demo</div>
+            <div className="text-xs font-semibold uppercase tracking-[0.2em] text-slate-500 dark:text-[var(--text-muted)]">Book a demo</div>
             <h2 id="demo-wizard-title" className="mt-1 text-2xl font-semibold text-slate-900 dark:text-slate-100">
               Guided booking
             </h2>

@@ -112,28 +112,28 @@ export default function Home({
     {
       href: "/aixcelerator/agents",
       title: "Agents catalog",
-      description: "Ownership, runbooks, evaluations, and deployment readiness.",
+      description: "Evaluate ownership, readiness, and runbooks before you deploy.",
       meta: "Agents",
       image: heroImage("hero-agents-cinematic.webp"),
     },
     {
       href: "/aixcelerator/mcp",
       title: "MCP integration library",
-      description: "Standardized tool access, connectors, and server templates.",
+      description: "Standardized connectors and server templates for tool access.",
       meta: "MCP",
       image: heroImage("hero-mcp-cinematic.webp"),
     },
     {
       href: "/aixcelerator/skills",
       title: "Skills catalog",
-      description: "Reusable capability units for official, workflow, domain, and orchestration tasks.",
+      description: "Reusable capabilities that plug into workflows, domains, and orchestration.",
       meta: "Skills",
       image: heroImage("hero-platform-cinematic.webp"),
     },
     {
       href: "/solutions",
       title: "Use cases + playbooks",
-      description: "Solution blueprints mapped to outcomes and operating models.",
+      description: "Solution blueprints that map directly to measurable outcomes.",
       meta: "Solutions",
       image: heroImage("hero-solutions-cinematic.webp"),
     },
@@ -161,12 +161,32 @@ export default function Home({
     { title: "Industry workspaces", description: "Bring domain context into delivery with repeatable playbooks and patterns." },
     { title: "Developer control", description: "Use a clean platform surface that supports code-level control with faster patterns when needed." },
   ];
+  const executiveProofs = [
+    {
+      title: "Decision-ready narratives",
+      description: "Each solution and use case route now follows a consistent executive storyline from problem framing to delivery path.",
+      href: "/solutions",
+      cta: "Review solutions",
+    },
+    {
+      title: "Industry confidence layer",
+      description: "Industry pages now expose readiness signals, coverage depth, and path-to-launch context for leadership reviews.",
+      href: "/industries",
+      cta: "Explore industries",
+    },
+    {
+      title: "Execution-first use case flow",
+      description: "Use case filtering and delivery-lane pathways reduce friction between discovery, architecture planning, and rollout.",
+      href: "/use-cases",
+      cta: "Browse use cases",
+    },
+  ];
 
   const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://colaberry.ai";
   const metaDescription =
-    "Colaberry AI is a marketplace and destination for AI agents, MCP servers, skills, podcasts, case studies, and trusted research-built for SEO and LLM indexing.";
+    "Discover, evaluate, and deploy AI agents, MCP servers, and skills from one governed catalog — built for enterprise teams and LLM workflows.";
   const seoMeta: SeoMeta = {
-    title: "Colaberry AI | The go-to destination for agents, MCPs, and AI knowledge",
+    title: "Colaberry AI | Discover, govern, and scale enterprise AI",
     description: metaDescription,
     canonical: siteUrl,
   };
@@ -213,14 +233,14 @@ export default function Home({
             </div>
 
             <h1 className="rise-in rise-delay-2 mt-8 font-display text-display-md font-bold text-[var(--text-heading)] sm:text-display-lg lg:text-display-xl">
-              Discover, govern, and scale{" "}
+              Ship AI programs{" "}
               <span className="text-gradient">
-                enterprise AI
+                with confidence
               </span>
             </h1>
 
             <p className="rise-in rise-delay-3 mt-6 max-w-2xl text-body-lg leading-relaxed text-[var(--text-body-light)]">
-              A unified catalog where teams discover, evaluate, and deploy AI agents, MCP servers, skills, and research — governed and structured for both people and LLMs.
+              One governed catalog for agents, MCP servers, skills, and research — so teams can evaluate, deploy, and scale AI without guesswork.
             </p>
 
             <div className="rise-in mt-8 flex flex-wrap gap-4" style={{ animationDelay: "0.32s" }}>
@@ -261,13 +281,31 @@ export default function Home({
         </div>
       </section>
 
+      <section className="reveal section-spacing surface-panel p-6 sm:p-8">
+        <div className="flex flex-col gap-2 sm:flex-row sm:items-end sm:justify-between">
+          <SectionHeader
+            kicker="Executive proof"
+            title="Built for leadership-level evaluation"
+            description="A consistent narrative across homepage, solution tracks, industry lanes, and use cases so decision-makers can move faster."
+          />
+          <Link href="/request-demo" className="btn btn-secondary mt-3 sm:mt-0">
+            Schedule executive walkthrough
+          </Link>
+        </div>
+        <div className="mt-5 grid gap-4 lg:grid-cols-3">
+          {executiveProofs.map((item) => (
+            <ExecutiveProofCard key={item.title} {...item} />
+          ))}
+        </div>
+      </section>
+
       <hr className="section-divider" />
 
       <section className="reveal section-spacing">
         <SectionHeader
           kicker="Explore the catalog"
-          title="A structured destination for agents, MCPs, podcasts, and research"
-          description="Give teams and LLMs a single place to discover, compare, and deploy intelligence."
+          title="One place to discover, compare, and deploy"
+          description="Agents, MCP servers, skills, podcasts, and research — structured for teams and LLM workflows."
         />
         <div className="stagger-grid revealed mt-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
           {catalogs.map((catalog) => (
@@ -293,8 +331,8 @@ export default function Home({
       <section className="reveal section-spacing">
         <SectionHeader
           kicker="Platform capabilities"
-          title="Everything teams need to build, govern, and scale AI"
-          description="From cataloging agents to evaluating outcomes, the platform supports full lifecycle delivery."
+          title="Build, govern, and scale — all from one surface"
+          description="From agent cataloging to outcome evaluation, every stage of AI delivery in one platform."
         />
         <div className="stagger-grid revealed mt-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
           {platformFeatures.map((feature) => (
@@ -307,8 +345,8 @@ export default function Home({
         <div className="flex flex-col gap-2 sm:flex-row sm:items-end sm:justify-between">
           <SectionHeader
             kicker="Connect your stack"
-            title="Integrations-ready from day one"
-            description="Build assistants that can act across your tools — using a standardized MCP surface."
+            title="Integration-ready from day one"
+            description="Build assistants that act across your tools through a standardized MCP surface."
           />
           <Link href="/aixcelerator/mcp" className="btn btn-secondary mt-3 sm:mt-0">
             Explore MCP servers
@@ -326,8 +364,8 @@ export default function Home({
       <section className="reveal section-spacing">
         <SectionHeader
           kicker="Industry expertise"
-          title="Proven success across industries"
-          description="Domain-specific playbooks and patterns for your sector."
+          title="Domain playbooks built for your sector"
+          description="Repeatable patterns and AI-ready strategies for agriculture, healthcare, fintech, and beyond."
         />
         <div className="mt-6 grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-4">
           {industries.map((item) => (
@@ -493,8 +531,8 @@ function SignalDashboard({
     <section className="reveal section-spacing">
       <SectionHeader
         kicker="Platform signals"
-        title="Latest and trending across the catalog"
-        description="Fresh profiles and high-interest items across agents, skills, MCP servers, podcasts, and use cases."
+        title="What's moving across the catalog"
+        description="The latest additions and highest-interest items across agents, skills, MCP servers, and more."
       />
 
       {/* Tab bar */}
@@ -665,13 +703,13 @@ function FeaturedPodcastCard({ episode }: { episode: HomePodcastSignal }) {
           <span className="text-xs font-semibold uppercase tracking-[0.16em] text-slate-700 dark:text-slate-200">
             Latest episode
           </span>
-          <span className={`inline-flex rounded-md px-2 py-0.5 text-label font-semibold leading-none ${isExternal ? "bg-slate-100 text-slate-600 dark:bg-slate-800 dark:text-slate-300" : "bg-slate-100 text-[#111827] dark:bg-slate-800 dark:text-[#F9FAFB]"}`}>
+          <span className={`inline-flex rounded-md px-2 py-0.5 text-label font-semibold leading-none ${isExternal ? "bg-slate-100 text-slate-600 dark:bg-slate-800 dark:text-slate-300" : "bg-slate-100 text-[var(--text-primary)] dark:bg-slate-800 dark:text-[var(--text-primary)]"}`}>
             {isExternal ? "External" : "Colaberry"}
           </span>
         </div>
-        <h4 className="mt-1 line-clamp-2 text-base font-semibold text-slate-900 group-hover:text-slate-600 dark:group-hover:text-slate-300 dark:text-slate-100">
+        <h3 className="mt-1 line-clamp-2 text-base font-semibold text-slate-900 group-hover:text-slate-600 dark:group-hover:text-slate-300 dark:text-slate-100">
           {episode.title}
-        </h4>
+        </h3>
         <div className="mt-1 flex flex-wrap items-center gap-x-2 text-xs text-slate-500 dark:text-slate-400">
           {formatPodcastDate(episode.publishedDate) || "Date pending"}
           {episode.duration ? <span>· {episode.duration}</span> : null}
@@ -738,7 +776,7 @@ function PodcastRail({
                     <div className="mt-0.5 flex flex-wrap items-center gap-x-2 text-xs text-slate-500 dark:text-slate-400">
                       {formatPodcastDate(episode.publishedDate) || "Date pending"}
                       {episode.duration ? <span>· {episode.duration}</span> : null}
-                      <span className={`inline-flex rounded-md px-1.5 py-0.5 text-label font-semibold leading-none ${isExternal ? "bg-slate-100 text-slate-600 dark:bg-slate-800 dark:text-slate-300" : "bg-slate-100 text-[#111827] dark:bg-slate-800 dark:text-[#F9FAFB]"}`}>
+                      <span className={`inline-flex rounded-md px-1.5 py-0.5 text-label font-semibold leading-none ${isExternal ? "bg-slate-100 text-slate-600 dark:bg-slate-800 dark:text-slate-300" : "bg-slate-100 text-[var(--text-primary)] dark:bg-slate-800 dark:text-[var(--text-primary)]"}`}>
                         {isExternal ? "External" : "Colaberry"}
                       </span>
                     </div>
@@ -978,6 +1016,32 @@ function QuickLink({
     <Link href={href} className="card-glass group flex items-start justify-between gap-3 p-5" aria-label={`Open ${title}`}>
       {content}
     </Link>
+  );
+}
+
+function ExecutiveProofCard({
+  title,
+  description,
+  href,
+  cta,
+}: {
+  title: string;
+  description: string;
+  href: string;
+  cta: string;
+}) {
+  return (
+    <article className="card-elevated p-5">
+      <h3 className="text-sm font-semibold text-slate-900 dark:text-slate-100">{title}</h3>
+      <p className="mt-1.5 text-sm leading-relaxed text-slate-600 dark:text-slate-300">{description}</p>
+      <Link
+        href={href}
+        className="mt-3 inline-flex items-center gap-1 text-xs font-semibold uppercase tracking-[0.12em] text-slate-700 hover:text-slate-900 dark:text-slate-200 dark:hover:text-slate-100"
+      >
+        {cta}
+        <span aria-hidden="true">→</span>
+      </Link>
+    </article>
   );
 }
 
@@ -1389,7 +1453,7 @@ function AnimatedMetric({
         className={visible ? "counter-animate" : "opacity-0"}
         style={{ animationDelay: `${delay}ms` }}
       >
-        <div className="font-display text-display-sm font-bold bg-gradient-to-r from-[#F87171] to-[#34D399] bg-clip-text text-transparent">
+        <div className="font-display text-display-sm font-bold bg-gradient-to-r from-[var(--pivot-fill)] to-[var(--trusted-fill)] bg-clip-text text-transparent">
           {value}
         </div>
         <div className="mt-2 text-sm font-semibold text-slate-900 dark:text-slate-100">{label}</div>

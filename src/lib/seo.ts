@@ -225,6 +225,64 @@ export function faqSchema(items: { question: string; answer: string }[]) {
   };
 }
 
+/** Build a JSON-LD SoftwareApplication / Product object for catalog items. */
+export function productSchema(product: {
+  name: string;
+  description: string;
+  url: string;
+  category?: string;
+  rating?: number | null;
+  ratingCount?: number | null;
+}) {
+  return {
+    "@context": "https://schema.org",
+    "@type": "SoftwareApplication",
+    name: product.name,
+    description: product.description,
+    url: product.url,
+    applicationCategory: product.category ?? "AI Agent",
+    ...(product.rating != null && product.ratingCount != null && product.ratingCount > 0
+      ? {
+          aggregateRating: {
+            "@type": "AggregateRating",
+            ratingValue: product.rating,
+            ratingCount: product.ratingCount,
+            bestRating: 5,
+            worstRating: 1,
+          },
+        }
+      : {}),
+    offers: {
+      "@type": "Offer",
+      price: "0",
+      priceCurrency: "USD",
+      availability: "https://schema.org/InStock",
+    },
+  };
+}
+
+/** Build a JSON-LD HowTo object for use case implementation steps. */
+export function howToSchema(howTo: {
+  name: string;
+  description: string;
+  url: string;
+  steps: { name: string; text: string }[];
+}) {
+  return {
+    "@context": "https://schema.org",
+    "@type": "HowTo",
+    name: howTo.name,
+    description: howTo.description,
+    url: howTo.url,
+    step: howTo.steps.map((step, index) => ({
+      "@type": "HowToStep",
+      position: index + 1,
+      name: step.name,
+      text: step.text,
+    })),
+  };
+}
+
 /** Build a JSON-LD WebSite object with a SearchAction for site search. */
 export function webSiteSchema() {
   return {

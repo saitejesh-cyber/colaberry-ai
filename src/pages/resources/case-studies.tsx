@@ -2,8 +2,9 @@ import { useState } from "react";
 import Head from "next/head";
 import Layout from "../../components/Layout";
 import Link from "next/link";
-import SectionHeader from "../../components/SectionHeader";
 import EnterprisePageHero from "../../components/EnterprisePageHero";
+import EnterpriseCtaBand from "../../components/EnterpriseCtaBand";
+import SectionHeader from "../../components/SectionHeader";
 import { heroImage } from "../../lib/media";
 import { seoTags, canonicalUrl as buildCanonical, type SeoMeta } from "../../lib/seo";
 import type { GetStaticProps } from "next";
@@ -35,9 +36,29 @@ const hardcodedIndustries = [
 ];
 
 export default function CaseStudiesHub({ caseStudies }: CaseStudiesProps) {
+  const outcomeTracks = [
+    {
+      title: "Cost efficiency",
+      description: "Programs reducing manual effort and improving operational throughput.",
+      href: "/use-cases",
+      cta: "Browse use cases",
+    },
+    {
+      title: "Speed to delivery",
+      description: "Initiatives improving cycle time from strategy to production deployment.",
+      href: "/solutions",
+      cta: "Open solutions",
+    },
+    {
+      title: "Risk and governance",
+      description: "Deployments balancing innovation with security, compliance, and audit controls.",
+      href: "/resources/white-papers",
+      cta: "Read white papers",
+    },
+  ];
   const seoMeta: SeoMeta = {
     title: "Case Studies | Colaberry AI",
-    description: "Browse delivery outcomes by industry. Each industry page contains detailed case studies with measurable results.",
+    description: "See how enterprises achieve measurable ROI with AI agents. Real deployments, real outcomes, across 8+ industries.",
     canonical: buildCanonical("/resources/case-studies"),
   };
 
@@ -55,6 +76,8 @@ export default function CaseStudiesHub({ caseStudies }: CaseStudiesProps) {
   const filtered = activeIndustry
     ? caseStudies.filter((cs) => cs.industry === activeIndustry)
     : caseStudies;
+  const withOutcomes = caseStudies.filter((item) => Boolean(item.outcomes && item.outcomes.trim())).length;
+  const withClient = caseStudies.filter((item) => Boolean(item.clientName && item.clientName.trim())).length;
 
   return (
     <Layout>
@@ -68,7 +91,7 @@ export default function CaseStudiesHub({ caseStudies }: CaseStudiesProps) {
             "@context": "https://schema.org",
             "@type": "CollectionPage",
             "name": "Colaberry AI Case Studies",
-            "description": "Browse delivery outcomes by industry with detailed case studies and measurable results.",
+            "description": "Real-world AI deployments with measurable ROI across multiple industries.",
             "url": buildCanonical("/resources/case-studies"),
             "publisher": { "@type": "Organization", "name": "Colaberry AI" },
           }) }} />
@@ -77,15 +100,54 @@ export default function CaseStudiesHub({ caseStudies }: CaseStudiesProps) {
       <EnterprisePageHero
         kicker="Resources"
         title="Case studies"
-        description="Browse delivery outcomes by industry with detailed case studies and measurable results."
+        description="See how teams across industries use AI agents to cut costs, accelerate delivery, and unlock new revenue."
         image={heroImage("hero-case-studies-cinematic.webp")}
-        alt="Enterprise case study outcomes"
-        imageKicker="Impact library"
-        imageTitle="Outcome snapshots"
-        imageDescription="Cross-industry delivery proof points."
-        primaryAction={{ label: "Explore industries", href: "/industries" }}
-        secondaryAction={{ label: "Browse all resources", href: "/resources", variant: "secondary" }}
+        alt="Enterprise AI case study outcomes by industry"
+        imageKicker="Proven results"
+        imageTitle="Real-world AI outcomes"
+        imageDescription="Measurable impact from production AI deployments across industries."
+        primaryAction={{ label: "Explore by industry", href: "/industries" }}
+        secondaryAction={{ label: "Back to resources", href: "/resources", variant: "secondary" }}
+        metrics={[
+          {
+            label: "Case studies",
+            value: hasCmsData ? String(caseStudies.length) : "Growing",
+            note: "Documented real-world enterprise AI deployments.",
+          },
+          {
+            label: "Industry lanes",
+            value: hasCmsData ? String(industries.length) : String(hardcodedIndustries.length),
+            note: "Coverage across vertical and operating contexts.",
+          },
+          {
+            label: "Outcome-backed",
+            value: hasCmsData ? String(withOutcomes) : "Planned",
+            note: `${withClient} include named client context where available.`,
+          },
+        ]}
       />
+
+      <section className="surface-panel section-spacing p-5 sm:p-6">
+        <SectionHeader
+          kicker="Outcome categories"
+          title="Navigate by business result"
+          description="Use these tracks to quickly find the proof points your stakeholders need."
+          size="md"
+        />
+        <div className="mt-4 grid gap-3 lg:grid-cols-3">
+          {outcomeTracks.map((track) => (
+            <article key={track.title} className="card-feature p-4">
+              <h2 className="text-sm font-semibold text-slate-900 dark:text-slate-100">{track.title}</h2>
+              <p className="mt-1 text-xs leading-relaxed text-slate-600 dark:text-slate-300">
+                {track.description}
+              </p>
+              <Link href={track.href} className="btn btn-ghost mt-3 text-xs">
+                {track.cta}
+              </Link>
+            </article>
+          ))}
+        </div>
+      </section>
 
       {/* CMS-driven case study cards with industry filter chips */}
       {hasCmsData && (
@@ -94,11 +156,12 @@ export default function CaseStudiesHub({ caseStudies }: CaseStudiesProps) {
           {industries.length > 1 && (
             <div className="mt-6 flex flex-wrap gap-2 sm:mt-8">
               <button
+                type="button"
                 onClick={() => setActiveIndustry(null)}
                 className={`rounded-full border px-3 py-1.5 text-xs font-semibold transition-colors ${
                   activeIndustry === null
                     ? "border-brand-deep bg-brand-deep text-white"
-                    : "border-slate-200/80 bg-white text-slate-700 hover:border-slate-300 hover:bg-slate-50 dark:border-[var(--stroke)] dark:bg-[var(--surface-strong)] dark:text-[var(--text-muted)] dark:hover:border-[#4B5563] dark:hover:bg-[#374151]"
+                    : "border-slate-200/80 bg-white text-slate-700 hover:border-slate-300 hover:bg-slate-50 dark:border-[var(--stroke)] dark:bg-[var(--surface-strong)] dark:text-[var(--text-muted)] dark:hover:border-[var(--stroke)] dark:hover:bg-[var(--surface-elevated)]"
                 }`}
               >
                 All ({caseStudies.length})
@@ -108,11 +171,12 @@ export default function CaseStudiesHub({ caseStudies }: CaseStudiesProps) {
                 return (
                   <button
                     key={industry}
+                    type="button"
                     onClick={() => setActiveIndustry(activeIndustry === industry ? null : industry)}
                     className={`rounded-full border px-3 py-1.5 text-xs font-semibold transition-colors ${
                       activeIndustry === industry
                         ? "border-brand-deep bg-brand-deep text-white"
-                        : "border-slate-200/80 bg-white text-slate-700 hover:border-slate-300 hover:bg-slate-50 dark:border-[var(--stroke)] dark:bg-[var(--surface-strong)] dark:text-[var(--text-muted)] dark:hover:border-[#4B5563] dark:hover:bg-[#374151]"
+                        : "border-slate-200/80 bg-white text-slate-700 hover:border-slate-300 hover:bg-slate-50 dark:border-[var(--stroke)] dark:bg-[var(--surface-strong)] dark:text-[var(--text-muted)] dark:hover:border-[var(--stroke)] dark:hover:bg-[var(--surface-elevated)]"
                     }`}
                   >
                     {industry} ({count})
@@ -126,7 +190,7 @@ export default function CaseStudiesHub({ caseStudies }: CaseStudiesProps) {
             {filtered.map((cs) => (
               <div
                 key={cs.id}
-                className="surface-panel border border-slate-200/80 bg-white/90 dark:bg-[var(--surface-strong)]/90 p-6"
+                className="surface-panel p-6"
               >
                 <div className="flex items-start justify-between gap-3">
                   <div className="min-w-0 flex-1">
@@ -162,13 +226,13 @@ export default function CaseStudiesHub({ caseStudies }: CaseStudiesProps) {
             <Link
               key={item.slug}
               href={`/industries/${item.slug}`}
-              className="surface-panel surface-hover surface-interactive group border border-slate-200/80 bg-white/90 dark:bg-[var(--surface-strong)]/90 p-6"
+              className="surface-panel surface-hover surface-interactive group p-6"
               aria-label={`View ${item.name} case studies`}
             >
               <div className="flex items-start justify-between gap-4">
                 <div>
                   <div className="text-sm font-semibold text-slate-900">{item.name}</div>
-                  <div className="mt-1 text-sm text-slate-600">View case studies and outcomes.</div>
+                  <div className="mt-1 text-sm text-slate-600">View deployment outcomes and ROI data.</div>
                 </div>
                 <div className="mt-0.5 text-slate-400 transition-transform group-hover:translate-x-0.5 group-hover:text-slate-600 dark:group-hover:text-slate-300">
                   <span aria-hidden="true">&rarr;</span>
@@ -179,20 +243,15 @@ export default function CaseStudiesHub({ caseStudies }: CaseStudiesProps) {
         </div>
       )}
 
-      <div className="mt-8 flex flex-col gap-3 sm:flex-row">
-        <Link
-          href="/resources"
-          className="btn btn-secondary"
-        >
-          Back to Resources
-        </Link>
-        <Link
-          href="/industries"
-          className="btn btn-primary"
-        >
-          View Industries
-        </Link>
-      </div>
+      <EnterpriseCtaBand
+        kicker="Execution proof"
+        title="Turn case-study evidence into your rollout plan"
+        description="Use deployment outcomes to align sponsors, architects, and delivery leads around a shared execution path."
+        primaryHref="/industries"
+        primaryLabel="Explore industries"
+        secondaryHref="/resources"
+        secondaryLabel="Back to resources"
+      />
     </Layout>
   );
 }

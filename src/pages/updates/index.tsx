@@ -2,6 +2,7 @@ import { useState } from "react";
 import Layout from "../../components/Layout";
 import Head from "next/head";
 import { GetStaticProps } from "next";
+import Link from "next/link";
 import SectionHeader from "../../components/SectionHeader";
 import StatePanel from "../../components/StatePanel";
 import PremiumMediaCard from "../../components/PremiumMediaCard";
@@ -85,21 +86,21 @@ export default function Updates({ ratings, briefing, fetchError }: UpdatesProps)
     {
       href: "/updates",
       title: "Product releases",
-      description: "Feature updates, changelogs, and release notes.",
+      description: "What shipped this week and what it means for your team.",
       meta: "Product",
       image: heroImage("hero-platform-cinematic.webp"),
     },
     {
       href: "/resources/white-papers",
       title: "Research drops",
-      description: "New white papers, POVs, and technical assets.",
+      description: "New white papers and analysis you can share with stakeholders.",
       meta: "Research",
       image: heroImage("hero-resources-cinematic.webp"),
     },
     {
       href: "https://gaiinsights.com/articles",
       title: "Ecosystem signals",
-      description: "Curated headlines and market signals in one feed.",
+      description: "The AI headlines that matter, rated and summarized daily.",
       meta: "Signals",
       image: heroImage("hero-updates-cinematic.webp"),
       external: true,
@@ -107,7 +108,7 @@ export default function Updates({ ratings, briefing, fetchError }: UpdatesProps)
     {
       href: "/solutions",
       title: "Roadmap highlights",
-      description: "What is shipping next across the platform layers.",
+      description: "See what is coming next and plan your rollout accordingly.",
       meta: "Roadmap",
       image: heroImage("hero-solutions-cinematic.webp"),
     },
@@ -123,10 +124,48 @@ export default function Updates({ ratings, briefing, fetchError }: UpdatesProps)
   const visibleRatings = showAllRatings
     ? ratings
     : ratings.slice(0, COLLAPSED_RATINGS_COUNT);
+  const ratingSummary = ratings.reduce(
+    (acc, item) => {
+      const bucket = getRatingBucket(item.rating);
+      acc[bucket] += 1;
+      return acc;
+    },
+    { essential: 0, important: 0, watchlist: 0, unrated: 0 }
+  );
+  const categoryCounts = CATEGORY_TABS.reduce<Record<CategoryTab, number>>(
+    (acc, tab) => {
+      acc[tab] =
+        tab === "All"
+          ? updateHighlights.length
+          : updateHighlights.filter((item) => CATEGORY_MAP[item.meta] === tab).length;
+      return acc;
+    },
+    { All: 0, Product: 0, "AI News": 0, Research: 0 }
+  );
+  const updateActions = [
+    {
+      title: "Run morning brief",
+      description: "Start each day with the top rated stories and briefing headlines.",
+      href: "#ratings",
+      cta: "Open command center",
+    },
+    {
+      title: "Share stakeholder digest",
+      description: "Package product releases and priority signals into one leadership-ready narrative.",
+      href: "/resources/white-papers",
+      cta: "Open research assets",
+    },
+    {
+      title: "Convert signals to roadmap",
+      description: "Map updates to active initiatives, use cases, and implementation milestones.",
+      href: "/solutions",
+      cta: "Review solution tracks",
+    },
+  ];
 
   const seoMeta: SeoMeta = {
     title: "Updates | Colaberry AI",
-    description: "Announcements, releases, and curated AI ecosystem signals in one enterprise feed.",
+    description: "Stay ahead with product releases, curated AI news ratings, and daily briefings in one enterprise feed.",
     canonical: buildCanonical("/updates"),
   };
 
@@ -144,47 +183,61 @@ export default function Updates({ ratings, briefing, fetchError }: UpdatesProps)
               "@context": "https://schema.org",
               "@type": "CollectionPage",
               "name": "Colaberry AI Updates",
-              "description": "Announcements, releases, and curated AI ecosystem signals in one enterprise feed.",
+              "description": "Stay ahead with product releases, curated AI news ratings, and daily briefings in one enterprise feed.",
               "url": `${process.env.NEXT_PUBLIC_SITE_URL || "https://colaberry.ai"}/updates`,
             }),
           }}
         />
       </Head>
       <EnterprisePageHero
-        kicker="Modular layer"
-        title="News & product"
-        description="Announcements, releases, and curated AI ecosystem signals in one enterprise feed."
+        kicker="Stay current"
+        title="One feed for everything that matters in AI"
+        description="Product releases, top-rated AI news, and daily briefings -- all in one place so your team never misses a signal."
         image={heroImage("hero-updates-cinematic.webp")}
         alt="City skyline highlighting update signals"
         imageKicker="Signal feed"
-        imageTitle="Updates and announcements"
-        imageDescription="Product shipping notes, curated headlines, and briefing-level intelligence."
+        imageTitle="Curated, rated, and ready"
+        imageDescription="Every item is rated for relevance so you focus on what drives decisions."
         chips={["Product releases", "Daily briefings", "Top-rated AI news", "Research drops"]}
         primaryAction={{ label: "Open updates feed", href: "/updates" }}
         secondaryAction={{ label: "View GAI Insights", href: "https://gaiinsights.com/ratings", external: true, variant: "secondary" }}
         metrics={[
-          { label: "Top-rated news", value: `${ratings.length}`, note: "Curated items in current refresh." },
-          { label: "Briefing signals", value: `${briefing.items.length}`, note: "Headlines in current briefing." },
-          { label: "Refresh cycle", value: "6h", note: "Cache and revalidation cadence." },
+          { label: "Rated stories", value: `${ratings.length}`, note: "Expert-rated for enterprise relevance." },
+          { label: "Briefing items", value: `${briefing.items.length}`, note: "Today's top headlines, curated." },
+          { label: "Refresh cycle", value: "6 hrs", note: "Updated automatically throughout the day." },
         ]}
       />
 
-      {/* Category filter tabs */}
-      <nav className="mt-6 flex flex-wrap gap-2" aria-label="Update categories">
-        {CATEGORY_TABS.map((tab) => (
+      <section className="surface-panel mt-6 p-5 sm:p-6">
+        <SectionHeader
+          kicker="Operating rhythm"
+          title="Use updates as an enterprise signal command center"
+          description="Filter what matters, prioritize execution-critical insights, and route each signal to the right team."
+          size="md"
+        />
+        <nav className="mt-4 flex flex-wrap gap-2" aria-label="Update categories">
+          {CATEGORY_TABS.map((tab) => (
           <button
             key={tab}
+            type="button"
             onClick={() => setActiveCategory(tab)}
             className={`rounded-full border px-4 py-1.5 text-xs font-semibold transition-colors ${
               activeCategory === tab
                 ? "border-brand-deep bg-brand-deep text-white dark:border-brand-deep dark:bg-brand-deep"
-                : "border-slate-200/80 bg-white text-slate-700 hover:border-slate-300 hover:bg-slate-50 dark:border-slate-600 dark:bg-[var(--surface-soft)] dark:text-slate-200 dark:hover:border-slate-500 dark:hover:bg-slate-600"
-            }`}
-          >
-            {tab}
-          </button>
-        ))}
-      </nav>
+                  : "border-slate-200/80 bg-white text-slate-700 hover:border-slate-300 hover:bg-slate-50 dark:border-slate-600 dark:bg-[var(--surface-soft)] dark:text-slate-200 dark:hover:border-slate-500 dark:hover:bg-slate-600"
+              }`}
+            >
+              {tab} ({categoryCounts[tab]})
+            </button>
+          ))}
+        </nav>
+        <div className="mt-4 grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
+          <SignalSnapshot title="Essential" value={String(ratingSummary.essential)} tone="essential" />
+          <SignalSnapshot title="Important" value={String(ratingSummary.important)} tone="important" />
+          <SignalSnapshot title="Watchlist" value={String(ratingSummary.watchlist)} tone="watchlist" />
+          <SignalSnapshot title="Unrated" value={String(ratingSummary.unrated)} tone="neutral" />
+        </div>
+      </section>
 
       <section className="mt-4 grid gap-3 sm:grid-cols-2">
         {filteredHighlights.length > 0 ? (
@@ -211,6 +264,28 @@ export default function Updates({ ratings, briefing, fetchError }: UpdatesProps)
         )}
       </section>
 
+      <section className="surface-panel mt-6 p-5 sm:p-6">
+        <SectionHeader
+          kicker="Action playbook"
+          title="What high-performing teams do with this feed"
+          description="Three repeatable actions to convert daily updates into roadmap movement."
+          size="md"
+        />
+        <div className="mt-4 grid gap-3 lg:grid-cols-3">
+          {updateActions.map((action) => (
+            <article key={action.title} className="card-feature p-4">
+              <h2 className="text-sm font-semibold text-slate-900 dark:text-slate-100">{action.title}</h2>
+              <p className="mt-1 text-xs leading-relaxed text-slate-600 dark:text-slate-300">
+                {action.description}
+              </p>
+              <Link href={action.href} className="btn btn-ghost mt-3 text-xs">
+                {action.cta}
+              </Link>
+            </article>
+          ))}
+        </div>
+      </section>
+
       {fetchError && (
         <div className="mt-6">
           <StatePanel
@@ -231,13 +306,13 @@ export default function Updates({ ratings, briefing, fetchError }: UpdatesProps)
         </div>
       )}
 
-      <div className="mt-6 grid gap-4 sm:mt-8 lg:grid-cols-[1.2fr_0.8fr]">
-        <section className="surface-panel border border-slate-200/80 bg-white/90 p-6">
+      <div id="ratings" className="mt-6 grid gap-4 sm:mt-8 lg:grid-cols-[1.2fr_0.8fr]">
+        <section className="surface-panel p-6">
           <div className="flex flex-col gap-2 sm:flex-row sm:items-end sm:justify-between">
             <SectionHeader
               kicker="Curated feed"
-              title="Top-Rated AI News"
-              description="Daily ratings and rationale from GAI Insights."
+              title="Top-rated AI news"
+              description="Expert-rated stories with rationale so you know why each one matters."
               size="md"
             />
             <a
@@ -296,6 +371,7 @@ export default function Updates({ ratings, briefing, fetchError }: UpdatesProps)
               </ul>
               {ratings.length > COLLAPSED_RATINGS_COUNT && (
                 <button
+                  type="button"
                   onClick={() => setShowAllRatings((prev) => !prev)}
                   className="btn btn-ghost mt-4 w-full text-center text-sm"
                 >
@@ -308,15 +384,15 @@ export default function Updates({ ratings, briefing, fetchError }: UpdatesProps)
           )}
         </section>
 
-        <section className="surface-panel border border-slate-200/80 bg-white/90 p-6">
+        <section className="surface-panel p-6">
           <div className="flex flex-col gap-2 sm:flex-row sm:items-end sm:justify-between">
             <SectionHeader
               kicker="Daily briefing"
-              title="Daily AI News Briefing"
+              title="Today's AI briefing"
               description={
                 briefing.date
                   ? `Briefing for ${briefing.date}.`
-                  : "Daily external headlines curated by GAI Insights."
+                  : "The day's most important AI headlines, curated by GAI Insights."
               }
               size="md"
             />
@@ -363,28 +439,28 @@ export default function Updates({ ratings, briefing, fetchError }: UpdatesProps)
         </section>
       </div>
 
-      <section className="surface-panel mt-6 border border-slate-200/80 bg-white/90 p-6">
+      <section className="surface-panel mt-6 p-6">
         <SectionHeader
-          kicker="Subscription"
-          title="Newsletter and release alerts"
-          description="Subscribe for product releases, AI news briefings, and enterprise rollout signals."
+          kicker="Stay informed"
+          title="Get updates delivered to your inbox"
+          description="One weekly digest with product releases, top AI news, and implementation notes."
           size="md"
         />
         <div className="mt-4">
           <NewsletterSignup
             sourcePath="/updates"
             sourcePage="updates-page"
-            title="Stay informed"
-            description="One digest covering platform releases, curated AI signals, and implementation notes."
+            title="Never miss a release"
+            description="Platform updates, curated AI news, and actionable implementation notes -- one email, no noise."
             ctaLabel="Subscribe"
           />
         </div>
       </section>
 
       <EnterpriseCtaBand
-        kicker="Update workflow"
-        title="Turn AI signals into enterprise action"
-        description="Connect product releases, curated news, and implementation playbooks into one decision surface for delivery teams."
+        kicker="Take action"
+        title="Turn today's AI signals into your next move"
+        description="Connect the dots between news, product updates, and your rollout plan -- all in one place."
         primaryHref="/aixcelerator"
         primaryLabel="Explore AIXcelerator"
         secondaryHref="/resources"
@@ -392,6 +468,41 @@ export default function Updates({ ratings, briefing, fetchError }: UpdatesProps)
       />
     </Layout>
   );
+}
+
+function SignalSnapshot({
+  title,
+  value,
+  tone,
+}: {
+  title: string;
+  value: string;
+  tone: "essential" | "important" | "watchlist" | "neutral";
+}) {
+  const toneClass =
+    tone === "essential"
+      ? "border-emerald-300/70 bg-emerald-50/80 text-emerald-900 dark:border-emerald-400/40 dark:bg-emerald-950/40 dark:text-emerald-100"
+      : tone === "important"
+      ? "border-amber-300/70 bg-amber-50/80 text-amber-900 dark:border-amber-400/40 dark:bg-amber-950/40 dark:text-amber-100"
+      : tone === "watchlist"
+      ? "border-slate-300/70 bg-slate-100/80 text-slate-800 dark:border-slate-500/40 dark:bg-slate-900/60 dark:text-slate-100"
+      : "border-slate-200/70 bg-white/80 text-slate-900 dark:border-slate-600/60 dark:bg-[var(--surface-soft)] dark:text-slate-100";
+
+  return (
+    <div className={`section-card rounded-xl border p-4 ${toneClass}`}>
+      <div className="text-xs font-semibold uppercase tracking-[0.14em]">{title}</div>
+      <div className="mt-2 text-2xl font-semibold">{value}</div>
+    </div>
+  );
+}
+
+function getRatingBucket(rating?: string): "essential" | "important" | "watchlist" | "unrated" {
+  if (!rating) return "unrated";
+  const normalized = rating.toLowerCase();
+  if (normalized.includes("essential")) return "essential";
+  if (normalized.includes("important")) return "important";
+  if (normalized.includes("watch") || normalized.includes("optional")) return "watchlist";
+  return "unrated";
 }
 
 function ratingBorderLeft(rating?: string) {

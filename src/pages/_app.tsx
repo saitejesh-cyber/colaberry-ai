@@ -1,23 +1,8 @@
 import type { AppProps } from "next/app";
-import { PT_Serif, Source_Sans_3 } from "next/font/google";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 
 import "../styles/globals.css";
-
-const sourceSans = Source_Sans_3({
-  subsets: ["latin"],
-  weight: ["400", "500", "600", "700"],
-  variable: "--font-source-sans",
-  display: "swap",
-});
-
-const ptSerif = PT_Serif({
-  subsets: ["latin"],
-  weight: ["400", "700"],
-  variable: "--font-pt-serif",
-  display: "swap",
-});
 
 export default function App({ Component, pageProps }: AppProps) {
   const router = useRouter();
@@ -45,7 +30,7 @@ export default function App({ Component, pageProps }: AppProps) {
   }, [router]);
 
   return (
-    <div className={`${sourceSans.variable} ${ptSerif.variable}`}>
+    <div>
       <div
         style={{
           opacity: transitioning ? 0 : 1,

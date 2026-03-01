@@ -2,22 +2,22 @@
 <svg width="2400" height="1350" viewBox="0 0 2400 1350" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Colaberry enterprise hero background">
   <defs>
     <linearGradient id="bg-outcome-cards" x1="0" y1="0" x2="1" y2="1">
-      <stop offset="0" stop-color="#060A15"/>
-      <stop offset="0.54" stop-color="#17253F"/>
-      <stop offset="1" stop-color="#12475C"/>
+      <stop offset="0" stop-color="#060915"/>
+      <stop offset="0.54" stop-color="#151D3B"/>
+      <stop offset="1" stop-color="#1E1B4B"/>
     </linearGradient>
     <radialGradient id="orb-a-outcome-cards" cx="52%" cy="42%" r="56%">
-      <stop offset="0" stop-color="#7D5CE0" stop-opacity="0.48"/>
-      <stop offset="1" stop-color="#7D5CE0" stop-opacity="0"/>
+      <stop offset="0" stop-color="#818CF8" stop-opacity="0.48"/>
+      <stop offset="1" stop-color="#818CF8" stop-opacity="0"/>
     </radialGradient>
     <radialGradient id="orb-b-outcome-cards" cx="56%" cy="54%" r="56%">
-      <stop offset="0" stop-color="#33D6C2" stop-opacity="0.44"/>
-      <stop offset="1" stop-color="#33D6C2" stop-opacity="0"/>
+      <stop offset="0" stop-color="#2DD4BF" stop-opacity="0.44"/>
+      <stop offset="1" stop-color="#2DD4BF" stop-opacity="0"/>
     </radialGradient>
     <linearGradient id="flow-outcome-cards" x1="1380" y1="1180" x2="2310" y2="420" gradientUnits="userSpaceOnUse">
-      <stop stop-color="#D1C5FF" stop-opacity="0.88"/>
-      <stop offset="0.56" stop-color="#95F6E9" stop-opacity="0.84"/>
-      <stop offset="1" stop-color="#D1C5FF" stop-opacity="0.62"/>
+      <stop stop-color="#E0E7FF" stop-opacity="0.88"/>
+      <stop offset="0.56" stop-color="#CCFBF1" stop-opacity="0.84"/>
+      <stop offset="1" stop-color="#E0E7FF" stop-opacity="0.62"/>
     </linearGradient>
     <linearGradient id="left-scrim-outcome-cards" x1="0" y1="0" x2="1" y2="0">
       <stop offset="0" stop-color="#030712" stop-opacity="0.94"/>
@@ -39,11 +39,11 @@
 
   
         <g opacity="0.96">
-          <rect x="1410" y="340" width="760" height="690" rx="24" fill="rgba(10,23,43,0.72)" stroke="#D1C5FF" stroke-opacity="0.34"/>
-          <rect x="1470" y="420" width="640" height="150" rx="14" fill="rgba(142,234,255,0.08)" stroke="#95F6E9" stroke-opacity="0.34"/>
-          <rect x="1470" y="610" width="300" height="150" rx="14" fill="rgba(211,197,255,0.08)" stroke="#D1C5FF" stroke-opacity="0.34"/>
-          <rect x="1810" y="610" width="300" height="150" rx="14" fill="rgba(142,234,255,0.08)" stroke="#95F6E9" stroke-opacity="0.34"/>
-          <rect x="1470" y="800" width="640" height="150" rx="14" fill="rgba(211,197,255,0.08)" stroke="#D1C5FF" stroke-opacity="0.34"/>
+          <rect x="1410" y="340" width="760" height="690" rx="24" fill="rgba(10,23,43,0.72)" stroke="#E0E7FF" stroke-opacity="0.34"/>
+          <rect x="1470" y="420" width="640" height="150" rx="14" fill="rgba(142,234,255,0.08)" stroke="#CCFBF1" stroke-opacity="0.34"/>
+          <rect x="1470" y="610" width="300" height="150" rx="14" fill="rgba(211,197,255,0.08)" stroke="#E0E7FF" stroke-opacity="0.34"/>
+          <rect x="1810" y="610" width="300" height="150" rx="14" fill="rgba(142,234,255,0.08)" stroke="#CCFBF1" stroke-opacity="0.34"/>
+          <rect x="1470" y="800" width="640" height="150" rx="14" fill="rgba(211,197,255,0.08)" stroke="#E0E7FF" stroke-opacity="0.34"/>
         </g>
       
 

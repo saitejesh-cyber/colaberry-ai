@@ -3,6 +3,8 @@ import Head from "next/head";
 import Link from "next/link";
 import Layout from "../../../components/Layout";
 import EnterprisePageHero from "../../../components/EnterprisePageHero";
+import EnterpriseCtaBand from "../../../components/EnterpriseCtaBand";
+import SectionHeader from "../../../components/SectionHeader";
 import StatePanel from "../../../components/StatePanel";
 import { heroImage } from "../../../lib/media";
 import { Article, fetchArticles } from "../../../lib/cms";
@@ -33,9 +35,37 @@ export const getStaticProps: GetStaticProps<ArticlesPageProps> = async () => {
 };
 
 export default function ArticlesPage({ articles, fetchError }: ArticlesPageProps) {
+  const editorialLanes = [
+    {
+      title: "Executive perspective",
+      description: "Guidance on ROI framing, governance posture, and enterprise AI operating models.",
+      href: "/resources/case-studies",
+      cta: "View case studies",
+    },
+    {
+      title: "Architecture perspective",
+      description: "Implementation patterns for reliability, integration, and scalable delivery.",
+      href: "/resources/white-papers",
+      cta: "Read white papers",
+    },
+    {
+      title: "Delivery perspective",
+      description: "Practical notes from teams deploying agents and MCP-enabled workflows.",
+      href: "/resources/podcasts",
+      cta: "Browse podcasts",
+    },
+  ];
+  const categoryCounts = articles.reduce<Record<string, number>>((acc, article) => {
+    const key = article.category?.name || "Article";
+    acc[key] = (acc[key] ?? 0) + 1;
+    return acc;
+  }, {});
+  const topCategories = Object.entries(categoryCounts)
+    .sort((left, right) => right[1] - left[1] || left[0].localeCompare(right[0]))
+    .slice(0, 8);
   const seoMeta: SeoMeta = {
     title: "Articles | Colaberry AI",
-    description: "Enterprise AI articles, analyses, and practical implementation guidance from Colaberry AI.",
+    description: "Actionable articles on enterprise AI deployment -- from agent architecture to production best practices and ROI analysis.",
     canonical: buildCanonical("/resources/articles"),
   };
 
@@ -50,7 +80,7 @@ export default function ArticlesPage({ articles, fetchError }: ArticlesPageProps
           "@context": "https://schema.org",
           "@type": "CollectionPage",
           "name": "Colaberry AI Articles",
-          "description": "Enterprise AI articles, analyses, and practical implementation guidance.",
+          "description": "Actionable articles on enterprise AI deployment, agent architecture, and production best practices.",
           "url": `${process.env.NEXT_PUBLIC_SITE_URL || "https://colaberry.ai"}/resources/articles`,
         }) }} />
       </Head>
@@ -58,33 +88,69 @@ export default function ArticlesPage({ articles, fetchError }: ArticlesPageProps
       <EnterprisePageHero
         kicker="Resources"
         title="Articles"
-        description="Analysis, implementation notes, and practical guidance for teams deploying agents, MCP systems, and use-case workflows."
+        description="Practical guidance for teams deploying AI agents in production -- from architecture decisions to measurable outcomes."
         image={heroImage("hero-updates-cinematic.webp")}
-        alt="Enterprise AI editorial feed"
-        imageKicker="Editorial feed"
-        imageTitle="Enterprise AI analysis"
-        imageDescription="Structured CMS content published for humans and LLM indexability."
-        chips={["Analysis", "Implementation notes", "Product signals", "LLM-indexable content"]}
+        alt="Enterprise AI articles and analysis"
+        imageKicker="Expert analysis"
+        imageTitle="AI deployment insights"
+        imageDescription="Written for decision-makers and practitioners shipping AI in production."
+        chips={["Strategy", "Architecture", "Best practices", "ROI analysis"]}
         primaryAction={{ label: "Open updates feed", href: "/updates" }}
         secondaryAction={{ label: "Back to resources", href: "/resources", variant: "secondary" }}
         metrics={[
           {
-            label: "Published articles",
+            label: "Articles",
             value: String(articles.length),
-            note: "Current content in this feed.",
+            note: "Published and continuously updated.",
           },
           {
-            label: "Publishing source",
-            value: "Strapi CMS",
-            note: "Structured and metadata-first.",
+            label: "Focus",
+            value: "Production AI",
+            note: "Real deployments, not just theory.",
           },
           {
-            label: "Refresh window",
-            value: "10m",
-            note: "Static regeneration cadence.",
+            label: "Audience",
+            value: "Leaders + builders",
+            note: "Strategy through implementation.",
           },
         ]}
       />
+
+      <section className="surface-panel section-spacing p-5 sm:p-6">
+        <SectionHeader
+          kicker="Editorial streams"
+          title="Read by role, not by guesswork"
+          description="Choose the stream that matches your current decision point and move faster from reading to execution."
+          size="md"
+        />
+        <div className="mt-4 grid gap-3 lg:grid-cols-3">
+          {editorialLanes.map((lane) => (
+            <article key={lane.title} className="card-feature p-4">
+              <h2 className="text-sm font-semibold text-slate-900 dark:text-slate-100">{lane.title}</h2>
+              <p className="mt-1 text-xs leading-relaxed text-slate-600 dark:text-slate-300">
+                {lane.description}
+              </p>
+              <Link href={lane.href} className="btn btn-ghost mt-3 text-xs">
+                {lane.cta}
+              </Link>
+            </article>
+          ))}
+        </div>
+        {topCategories.length > 0 ? (
+          <div className="mt-4 border-t border-slate-200/70 pt-4 dark:border-slate-700/60">
+            <div className="text-xs font-semibold uppercase tracking-[0.12em] text-slate-500 dark:text-slate-400">
+              Top categories
+            </div>
+            <div className="mt-2 flex flex-wrap gap-2">
+              {topCategories.map(([name, count]) => (
+                <span key={`${name}-${count}`} className="chip chip-neutral rounded-md px-3 py-1 text-xs font-semibold">
+                  {name} ({count})
+                </span>
+              ))}
+            </div>
+          </div>
+        ) : null}
+      </section>
 
       {fetchError ? (
         <div className="section-spacing">
@@ -138,14 +204,15 @@ export default function ArticlesPage({ articles, fetchError }: ArticlesPageProps
         </div>
       )}
 
-      <div className="section-spacing flex flex-col gap-3 sm:flex-row">
-        <Link href="/resources" className="btn btn-secondary">
-          Back to Resources
-        </Link>
-        <Link href="/updates" className="btn btn-primary">
-          View News & Product
-        </Link>
-      </div>
+      <EnterpriseCtaBand
+        kicker="Stay aligned"
+        title="Turn article insights into rollout decisions"
+        description="Use these articles to align leadership, architecture, and delivery teams on a single enterprise AI strategy."
+        primaryHref="/resources"
+        primaryLabel="Back to resources"
+        secondaryHref="/updates"
+        secondaryLabel="View latest updates"
+      />
     </Layout>
   );
 }

@@ -15,6 +15,22 @@ type FieldErrors = {
   email?: string;
 };
 
+const TEAM_SIZE_OPTIONS = [
+  "1-10",
+  "11-50",
+  "51-200",
+  "201-500",
+  "500+",
+];
+
+const TIMELINE_OPTIONS = [
+  "Immediate (0-30 days)",
+  "Near term (30-60 days)",
+  "This quarter",
+  "This year",
+  "Exploring",
+];
+
 export default function DemoRequestForm({
   sourcePage = "request-demo",
   sourcePath,
@@ -65,7 +81,6 @@ export default function DemoRequestForm({
     event.preventDefault();
     if (state === "submitting") return;
 
-    // Validate all required fields before submit
     const nameError = validateName(name);
     const emailError = validateEmail(email);
     setFieldErrors({ name: nameError, email: emailError });
@@ -129,7 +144,8 @@ export default function DemoRequestForm({
       : "text-slate-500 dark:text-slate-400";
 
   const inputBaseClass = "input-premium mt-2";
-
+  const inputLabelClass =
+    "text-xs font-semibold uppercase tracking-[0.14em] text-slate-500 dark:text-slate-400";
   const inputErrorClass =
     "input-premium mt-2 !border-[var(--failure-stroke)] focus:!border-[var(--failure-text)] focus:!shadow-[0_0_0_3px_var(--failure-stroke)/30]";
 
@@ -137,23 +153,29 @@ export default function DemoRequestForm({
     <form
       id="demo-request-form"
       onSubmit={onSubmit}
-      className="surface-panel mt-8 p-6"
+      className="surface-panel mt-8 space-y-6 p-6"
       noValidate
     >
-      <div className="text-sm font-semibold text-slate-900 dark:text-slate-100">
-        Request a tailored walkthrough
-      </div>
-      <p className="mt-1 text-sm text-slate-600 dark:text-slate-300">
-        Tell us about your team and we will prepare a demo that fits your workflows.
-      </p>
-
-      <div className="mt-5 grid gap-4 sm:grid-cols-2">
+      <div className="flex flex-wrap items-end justify-between gap-3">
         <div>
-          <label
-            htmlFor="demo-name"
-            className="text-xs font-semibold uppercase tracking-[0.14em] text-slate-500 dark:text-slate-400"
-          >
-            Name <span className="text-[var(--failure-text)]" aria-hidden="true">*</span><span className="sr-only"> (required)</span>
+          <div className="text-sm font-semibold text-slate-900 dark:text-slate-100">
+            Request a tailored walkthrough
+          </div>
+          <p className="mt-1 text-sm text-slate-600 dark:text-slate-300">
+            Share your goals and stack. We will align the session to your team&apos;s priorities.
+          </p>
+        </div>
+        <span className="text-xs font-semibold uppercase tracking-[0.12em] text-slate-400 dark:text-slate-500">
+          Required: name + work email
+        </span>
+      </div>
+
+      <fieldset className="grid gap-4 sm:grid-cols-2">
+        <legend className="sr-only">Contact details</legend>
+        <div>
+          <label htmlFor="demo-name" className={inputLabelClass}>
+            Name <span className="text-[var(--failure-text)]" aria-hidden="true">*</span>
+            <span className="sr-only"> (required)</span>
           </label>
           <input
             id="demo-name"
@@ -173,7 +195,7 @@ export default function DemoRequestForm({
             }}
             onBlur={() => handleBlur("name")}
             className={touched.name && fieldErrors.name ? inputErrorClass : inputBaseClass}
-            placeholder="Your name"
+            placeholder="Your full name"
           />
           {touched.name && fieldErrors.name ? (
             <p id="demo-name-error" className="mt-1 text-xs text-[var(--failure-text)] dark:text-[var(--failure-text)]" role="alert">
@@ -183,11 +205,9 @@ export default function DemoRequestForm({
         </div>
 
         <div>
-          <label
-            htmlFor="demo-email"
-            className="text-xs font-semibold uppercase tracking-[0.14em] text-slate-500 dark:text-slate-400"
-          >
-            Work email <span className="text-[var(--failure-text)]" aria-hidden="true">*</span><span className="sr-only"> (required)</span>
+          <label htmlFor="demo-email" className={inputLabelClass}>
+            Work email <span className="text-[var(--failure-text)]" aria-hidden="true">*</span>
+            <span className="sr-only"> (required)</span>
           </label>
           <input
             id="demo-email"
@@ -215,8 +235,11 @@ export default function DemoRequestForm({
             </p>
           ) : null}
         </div>
+      </fieldset>
 
-        <label className="text-xs font-semibold uppercase tracking-[0.14em] text-slate-500 dark:text-slate-400">
+      <fieldset className="grid gap-4 sm:grid-cols-2">
+        <legend className="sr-only">Company context</legend>
+        <label className={inputLabelClass}>
           Company
           <input
             type="text"
@@ -225,10 +248,10 @@ export default function DemoRequestForm({
             value={company}
             onChange={(event) => setCompany(event.target.value)}
             className={inputBaseClass}
-            placeholder="Company name"
+            placeholder="Organization"
           />
         </label>
-        <label className="text-xs font-semibold uppercase tracking-[0.14em] text-slate-500 dark:text-slate-400">
+        <label className={inputLabelClass}>
           Role
           <input
             type="text"
@@ -237,40 +260,45 @@ export default function DemoRequestForm({
             value={role}
             onChange={(event) => setRole(event.target.value)}
             className={inputBaseClass}
-            placeholder="Title or team"
+            placeholder="Head of Product, CTO, VP Engineering..."
           />
         </label>
-        <label className="text-xs font-semibold uppercase tracking-[0.14em] text-slate-500 dark:text-slate-400">
+        <label className={inputLabelClass}>
           Team size
-          <input
-            type="text"
+          <select
             name="teamSize"
             value={teamSize}
             onChange={(event) => setTeamSize(event.target.value)}
             className={inputBaseClass}
-            placeholder="e.g. 10-50"
-          />
+          >
+            <option value="">Select team size</option>
+            {TEAM_SIZE_OPTIONS.map((option) => (
+              <option key={option} value={option}>
+                {option}
+              </option>
+            ))}
+          </select>
         </label>
-        <label className="text-xs font-semibold uppercase tracking-[0.14em] text-slate-500 dark:text-slate-400">
+        <label className={inputLabelClass}>
           Timeline
           <select
             name="timeline"
             value={timeline}
             onChange={(event) => setTimeline(event.target.value)}
-            className="input-premium mt-2"
+            className={inputBaseClass}
           >
             <option value="">Select timeline</option>
-            <option value="Immediate">Immediate</option>
-            <option value="30-60 days">30-60 days</option>
-            <option value="This quarter">This quarter</option>
-            <option value="This year">This year</option>
-            <option value="Exploring">Exploring</option>
+            {TIMELINE_OPTIONS.map((option) => (
+              <option key={option} value={option}>
+                {option}
+              </option>
+            ))}
           </select>
         </label>
-      </div>
+      </fieldset>
 
-      <label className="mt-4 block text-xs font-semibold uppercase tracking-[0.14em] text-slate-500 dark:text-slate-400">
-        Notes
+      <label className={`block ${inputLabelClass}`}>
+        Goals and notes
         <textarea
           name="message"
           value={message}
@@ -291,17 +319,17 @@ export default function DemoRequestForm({
         aria-hidden="true"
       />
 
-      <div className="mt-5 flex flex-col items-start gap-3 sm:flex-row sm:items-center sm:justify-between">
+      <div className="flex flex-col items-start gap-3 border-t border-slate-200/70 pt-5 sm:flex-row sm:items-center sm:justify-between dark:border-slate-700/70">
         <button type="submit" className="btn btn-cta" disabled={state === "submitting"}>
           {state === "submitting" ? "Sending request..." : "Submit demo request"}
         </button>
-        <p className="text-xs text-slate-500 dark:text-slate-400">
-          We reply within 1-2 business days. Your info stays internal.
+        <p className="max-w-sm text-xs text-slate-500 dark:text-slate-400">
+          We reply within 1-2 business days. Your information is used only for demo scheduling.
         </p>
       </div>
 
       {statusMessage ? (
-        <p className={`mt-3 text-sm ${statusClass}`} role={state === "error" ? "alert" : "status"} aria-live="polite">
+        <p className={`text-sm ${statusClass}`} role={state === "error" ? "alert" : "status"} aria-live="polite">
           {statusMessage}
         </p>
       ) : null}

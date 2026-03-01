@@ -7,7 +7,7 @@ import Layout from "../../../components/Layout";
 import Breadcrumb from "../../../components/Breadcrumb";
 import SectionHeader from "../../../components/SectionHeader";
 import EnterprisePageHero from "../../../components/EnterprisePageHero";
-import AgentCard from "../../../components/AgentCard";
+import CatalogCard from "../../../components/CatalogCard";
 import { Agent, fetchAgentBySlug, fetchRelatedAgents } from "../../../lib/cms";
 import { heroImage } from "../../../lib/media";
 import type { ReactNode } from "react";
@@ -402,7 +402,7 @@ export default function AgentDetail({ agent, allowPrivate, relatedAgents }: Agen
                     <ul className="mt-3 space-y-2 text-sm text-slate-700 dark:text-slate-300">
                       {requirements.map((item, index) => (
                         <li key={`req-${index}`} className="flex gap-2">
-                          <span className="mt-2 h-1.5 w-1.5 shrink-0 rounded-full bg-[#059669]" />
+                          <span className="mt-2 h-1.5 w-1.5 shrink-0 rounded-full bg-[var(--trusted-fill)]" />
                           <span>{item}</span>
                         </li>
                       ))}
@@ -587,7 +587,7 @@ export default function AgentDetail({ agent, allowPrivate, relatedAgents }: Agen
           <div className="mt-6 grid gap-4 lg:grid-cols-3">
             {relatedAgents.map((related) => (
               <div key={related.id} className="card-elevated">
-                <AgentCard agent={related} />
+                <CatalogCard item={related} variant="agent" />
               </div>
             ))}
           </div>
@@ -623,7 +623,7 @@ export default function AgentDetail({ agent, allowPrivate, relatedAgents }: Agen
         </aside>
       </section>
 
-      <ShareActions title={agent.name} />
+      <ShareActions />
     </Layout>
   );
 }
@@ -652,7 +652,7 @@ function ScrollProgress() {
   );
 }
 
-function ShareActions({ title: _title }: { title: string }) {
+function ShareActions() {
   const [copied, setCopied] = useState(false);
   const copy = () => {
     navigator.clipboard.writeText(window.location.href).then(() => {
@@ -664,7 +664,7 @@ function ShareActions({ title: _title }: { title: string }) {
     <div className="fixed bottom-6 right-6 z-30 flex gap-2">
       <button
         type="button"
-        className="flex h-10 w-10 items-center justify-center rounded-full border border-[var(--stroke)] bg-[var(--surface-strong)] shadow-lg transition-colors hover:bg-[var(--surface-soft)]"
+        className="flex h-11 w-11 items-center justify-center rounded-full border border-[var(--stroke)] bg-[var(--surface-strong)] shadow-lg transition-colors hover:bg-[var(--surface-soft)]"
         aria-label="Copy link"
         onClick={copy}
       >
@@ -765,7 +765,7 @@ function GuidanceBlock({
       <ul className="mt-3 space-y-2 text-sm text-slate-700 dark:text-slate-300">
         {items.map((item, index) => (
           <li key={`${title}-${index}`} className="flex gap-2">
-            <span className="mt-2 h-1.5 w-1.5 shrink-0 rounded-full bg-[#059669]" />
+            <span className="mt-2 h-1.5 w-1.5 shrink-0 rounded-full bg-[var(--trusted-fill)]" />
             <span>{item}</span>
           </li>
         ))}
@@ -783,7 +783,7 @@ function ListSection({ title, items, empty }: { title: string; items: string[]; 
         <ul className="mt-3 space-y-2 text-sm text-slate-700 dark:text-slate-300">
           {items.map((item, index) => (
             <li key={`${title}-${index}`} className="flex gap-2">
-              <span className="mt-2 h-1.5 w-1.5 shrink-0 rounded-full bg-[#059669]" />
+              <span className="mt-2 h-1.5 w-1.5 shrink-0 rounded-full bg-[var(--trusted-fill)]" />
               <span>{item}</span>
             </li>
           ))}

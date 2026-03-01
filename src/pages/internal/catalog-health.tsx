@@ -258,7 +258,7 @@ export default function InternalCatalogHealthPage() {
           <label className="flex items-center gap-2 rounded-lg border border-slate-200/80 bg-slate-50/80 px-4 py-3 text-sm text-slate-700 dark:border-slate-700/70 dark:bg-slate-900/70 dark:text-slate-200">
             <input
               type="checkbox"
-              className="h-4 w-4 rounded border-slate-300 text-[#DC2626] focus:ring-[#DC2626]"
+              className="h-4 w-4 rounded border-slate-300 text-[var(--pivot-fill)] focus:ring-[var(--pivot-fill)]"
               checked={includePrivate}
               onChange={(event) => setIncludePrivate(event.target.checked)}
               aria-label="Include private records"
@@ -362,7 +362,7 @@ export default function InternalCatalogHealthPage() {
                           {row.entity}
                         </td>
                         <td className="px-3 py-3 text-slate-900 dark:text-slate-100">
-                          <a href={row.href} className="font-semibold hover:text-[#DC2626] dark:hover:text-[#F87171]">
+                          <a href={row.href} className="font-semibold hover:text-[var(--pivot-fill)] dark:hover:text-[var(--pivot-fill)]">
                             {row.name}
                           </a>
                           <p className="mt-0.5 text-xs text-slate-500">{row.slug}</p>
